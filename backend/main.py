@@ -372,6 +372,28 @@ async def get_project(project_id: str, db: AsyncSession = Depends(get_db)):
     if not project:
         raise HTTPException(status_code=404, detail="Projet non trouvé")
 
+    # Lazy-fetch domain metrics if analysis exists but metrics are missing
+    sa = project.site_analysis
+    if (
+        sa
+        and sa.get("status") == "completed"
+        and not sa.get("domain_metrics")
+        and project.client_domain
+    ):
+        try:
+            from backend.services.domdetailer import fetch_domain_metrics
+            metrics = await fetch_domain_metrics(project.client_domain)
+            if metrics:
+                sa["domain_metrics"] = metrics
+                project.site_analysis = sa
+                # Force SQLAlchemy to detect the JSON change
+                from sqlalchemy.orm.attributes import flag_modified
+                flag_modified(project, "site_analysis")
+                await db.commit()
+                await db.refresh(project)
+        except Exception as e:
+            print(f"[API] Lazy domain metrics fetch failed for {project.client_domain}: {e}")
+
     spots_q = await db.execute(
         select(func.count(Spot.id)).where(Spot.project_id == project.id)
     )
