@@ -3,7 +3,6 @@ import { Outlet, NavLink, useParams, useLocation, useNavigate } from 'react-rout
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
-  LayoutDashboard,
   BarChart3,
   Target,
   Link2,
@@ -19,7 +18,6 @@ import { cn } from '@/lib/utils';
 import { getProject, getProjects, createProject, deleteProject } from '@/lib/api';
 
 const PROJECT_NAV = [
-  { label: 'Dashboard',  path: '',           icon: LayoutDashboard },
   { label: 'Analyse',    path: '/analysis',  icon: BarChart3 },
   { label: 'Backlinks',  path: '/backlinks', icon: Link2 },
   { label: 'Spots',      path: '/spots',     icon: Target },

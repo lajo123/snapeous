@@ -17,6 +17,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Link2,
+  Shield,
+  BarChart3,
+  Users,
+  TrendingUp,
 } from 'lucide-react';
 
 // ── Badge color maps ─────────────────────────────────────────────────
@@ -644,6 +648,67 @@ export default function ProjectAnalysis() {
           </button>
         </div>
       </div>
+
+      {/* ── Domain metrics from DomDetailer ────────────────────────── */}
+      {analysis?.domain_metrics && (
+        <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-7">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">
+            Métriques du domaine
+          </h2>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Shield className="h-4 w-4 text-emerald-600" />
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Domain Rank</p>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">{analysis.domain_metrics.domain_rank ?? '--'}</p>
+            </div>
+            <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
+              <div className="flex items-center gap-2 mb-1.5">
+                <BarChart3 className="h-4 w-4 text-blue-600" />
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">URL Rank</p>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">{analysis.domain_metrics.url_rank ?? '--'}</p>
+            </div>
+            <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Link2 className="h-4 w-4 text-violet-600" />
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Backlinks</p>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">
+                {analysis.domain_metrics.backlinks_count != null
+                  ? Number(analysis.domain_metrics.backlinks_count).toLocaleString('fr-FR')
+                  : '--'}
+              </p>
+            </div>
+            <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Users className="h-4 w-4 text-amber-600" />
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Ref. Domains</p>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">
+                {analysis.domain_metrics.referring_domains != null
+                  ? Number(analysis.domain_metrics.referring_domains).toLocaleString('fr-FR')
+                  : '--'}
+              </p>
+            </div>
+            <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
+              <div className="flex items-center gap-2 mb-1.5">
+                <TrendingUp className="h-4 w-4 text-rose-600" />
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Dofollow</p>
+              </div>
+              <p className="text-2xl font-bold text-gray-900">
+                {(() => {
+                  const df = Number(analysis.domain_metrics.dofollow_backlinks || 0);
+                  const nf = Number(analysis.domain_metrics.nofollow_backlinks || 0);
+                  const total = df + nf;
+                  return total > 0 ? `${Math.round((df / total) * 100)}%` : '--';
+                })()}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── Niches ─────────────────────────────────────────────────── */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-7">
