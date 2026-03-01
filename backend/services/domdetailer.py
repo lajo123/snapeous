@@ -13,22 +13,32 @@ from backend.db.database import async_session
 DOMDETAILER_BASE_URL = "https://domdetailer.com/api"
 
 
+def _safe_int(val) -> Optional[int]:
+    """Safely convert a value to int (API may return strings like '45')."""
+    if val is None:
+        return None
+    try:
+        return int(float(val))
+    except (ValueError, TypeError):
+        return None
+
+
 async def fetch_domain_metrics(domain: str) -> Optional[Dict[str, Any]]:
-    """Fetch domain metrics from DomDetailer API.
-    
-    Returns 12 metrics:
-    - Domain Rank (DR)
-    - URL Rank (UR)
-    - Backlinks count
-    - Referring domains
-    - Dofollow backlinks
-    - Nofollow backlinks
-    - Gov backlinks
-    - Edu backlinks
-    - Dofollow referring
-    - Nofollow referring
-    - Gov referring
-    - Edu referring
+    """Fetch domain metrics from DomDetailer API (checkDomain v2).
+
+    Returns 12 metrics mapped from Moz / Majestic / Pretty stats:
+    - Domain Rank (mozDA)
+    - URL Rank (mozPA)
+    - Backlinks count (majesticLinks)
+    - Referring domains (majesticRefDomains)
+    - Dofollow backlinks (prettyLinksDofollow)
+    - Nofollow backlinks (computed)
+    - Gov backlinks (prettyLinksGov)
+    - Edu backlinks (prettyLinksEdu)
+    - Dofollow referring (N/A)
+    - Nofollow referring (N/A)
+    - Gov referring (majesticRefGov)
+    - Edu referring (majesticRefEdu)
     """
     if not settings.has_domdetailer or not domain:
         return None
@@ -36,41 +46,52 @@ async def fetch_domain_metrics(domain: str) -> Optional[Dict[str, Any]]:
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.get(
-                f"{DOMDETAILER_BASE_URL}/check",
+                f"{DOMDETAILER_BASE_URL}/checkDomain.php",
                 params={
-                    "api_key": settings.domdetailer_api_key,
+                    "apikey": settings.domdetailer_api_key,
                     "domain": domain,
-                    "format": "json"
+                    "app": "Snapeous",
                 }
             )
+
+            print(f"[DomDetailer] checkDomain for {domain}: status={response.status_code}")
 
             if response.status_code == 200:
                 data = response.json()
 
-                # Map DomDetailer response to our model
+                # Compute nofollow = total - dofollow
+                total_backlinks = _safe_int(data.get("majesticLinks"))
+                dofollow = _safe_int(data.get("prettyLinksDofollow"))
+                nofollow = None
+                if total_backlinks is not None and dofollow is not None:
+                    nofollow = max(0, total_backlinks - dofollow)
+
+                # Map DomDetailer Moz/Majestic/Pretty response to our model
                 return {
-                    "domain_rank": data.get("dr") or data.get("domain_rating"),
-                    "url_rank": data.get("ur") or data.get("url_rating"),
-                    "backlinks_count": data.get("backlinks") or data.get("total_backlinks"),
-                    "referring_domains": data.get("ref_domains") or data.get("referring_domains"),
-                    "dofollow_backlinks": data.get("dofollow_backlinks"),
-                    "nofollow_backlinks": data.get("nofollow_backlinks"),
-                    "gov_backlinks": data.get("gov_backlinks"),
-                    "edu_backlinks": data.get("edu_backlinks"),
-                    "dofollow_referring": data.get("dofollow_ref_domains"),
-                    "nofollow_referring": data.get("nofollow_ref_domains"),
-                    "gov_referring": data.get("gov_ref_domains"),
-                    "edu_referring": data.get("edu_ref_domains"),
+                    "domain_rank": _safe_int(data.get("mozDA")),
+                    "url_rank": _safe_int(data.get("mozPA")),
+                    "backlinks_count": total_backlinks,
+                    "referring_domains": _safe_int(data.get("majesticRefDomains")),
+                    "dofollow_backlinks": dofollow,
+                    "nofollow_backlinks": nofollow,
+                    "gov_backlinks": _safe_int(data.get("prettyLinksGov")),
+                    "edu_backlinks": _safe_int(data.get("prettyLinksEdu")),
+                    "dofollow_referring": None,  # Not available from API
+                    "nofollow_referring": None,  # Not available from API
+                    "gov_referring": _safe_int(data.get("majesticRefGov")),
+                    "edu_referring": _safe_int(data.get("majesticRefEdu")),
                 }
+            else:
+                print(f"[DomDetailer] Error response: {response.text[:200]}")
 
     except Exception as e:
-        print(f"Error fetching metrics for {domain}: {e}")
+        print(f"[DomDetailer] Error fetching metrics for {domain}: {e}")
 
     return None
 
 
 async def check_domain_authority(domain: str) -> Optional[int]:
-    """Get only Domain Rank (DR) for a domain."""
+    """Get only Domain Rank (DA) for a domain."""
     metrics = await fetch_domain_metrics(domain)
     if metrics:
         return metrics.get("domain_rank")
@@ -112,6 +133,7 @@ async def fetch_metrics_batch(backlink_ids: list[str], batch_size: int = 5):
                             backlink.gov_referring = metrics.get("gov_referring")
                             backlink.edu_referring = metrics.get("edu_referring")
                             backlink.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+                            print(f"[DomDetailer] Updated metrics for backlink {backlink_id} (DR={metrics.get('domain_rank')})")
                 except Exception as e:
                     print(f"[DomDetailer] Error in batch for backlink {backlink_id}: {e}")
 
@@ -140,7 +162,7 @@ async def fetch_backlinks(domain: str) -> Optional[Dict[str, Any]]:
                 "https://domdetailer.com/api2/getBacklinks.php",
                 params={
                     "apikey": settings.domdetailer_api_key,
-                    "app": "SpotSEO",
+                    "app": "Snapeous",
                     "domain": domain,
                     "onePerDomain": "1",
                 },

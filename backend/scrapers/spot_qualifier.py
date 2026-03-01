@@ -1,4 +1,4 @@
-"""SpotSEO - Spot Qualifier.
+"""Snapeous - Spot Qualifier.
 
 Visits each discovered spot URL and detects platform/CMS, spot type,
 comment forms, registration options, URL fields, dofollow status, and

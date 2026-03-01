@@ -1,4 +1,4 @@
-"""SpotSEO - SQLAlchemy models for all database tables."""
+"""Snapeous - SQLAlchemy models for all database tables."""
 
 import uuid
 import enum

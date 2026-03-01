@@ -1,5 +1,6 @@
-"""SpotSEO - FastAPI application with all API routes."""
+"""Snapeous - FastAPI application with all API routes."""
 
+import asyncio
 import csv
 import io
 from datetime import datetime, timezone
@@ -15,6 +16,7 @@ from sqlalchemy.orm import selectinload
 
 from backend.config import settings
 from backend.db.database import get_db
+from backend.auth import get_current_user
 from backend.models.models import (
     Project, Footprint, Search, Spot, Backlink, BacklinkHistory,
     ProjectStatus, FootprintCategory, LinkType, Difficulty,
@@ -24,7 +26,11 @@ from backend.services.backlink_history import record_history
 
 # ── App Setup ──────────────────────────────────────────────────────────
 
-app = FastAPI(title="SpotSEO", version="1.0.0")
+app = FastAPI(
+    title="Snapeous",
+    version="1.0.0",
+    dependencies=[Depends(get_current_user)],
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -259,7 +265,7 @@ class BacklinkImportItem(BaseModel):
 
 @app.get("/api/health")
 async def health():
-    return {"status": "ok", "app": "SpotSEO", "version": "1.0.0"}
+    return {"status": "ok", "app": "Snapeous", "version": "1.0.0"}
 
 
 # ── Settings Routes ───────────────────────────────────────────────────
@@ -1518,6 +1524,8 @@ async def run_post_creation_analysis(backlink_ids: list[str]):
             print(f"[ANALYSIS] Domain metrics fetched for {len(backlink_ids)} backlinks")
         except Exception as e:
             print(f"[ANALYSIS] Error fetching domain metrics: {e}")
+    else:
+        print("[ANALYSIS] DomDetailer API key not configured, skipping metrics")
 
     # 2. Indexation check (SpeedyIndex)
     if settings.has_speedyindex:
@@ -1526,6 +1534,8 @@ async def run_post_creation_analysis(backlink_ids: list[str]):
             print(f"[ANALYSIS] Indexation checked for {len(backlink_ids)} backlinks")
         except Exception as e:
             print(f"[ANALYSIS] Error checking indexation: {e}")
+    else:
+        print("[ANALYSIS] SpeedyIndex API key not configured, skipping indexation")
 
     print(f"[ANALYSIS] Post-creation analysis completed for {len(backlink_ids)} backlinks")
 
@@ -1609,8 +1619,8 @@ async def create_backlink(
 
     await db.commit()
 
-    # Launch analysis (synchronous for serverless)
-    await run_post_creation_analysis([backlink.id])
+    # Launch analysis in background (non-blocking)
+    asyncio.create_task(run_post_creation_analysis([backlink.id]))
 
     await db.refresh(backlink)
     return backlink
@@ -1719,9 +1729,9 @@ async def create_backlinks_bulk(
 
     await db.commit()
 
-    # Launch analysis (synchronous for serverless) for all newly created backlinks
+    # Launch analysis in background (non-blocking) for all newly created backlinks
     if created_ids:
-        await run_post_creation_analysis(created_ids)
+        asyncio.create_task(run_post_creation_analysis(created_ids))
 
     elapsed = time.time() - start_time
     print(f"[BULK] Completed: {created_count} created, {skipped_count} skipped, {len(errors)} errors in {elapsed:.2f}s")

@@ -1,5 +1,5 @@
 """
-SpotSEO - French SEO Footprints Seed Data
+Snapeous - French SEO Footprints Seed Data
 66+ footprints for netlinking prospection on French websites.
 
 Each footprint uses Google search operators to find link-building opportunities.

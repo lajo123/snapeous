@@ -1,4 +1,4 @@
-"""SpotSEO - Site Analyzer Service
+"""Snapeous - Site Analyzer Service
 
 Crawls a client website and analyzes it with AI (or fallback heuristics)
 to extract niche, keywords, target pages, anchor suggestions, etc.
@@ -752,7 +752,7 @@ async def _analyze_with_ai(domain: str, pages_data: list[dict], target_language:
     headers = {
         "Authorization": f"Bearer {settings.openrouter_api_key}",
         "HTTP-Referer": "http://localhost:5173",
-        "X-OpenRouter-Title": "SpotSEO",
+        "X-OpenRouter-Title": "Snapeous",
         "Content-Type": "application/json",
     }
 

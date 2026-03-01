@@ -1,4 +1,4 @@
-"""SpotSEO - Google Scraper using dataforSEO (primary) and fallback methods.
+"""Snapeous - Google Scraper using dataforSEO (primary) and fallback methods.
 
 dataforSEO provides reliable Google Search results via API.
 Includes smart pre-filtering to only keep actionable spots for netlinking.

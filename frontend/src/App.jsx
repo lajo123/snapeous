@@ -1,5 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ProjectDetail from './pages/ProjectDetail';
 import ProjectAnalysis from './pages/ProjectAnalysis';
@@ -12,7 +14,15 @@ import Settings from './pages/Settings';
 function App() {
   return (
     <Routes>
-      <Route element={<Layout />}>
+      <Route path="/login" element={<Login />} />
+
+      <Route
+        element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
         {/* Root redirects to first project */}
         <Route path="/" element={<Dashboard />} />
 

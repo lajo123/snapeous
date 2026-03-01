@@ -216,7 +216,7 @@ export default function Settings() {
                     </div>
                     <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
                       <span className="text-xs font-medium text-gray-400">Chemin</span>
-                      <span className="text-xs font-mono text-gray-900">data/spotseo.db</span>
+                      <span className="text-xs font-mono text-gray-900">data/snapeous.db</span>
                     </div>
                   </div>
                 </div>

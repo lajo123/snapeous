@@ -1,5 +1,5 @@
 #!/bin/bash
-# SpotSEO - Lancement backend + frontend en parallèle
+# Snapeous - Lancement backend + frontend en parallèle
 # Usage: ./start.sh
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -13,7 +13,7 @@ npm run dev --prefix "$DIR/frontend" &
 FRONT_PID=$!
 
 echo ""
-echo "  SpotSEO lancé !"
+echo "  Snapeous lancé !"
 echo "  Backend  : http://localhost:8000"
 echo "  Frontend : http://localhost:5173"
 echo ""

@@ -1,4 +1,4 @@
-"""SpotSEO - Database engine and session management (async PostgreSQL via Supabase)"""
+"""Snapeous - Database engine and session management (async PostgreSQL via Supabase)"""
 
 import ssl as _ssl
 

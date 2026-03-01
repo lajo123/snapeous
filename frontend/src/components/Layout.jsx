@@ -14,9 +14,11 @@ import {
   Plus,
   X,
   Trash2,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getProject, getProjects, createProject, deleteProject } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 const PROJECT_NAV = [
   { label: 'Dashboard',  path: '',           icon: LayoutDashboard },
@@ -30,6 +32,7 @@ export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { signOut } = useAuth();
 
   const [projectMenuOpen, setProjectMenuOpen] = useState(false);
   const [showNewModal, setShowNewModal] = useState(false);
@@ -114,11 +117,9 @@ export default function Layout() {
       <aside className="w-[220px] shrink-0 bg-white flex flex-col border-r border-[#E8E0D5]">
 
         {/* Logo */}
-        <div className="flex items-center gap-2.5 px-5 pt-6 pb-5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500">
-            <Target className="h-[14px] w-[14px] text-white" />
-          </div>
-          <span className="text-sm font-bold tracking-tight text-gray-900">SpotSEO</span>
+        <div className="flex items-center gap-2 px-5 pt-6 pb-5">
+          <img src="/snapeous-logo.svg" alt="Snapeous" className="h-6 w-6 shrink-0" />
+          <span className="text-sm font-bold tracking-tight text-gray-900">Snapeous</span>
         </div>
 
         {/* Nav */}
@@ -192,6 +193,14 @@ export default function Layout() {
 
         {/* ── Sélecteur de projet en bas ───────────────────────── */}
         <div className="relative px-3 pb-4 pt-2 border-t border-[#E8E0D5]">
+          {/* Déconnexion */}
+          <button
+            onClick={async () => { await signOut(); navigate('/login'); }}
+            className="w-full flex items-center gap-2.5 px-3 py-2 mb-2 rounded-lg text-sm font-medium text-[#5a5550] hover:bg-red-50 hover:text-red-600 transition-colors"
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            Déconnexion
+          </button>
           {/* Bouton principal */}
           <button
             onClick={() => setProjectMenuOpen(!projectMenuOpen)}

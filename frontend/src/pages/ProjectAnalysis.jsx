@@ -16,6 +16,7 @@ import {
   Globe,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Link2,
   Shield,
   BarChart3,
@@ -307,6 +308,21 @@ export default function ProjectAnalysis() {
   const [targetPagesDirty, setTargetPagesDirty] = useState(false);
   const [targetLangFilter, setTargetLangFilter] = useState('');
   const [showSitemapPicker, setShowSitemapPicker] = useState(false);
+
+  // Collapsible sections (all collapsed by default)
+  const [collapsedSections, setCollapsedSections] = useState({
+    metrics: true,
+    niches: true,
+    keywords: true,
+    backlinks: true,
+    anchors: true,
+    targetPages: true,
+    competitors: true,
+    recommendations: true,
+  });
+
+  const toggleSection = (key) =>
+    setCollapsedSections((prev) => ({ ...prev, [key]: !prev[key] }));
 
   // Initialise local state from project when it loads
   const keywords =
@@ -651,10 +667,17 @@ export default function ProjectAnalysis() {
 
       {/* ── Domain metrics from DomDetailer ────────────────────────── */}
       {analysis?.domain_metrics && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-7">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">
-            Métriques du domaine
-          </h2>
+        <div className="bg-white rounded-xl border border-gray-100 shadow-soft">
+          <button
+            onClick={() => toggleSection('metrics')}
+            className="w-full px-7 py-5 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 transition-colors rounded-xl"
+          >
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Métriques du domaine
+            </h2>
+            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.metrics && 'rotate-180')} />
+          </button>
+          {!collapsedSections.metrics && <div className="px-7 pb-7">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
               <div className="flex items-center gap-2 mb-1.5">
@@ -707,15 +730,22 @@ export default function ProjectAnalysis() {
               </p>
             </div>
           </div>
+          </div>}
         </div>
       )}
 
       {/* ── Niches ─────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-7">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-            Niches
-          </h2>
+      <div className="bg-white rounded-xl border border-gray-100 shadow-soft">
+        <div className="flex items-center justify-between px-7 py-5">
+          <button
+            onClick={() => toggleSection('niches')}
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Niches ({niches.length})
+            </h2>
+            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.niches && 'rotate-180')} />
+          </button>
           {nichesDirty && (
             <button
               onClick={handleSaveNiches}
@@ -727,6 +757,7 @@ export default function ProjectAnalysis() {
             </button>
           )}
         </div>
+        {!collapsedSections.niches && <div className="px-7 pb-7">
         <div className="flex flex-wrap items-center gap-2">
           {niches.map((niche, i) => (
             <span
@@ -784,14 +815,21 @@ export default function ProjectAnalysis() {
             Aucune niche detectee. Relancez l'analyse ou ajoutez manuellement.
           </p>
         )}
+        </div>}
       </div>
 
       {/* ── Keywords table ─────────────────────────────────────────── */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
         <div className="px-7 py-5 border-b border-[#EDE4D3] flex items-center justify-between">
-          <h2 className="text-base font-bold text-gray-900">
-            Mots-cles ({keywords.length})
-          </h2>
+          <button
+            onClick={() => toggleSection('keywords')}
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <h2 className="text-base font-bold text-gray-900">
+              Mots-cles ({keywords.length})
+            </h2>
+            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.keywords && 'rotate-180')} />
+          </button>
           <div className="flex items-center gap-2">
             {keywordsDirty && (
               <button
@@ -803,17 +841,19 @@ export default function ProjectAnalysis() {
                 Enregistrer
               </button>
             )}
-            <button
-              onClick={handleAddKeyword}
-              className="btn-secondary text-xs py-2"
-            >
-              <Plus className="h-3 w-3" />
-              Ajouter un keyword
-            </button>
+            {!collapsedSections.keywords && (
+              <button
+                onClick={handleAddKeyword}
+                className="btn-secondary text-xs py-2"
+              >
+                <Plus className="h-3 w-3" />
+                Ajouter un keyword
+              </button>
+            )}
           </div>
         </div>
 
-        {keywords.length === 0 ? (
+        {!collapsedSections.keywords && (keywords.length === 0 ? (
           <div className="px-7 py-10 text-center text-sm text-[#6b6560]">
             Aucun mot-cle. Cliquez sur "Ajouter un keyword" pour commencer.
           </div>
@@ -907,18 +947,25 @@ export default function ProjectAnalysis() {
               </tbody>
             </table>
           </div>
-        )}
+        ))}
       </div>
 
       {/* ── Backlink profile summary ─────────────────────────────── */}
       {backlinkProfile && backlinkProfile.total > 0 && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-7">
-          <div className="flex items-center gap-2 mb-4">
-            <Link2 className="h-4 w-4 text-gray-400" />
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
-              Profil de backlinks actuel ({backlinkProfile.total} backlinks)
-            </h2>
-          </div>
+        <div className="bg-white rounded-xl border border-gray-100 shadow-soft">
+          <button
+            onClick={() => toggleSection('backlinks')}
+            className="w-full px-7 py-5 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 transition-colors rounded-xl"
+          >
+            <div className="flex items-center gap-2">
+              <Link2 className="h-4 w-4 text-gray-400" />
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                Profil de backlinks actuel ({backlinkProfile.total} backlinks)
+              </h2>
+            </div>
+            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.backlinks && 'rotate-180')} />
+          </button>
+          {!collapsedSections.backlinks && <div className="px-7 pb-7">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {Object.entries(backlinkProfile.distribution || {}).map(([type, pct]) => (
               <div key={type} className="text-center">
@@ -946,16 +993,23 @@ export default function ProjectAnalysis() {
               </div>
             ))}
           </div>
+          </div>}
         </div>
       )}
 
       {/* ── Anchors table ──────────────────────────────────────────── */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
         <div className="px-7 py-5 border-b border-[#EDE4D3] flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <h2 className="text-base font-bold text-gray-900">
-              Ancres ({anchors.length})
-            </h2>
+          <button
+            onClick={() => toggleSection('anchors')}
+            className="flex items-center gap-4 cursor-pointer"
+          >
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-bold text-gray-900">
+                Ancres ({anchors.length})
+              </h2>
+              <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.anchors && 'rotate-180')} />
+            </div>
             <span
               className={cn(
                 'text-xs font-medium px-2.5 py-1 rounded-full',
@@ -967,7 +1021,7 @@ export default function ProjectAnalysis() {
               Total : {totalWeight}%
               {totalWeight !== 100 && ' (doit faire 100%)'}
             </span>
-          </div>
+          </button>
           <div className="flex items-center gap-2">
             {anchorsDirty && (
               <button
@@ -979,17 +1033,19 @@ export default function ProjectAnalysis() {
                 Enregistrer
               </button>
             )}
-            <button
-              onClick={handleAddAnchor}
-              className="btn-secondary text-xs py-2"
-            >
-              <Plus className="h-3 w-3" />
-              Ajouter une ancre
-            </button>
+            {!collapsedSections.anchors && (
+              <button
+                onClick={handleAddAnchor}
+                className="btn-secondary text-xs py-2"
+              >
+                <Plus className="h-3 w-3" />
+                Ajouter une ancre
+              </button>
+            )}
           </div>
         </div>
 
-        {anchors.length === 0 ? (
+        {!collapsedSections.anchors && (anchors.length === 0 ? (
           <div className="px-7 py-10 text-center text-sm text-[#6b6560]">
             Aucune ancre. Cliquez sur "Ajouter une ancre" pour commencer.
           </div>
@@ -1084,15 +1140,21 @@ export default function ProjectAnalysis() {
               </tbody>
             </table>
           </div>
-        )}
+        ))}
       </div>
 
       {/* ── Target pages ───────────────────────────────────────────── */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
         <div className="px-7 py-5 border-b border-[#EDE4D3] flex items-center justify-between">
-          <h2 className="text-base font-bold text-gray-900">
-            Pages cibles ({currentTargetPages.length})
-          </h2>
+          <button
+            onClick={() => toggleSection('targetPages')}
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            <h2 className="text-base font-bold text-gray-900">
+              Pages cibles ({currentTargetPages.length})
+            </h2>
+            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.targetPages && 'rotate-180')} />
+          </button>
           <div className="flex items-center gap-2">
             {targetPagesDirty && (
               <button
@@ -1104,16 +1166,19 @@ export default function ProjectAnalysis() {
                 Enregistrer
               </button>
             )}
-            <button
-              onClick={() => setShowSitemapPicker(true)}
-              className="btn-secondary text-xs py-2"
-            >
-              <Globe className="h-3 w-3" />
-              Ajouter depuis le sitemap
-            </button>
+            {!collapsedSections.targetPages && (
+              <button
+                onClick={() => setShowSitemapPicker(true)}
+                className="btn-secondary text-xs py-2"
+              >
+                <Globe className="h-3 w-3" />
+                Ajouter depuis le sitemap
+              </button>
+            )}
           </div>
         </div>
 
+        {!collapsedSections.targetPages && (<>
         {/* Language filter tabs */}
         {targetPageLanguages.length > 1 && (
           <div className="px-7 py-3 border-b border-gray-50 flex items-center gap-2 flex-wrap">
@@ -1194,16 +1259,24 @@ export default function ProjectAnalysis() {
             })}
           </ul>
         )}
+        </>)}
       </div>
 
       {/* ── Competitors ────────────────────────────────────────────── */}
       {competitors.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
           <div className="px-7 py-5 border-b border-[#EDE4D3]">
-            <h2 className="text-base font-bold text-gray-900">
-              Concurrents ({competitors.length})
-            </h2>
+            <button
+              onClick={() => toggleSection('competitors')}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <h2 className="text-base font-bold text-gray-900">
+                Concurrents ({competitors.length})
+              </h2>
+              <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.competitors && 'rotate-180')} />
+            </button>
           </div>
+          {!collapsedSections.competitors && (
           <ul className="divide-y divide-gray-50">
             {competitors.map((competitor, i) => {
               const domain =
@@ -1231,6 +1304,7 @@ export default function ProjectAnalysis() {
               );
             })}
           </ul>
+          )}
         </div>
       )}
 
@@ -1238,10 +1312,17 @@ export default function ProjectAnalysis() {
       {contentGaps.length > 0 && (
         <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
           <div className="px-7 py-5 border-b border-[#EDE4D3]">
-            <h2 className="text-base font-bold text-gray-900">
-              Recommandations ({contentGaps.length})
-            </h2>
+            <button
+              onClick={() => toggleSection('recommendations')}
+              className="flex items-center gap-2 cursor-pointer"
+            >
+              <h2 className="text-base font-bold text-gray-900">
+                Recommandations ({contentGaps.length})
+              </h2>
+              <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.recommendations && 'rotate-180')} />
+            </button>
           </div>
+          {!collapsedSections.recommendations && (
           <ul className="divide-y divide-gray-50">
             {contentGaps.map((gap, i) => {
               const isObject = typeof gap === 'object' && gap !== null;
@@ -1283,6 +1364,7 @@ export default function ProjectAnalysis() {
               );
             })}
           </ul>
+          )}
         </div>
       )}
 
