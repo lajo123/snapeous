@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from backend.config import settings
-from backend.db.database import init_db, get_db
+from backend.db.database import get_db
 from backend.models.models import (
     Project, Footprint, Search, Spot, Backlink, BacklinkHistory,
     ProjectStatus, FootprintCategory, LinkType, Difficulty,
@@ -35,9 +35,8 @@ app.add_middleware(
 )
 
 
-@app.on_event("startup")
-async def startup():
-    await init_db()
+# Note: init_db() removed — tables are managed in Supabase directly.
+# No need to run create_all on every serverless cold start.
 
 
 # ── Pydantic Schemas ──────────────────────────────────────────────────
