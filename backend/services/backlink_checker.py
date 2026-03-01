@@ -43,7 +43,7 @@ async def check_single_backlink(backlink_id: str):
                 else:
                     backlink.status = BacklinkStatus.pending
 
-                backlink.last_check_at = datetime.now(timezone.utc)
+                backlink.last_check_at = datetime.now(timezone.utc).replace(tzinfo=None)
 
                 # Record history if status or http_code changed
                 if str(backlink.status) != str(old_status):
@@ -75,7 +75,7 @@ async def check_single_backlink(backlink_id: str):
                     details=str(e),
                 )
             backlink.status = new_status
-            backlink.last_check_at = datetime.now(timezone.utc)
+            backlink.last_check_at = datetime.now(timezone.utc).replace(tzinfo=None)
             await db.commit()
 
 

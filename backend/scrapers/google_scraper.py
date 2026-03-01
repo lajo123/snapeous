@@ -604,7 +604,7 @@ async def run_searches(
                 # Update search
                 search.results_count = spots_created
                 search.status = SearchStatus.completed
-                search.completed_at = datetime.now(timezone.utc)
+                search.completed_at = datetime.now(timezone.utc).replace(tzinfo=None)
 
                 # Update footprint usage
                 if search.footprint_id:

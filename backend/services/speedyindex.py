@@ -58,7 +58,7 @@ async def check_indexation_batch(backlink_ids: list[str], batch_size: int = 10):
 
                     if is_indexed is not None:
                         backlink.is_indexed = is_indexed
-                        backlink.index_checked_at = datetime.now(timezone.utc)
+                        backlink.index_checked_at = datetime.now(timezone.utc).replace(tzinfo=None)
 
             await db.commit()
             await asyncio.sleep(1)  # Rate limiting

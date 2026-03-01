@@ -16,7 +16,13 @@ def generate_uuid() -> str:
 
 
 def utcnow() -> datetime:
-    return datetime.now(timezone.utc)
+    """Return current UTC time as a naive (offset-unaware) datetime.
+
+    PostgreSQL columns are TIMESTAMP WITHOUT TIME ZONE, so asyncpg requires
+    naive datetime objects.  We still compute the value from timezone.utc to
+    guarantee UTC semantics.
+    """
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 # ── Enums ──────────────────────────────────────────────────────────────

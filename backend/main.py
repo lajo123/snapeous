@@ -424,7 +424,7 @@ async def update_project(
             value = value.strip().replace("https://", "").replace("http://", "").rstrip("/")
         setattr(project, key, value)
 
-    project.updated_at = datetime.now(timezone.utc)
+    project.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
     await db.flush()
     await db.refresh(project)
 
@@ -592,7 +592,7 @@ async def analyze_project(
 
     # Mark project as analyzing
     project.site_analysis = {"status": "analyzing", "progress": "Crawl et analyse en cours..."}
-    project.updated_at = datetime.now(timezone.utc)
+    project.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
     await db.commit()
 
     await db.refresh(project)
@@ -1556,8 +1556,8 @@ async def create_backlink(
             links_on_page=enriched_data.get('links_on_page'),
             link_type=enriched_data.get('link_type', 'dofollow'),
             status=BacklinkStatus.active if enriched_data.get('status') == 'active' else BacklinkStatus.pending,
-            first_check_at=datetime.now(timezone.utc),
-            last_check_at=datetime.now(timezone.utc),
+            first_check_at=datetime.now(timezone.utc).replace(tzinfo=None),
+            last_check_at=datetime.now(timezone.utc).replace(tzinfo=None),
         )
     else:
         # Page accessible but no link found, or page error
@@ -1572,7 +1572,7 @@ async def create_backlink(
             links_on_page=enriched_data.get('links_on_page') if enriched_data else None,
             link_type=data.link_type or 'dofollow',
             status=BacklinkStatus.lost if (enriched_data and enriched_data.get('status') == 'lost') else BacklinkStatus.pending,
-            first_check_at=datetime.now(timezone.utc),
+            first_check_at=datetime.now(timezone.utc).replace(tzinfo=None),
         )
 
     db.add(backlink)
@@ -1674,8 +1674,8 @@ async def create_backlinks_bulk(
                     links_on_page=enriched_data.get('links_on_page'),
                     link_type=enriched_data.get('link_type', 'dofollow'),
                     status=BacklinkStatus.active if enriched_data.get('status') == 'active' else BacklinkStatus.pending,
-                    first_check_at=datetime.now(timezone.utc),
-                    last_check_at=datetime.now(timezone.utc),
+                    first_check_at=datetime.now(timezone.utc).replace(tzinfo=None),
+                    last_check_at=datetime.now(timezone.utc).replace(tzinfo=None),
                 )
             else:
                 backlink = Backlink(
@@ -1685,7 +1685,7 @@ async def create_backlinks_bulk(
                     links_on_page=enriched_data.get('links_on_page'),
                     link_type='dofollow',
                     status=BacklinkStatus.lost if enriched_data.get('status') == 'lost' else BacklinkStatus.pending,
-                    first_check_at=datetime.now(timezone.utc),
+                    first_check_at=datetime.now(timezone.utc).replace(tzinfo=None),
                 )
 
             db.add(backlink)
@@ -1755,7 +1755,7 @@ async def update_backlink(
     for key, value in update_data.items():
         setattr(backlink, key, value)
 
-    backlink.updated_at = datetime.now(timezone.utc)
+    backlink.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
     await db.flush()
     await db.refresh(backlink)
     return backlink
@@ -1897,7 +1897,7 @@ async def check_backlink(
     if enriched_data:
         backlink.http_code = enriched_data.get('http_code')
         backlink.links_on_page = enriched_data.get('links_on_page')
-        backlink.last_check_at = datetime.now(timezone.utc)
+        backlink.last_check_at = datetime.now(timezone.utc).replace(tzinfo=None)
 
         if enriched_data.get('found'):
             backlink.target_url = enriched_data.get('target_url')
@@ -1961,8 +1961,8 @@ async def check_indexation(
     is_indexed = await check_indexation_status(backlink.source_url)
 
     backlink.is_indexed = is_indexed
-    backlink.index_checked_at = datetime.now(timezone.utc)
-    backlink.updated_at = datetime.now(timezone.utc)
+    backlink.index_checked_at = datetime.now(timezone.utc).replace(tzinfo=None)
+    backlink.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
     await db.flush()
 
     return {"backlink_id": backlink_id, "is_indexed": is_indexed}
@@ -2046,7 +2046,7 @@ async def fetch_domain_metrics(
         backlink.nofollow_referring = metrics.get("nofollow_referring")
         backlink.gov_referring = metrics.get("gov_referring")
         backlink.edu_referring = metrics.get("edu_referring")
-        backlink.updated_at = datetime.now(timezone.utc)
+        backlink.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
 
         # Record metrics update history
         await record_history(

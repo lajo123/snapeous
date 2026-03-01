@@ -111,7 +111,7 @@ async def fetch_metrics_batch(backlink_ids: list[str], batch_size: int = 5):
                             backlink.nofollow_referring = metrics.get("nofollow_referring")
                             backlink.gov_referring = metrics.get("gov_referring")
                             backlink.edu_referring = metrics.get("edu_referring")
-                            backlink.updated_at = datetime.now(timezone.utc)
+                            backlink.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
                 except Exception as e:
                     print(f"[DomDetailer] Error in batch for backlink {backlink_id}: {e}")
 
