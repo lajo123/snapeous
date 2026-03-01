@@ -1,9 +1,13 @@
 """DomDetailer API service for domain metrics."""
 
+import asyncio
 import httpx
+from datetime import datetime, timezone
 from typing import Optional, Dict, Any
+from sqlalchemy import select
 
 from backend.config import settings
+from backend.db.database import async_session
 
 
 DOMDETAILER_BASE_URL = "https://domdetailer.com/api"
@@ -71,6 +75,48 @@ async def check_domain_authority(domain: str) -> Optional[int]:
     if metrics:
         return metrics.get("domain_rank")
     return None
+
+
+async def fetch_metrics_batch(backlink_ids: list[str], batch_size: int = 5):
+    """Fetch domain metrics for multiple backlinks in batches."""
+    if not settings.has_domdetailer:
+        return
+
+    from backend.models.models import Backlink
+
+    async with async_session() as db:
+        for i in range(0, len(backlink_ids), batch_size):
+            batch = backlink_ids[i:i + batch_size]
+
+            for backlink_id in batch:
+                try:
+                    result = await db.execute(
+                        select(Backlink).where(Backlink.id == backlink_id)
+                    )
+                    backlink = result.scalar_one_or_none()
+
+                    if backlink and backlink.source_domain:
+                        metrics = await fetch_domain_metrics(backlink.source_domain)
+
+                        if metrics:
+                            backlink.domain_rank = metrics.get("domain_rank")
+                            backlink.url_rank = metrics.get("url_rank")
+                            backlink.backlinks_count = metrics.get("backlinks_count")
+                            backlink.referring_domains = metrics.get("referring_domains")
+                            backlink.dofollow_backlinks = metrics.get("dofollow_backlinks")
+                            backlink.nofollow_backlinks = metrics.get("nofollow_backlinks")
+                            backlink.gov_backlinks = metrics.get("gov_backlinks")
+                            backlink.edu_backlinks = metrics.get("edu_backlinks")
+                            backlink.dofollow_referring = metrics.get("dofollow_referring")
+                            backlink.nofollow_referring = metrics.get("nofollow_referring")
+                            backlink.gov_referring = metrics.get("gov_referring")
+                            backlink.edu_referring = metrics.get("edu_referring")
+                            backlink.updated_at = datetime.now(timezone.utc)
+                except Exception as e:
+                    print(f"[DomDetailer] Error in batch for backlink {backlink_id}: {e}")
+
+            await db.commit()
+            await asyncio.sleep(1)  # Rate limiting between batches
 
 
 async def fetch_backlinks(domain: str) -> Optional[Dict[str, Any]]:

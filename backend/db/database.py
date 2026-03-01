@@ -1,34 +1,17 @@
-"""SpotSEO - Database engine and session management (async SQLite)"""
+"""SpotSEO - Database engine and session management (async PostgreSQL via Supabase)"""
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy import event
-import os
+from sqlalchemy.pool import NullPool
 
 from backend.config import settings
-
-# Ensure data directory exists
-os.makedirs("data", exist_ok=True)
-
-
-def _set_sqlite_pragma(dbapi_conn, connection_record):
-    """Enable WAL mode and set busy timeout for concurrent access."""
-    cursor = dbapi_conn.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute("PRAGMA busy_timeout=10000")  # 10 seconds retry
-    cursor.execute("PRAGMA synchronous=NORMAL")
-    cursor.close()
-
 
 engine = create_async_engine(
     settings.database_url,
     echo=settings.debug,
-    connect_args={"check_same_thread": False},
     pool_pre_ping=True,
+    poolclass=NullPool,  # Serverless-compatible: no persistent connection pool
 )
-
-# Register the pragma listener on the sync engine
-event.listen(engine.sync_engine, "connect", _set_sqlite_pragma)
 
 async_session = async_sessionmaker(
     engine,

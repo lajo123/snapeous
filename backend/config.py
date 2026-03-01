@@ -16,8 +16,13 @@ class Settings(BaseSettings):
     decodo_proxy_user: str = ""
     decodo_proxy_pass: str = ""
 
-    # Database
-    database_url: str = "sqlite+aiosqlite:///./data/spotseo.db"
+    # Database (Supabase PostgreSQL)
+    database_url: str = "postgresql+asyncpg://postgres:password@localhost:5432/postgres"
+
+    # Supabase
+    supabase_url: str = ""
+    supabase_anon_key: str = ""
+    supabase_service_role_key: str = ""
 
     # Security
     app_secret_key: str = "change-this-to-a-random-secret-key"

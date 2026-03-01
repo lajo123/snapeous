@@ -5,7 +5,7 @@ import io
 from datetime import datetime, timezone
 from typing import Optional
 
-from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks, Query
+from fastapi import FastAPI, Depends, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -28,7 +28,7 @@ app = FastAPI(title="SpotSEO", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["*"],  # Vercel serves frontend & API from same origin
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -323,7 +323,6 @@ async def list_projects(db: AsyncSession = Depends(get_db)):
 @app.post("/api/projects", response_model=ProjectOut)
 async def create_project(
     data: ProjectCreate,
-    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db)
 ):
     # Clean domain
@@ -338,14 +337,13 @@ async def create_project(
     db.add(project)
     await db.flush()
     await db.refresh(project)
-    
-    # IMPORTANT: Commit before launching background task so the project exists in DB
+
     await db.commit()
     await db.refresh(project)
-    
-    # Launch automatic analysis
+
+    # Launch automatic analysis (synchronous for serverless)
     from backend.services.site_analyzer import analyze_site
-    background_tasks.add_task(analyze_site, project.id, project.client_domain)
+    await analyze_site(project.id, project.client_domain)
     
     return ProjectOut(
         **{
@@ -585,7 +583,6 @@ async def seed_footprints(
 @app.post("/api/projects/{project_id}/analyze")
 async def analyze_project(
     project_id: str,
-    background_tasks: BackgroundTasks,
     language: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
 ):
@@ -597,14 +594,13 @@ async def analyze_project(
     # Mark project as analyzing
     project.site_analysis = {"status": "analyzing", "progress": "Crawl et analyse en cours..."}
     project.updated_at = datetime.now(timezone.utc)
-    await db.commit()  # IMPORTANT: Commit avant de lancer la tâche en arrière-plan
+    await db.commit()
 
-    # Refresh pour s'assurer que les données sont bien en base
     await db.refresh(project)
 
     from backend.services.site_analyzer import analyze_site
-    background_tasks.add_task(analyze_site, project_id, project.client_domain, language)
-    return {"detail": "Analyse lancée", "project_id": project_id}
+    await analyze_site(project_id, project.client_domain, language)
+    return {"detail": "Analyse terminée", "project_id": project_id}
 
 
 @app.get("/api/projects/{project_id}/sitemap-pages")
@@ -644,7 +640,6 @@ async def get_sitemap_pages(
 @app.post("/api/search")
 async def create_search(
     data: SearchCreate,
-    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
 ):
     # Verify project exists
@@ -691,14 +686,12 @@ async def create_search(
 
     await db.commit()
 
-    # Launch background scraping
+    # Launch scraping (synchronous for serverless)
     from backend.scrapers.google_scraper import run_searches
-    background_tasks.add_task(
-        run_searches, search_ids, data.num_results, data.auto_qualify
-    )
+    await run_searches(search_ids, data.num_results, data.auto_qualify)
 
     return {
-        "detail": f"{len(search_ids)} recherches créées",
+        "detail": f"{len(search_ids)} recherches terminées",
         "search_ids": search_ids,
         "queries_count": len(search_ids),
     }
@@ -707,7 +700,6 @@ async def create_search(
 @app.post("/api/search/bulk")
 async def create_search_bulk(
     data: SearchBulk,
-    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
 ):
     # Verify project
@@ -755,12 +747,10 @@ async def create_search_bulk(
     await db.commit()
 
     from backend.scrapers.google_scraper import run_searches
-    background_tasks.add_task(
-        run_searches, search_ids, data.num_results_per_query, True
-    )
+    await run_searches(search_ids, data.num_results_per_query, True)
 
     return {
-        "detail": f"{len(search_ids)} recherches créées (bulk)",
+        "detail": f"{len(search_ids)} recherches terminées (bulk)",
         "search_ids": search_ids,
         "queries_count": len(search_ids),
     }
@@ -1416,11 +1406,11 @@ async def get_backlink_history(
     # Gained = new_status == "active" (status_changed or created)
     # Lost = new_status == "lost"
     if period == "day":
-        date_trunc = func.date(BacklinkHistory.changed_at)
+        date_trunc = func.date_trunc('day', BacklinkHistory.changed_at)
     elif period == "month":
-        date_trunc = func.strftime("%Y-%m", BacklinkHistory.changed_at)
+        date_trunc = func.to_char(BacklinkHistory.changed_at, 'YYYY-MM')
     else:  # week
-        date_trunc = func.strftime("%Y-%W", BacklinkHistory.changed_at)
+        date_trunc = func.to_char(BacklinkHistory.changed_at, 'IYYY-IW')
 
     timeline_result = await db.execute(
         select(
@@ -1493,11 +1483,36 @@ async def get_backlink_domains(
     ]
 
 
+async def run_post_creation_analysis(backlink_ids: list[str]):
+    """Background task: fetch domain metrics + check indexation for newly created backlinks."""
+    from backend.services.domdetailer import fetch_metrics_batch
+    from backend.services.speedyindex import check_indexation_batch
+
+    print(f"[ANALYSIS] Starting post-creation analysis for {len(backlink_ids)} backlinks")
+
+    # 1. Domain metrics (DomDetailer)
+    if settings.has_domdetailer:
+        try:
+            await fetch_metrics_batch(backlink_ids)
+            print(f"[ANALYSIS] Domain metrics fetched for {len(backlink_ids)} backlinks")
+        except Exception as e:
+            print(f"[ANALYSIS] Error fetching domain metrics: {e}")
+
+    # 2. Indexation check (SpeedyIndex)
+    if settings.has_speedyindex:
+        try:
+            await check_indexation_batch(backlink_ids)
+            print(f"[ANALYSIS] Indexation checked for {len(backlink_ids)} backlinks")
+        except Exception as e:
+            print(f"[ANALYSIS] Error checking indexation: {e}")
+
+    print(f"[ANALYSIS] Post-creation analysis completed for {len(backlink_ids)} backlinks")
+
+
 @app.post("/api/projects/{project_id}/backlinks", response_model=BacklinkOut)
 async def create_backlink(
     project_id: str,
     data: BacklinkCreate,
-    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db)
 ):
     """Create a new backlink for a project. Auto-detects target URL from project domains."""
@@ -1507,13 +1522,23 @@ async def create_backlink(
     if not project:
         raise HTTPException(status_code=404, detail="Projet non trouvé")
 
+    # Clean source URL
+    source_url = data.source_url.strip()
+
+    # Check for duplicate
+    existing = await db.execute(
+        select(Backlink).where(
+            Backlink.project_id == project_id,
+            Backlink.source_url == source_url
+        )
+    )
+    if existing.scalar_one_or_none():
+        raise HTTPException(status_code=409, detail="Ce backlink existe déjà dans le projet")
+
     # Get project domains from client_domain and target_urls
     project_domains = [project.client_domain]
     if project.target_urls:
         project_domains.extend([normalize_domain(url) for url in project.target_urls if isinstance(url, str)])
-
-    # Clean source URL
-    source_url = data.source_url.strip()
 
     # Auto-detect backlink info by scraping the page
     from backend.services.backlink_extractor import validate_and_enrich_backlink
@@ -1561,6 +1586,11 @@ async def create_backlink(
         new_http_code=backlink.http_code,
     )
 
+    await db.commit()
+
+    # Launch analysis (synchronous for serverless)
+    await run_post_creation_analysis([backlink.id])
+
     await db.refresh(backlink)
     return backlink
 
@@ -1569,13 +1599,12 @@ async def create_backlink(
 async def create_backlinks_bulk(
     project_id: str,
     items: list[BacklinkImportItem],
-    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db)
 ):
     """Create multiple backlinks at once (from CSV import). Auto-detects target URLs."""
     import time
     start_time = time.time()
-    
+
     # Verify project exists
     result = await db.execute(select(Project).where(Project.id == project_id))
     project = result.scalar_one_or_none()
@@ -1587,19 +1616,49 @@ async def create_backlinks_bulk(
     if project.target_urls:
         project_domains.extend([normalize_domain(url) for url in project.target_urls if isinstance(url, str)])
 
-    print(f"[BULK] Processing {len(items)} backlinks for project {project_id}")
-    
+    # ── Deduplication ──────────────────────────────────────────────────
+    # Fetch existing source_urls for this project
+    existing_result = await db.execute(
+        select(Backlink.source_url).where(Backlink.project_id == project_id)
+    )
+    existing_urls = {row[0] for row in existing_result.all()}
+
+    # Filter out duplicates (vs existing DB entries AND within the import itself)
+    seen = set()
+    unique_items = []
+    skipped_count = 0
+    for item in items:
+        url = item.source_url.strip()
+        if url in existing_urls or url in seen:
+            skipped_count += 1
+            continue
+        seen.add(url)
+        unique_items.append(item)
+
+    print(f"[BULK] Processing {len(unique_items)} unique backlinks for project {project_id} ({skipped_count} duplicates skipped)")
+
+    if not unique_items:
+        elapsed = time.time() - start_time
+        return {
+            "created": 0,
+            "skipped": skipped_count,
+            "errors": [],
+            "total": len(items),
+            "duration_seconds": round(elapsed, 2)
+        }
+
     # Process all URLs in parallel with concurrency limit
     from backend.services.backlink_extractor import process_backlinks_batch
-    results = await process_backlinks_batch([{"source_url": item.source_url} for item in items], project_domains, max_concurrent=5)
-    
+    results = await process_backlinks_batch([{"source_url": item.source_url} for item in unique_items], project_domains, max_concurrent=5)
+
     created_count = 0
+    created_ids = []
     errors = []
 
     for i, enriched_data in enumerate(results):
         try:
-            source_url = items[i].source_url.strip()
-            
+            source_url = unique_items[i].source_url.strip()
+
             if enriched_data.get('error'):
                 errors.append({"url": source_url, "error": enriched_data['error']})
                 continue
@@ -1631,18 +1690,24 @@ async def create_backlinks_bulk(
                 )
 
             db.add(backlink)
+            await db.flush()
+            created_ids.append(backlink.id)
             created_count += 1
         except Exception as e:
-            errors.append({"url": items[i].source_url, "error": str(e)})
+            errors.append({"url": unique_items[i].source_url, "error": str(e)})
 
-    await db.flush()
     await db.commit()
-    
+
+    # Launch analysis (synchronous for serverless) for all newly created backlinks
+    if created_ids:
+        await run_post_creation_analysis(created_ids)
+
     elapsed = time.time() - start_time
-    print(f"[BULK] Completed: {created_count} created, {len(errors)} errors in {elapsed:.2f}s")
-    
+    print(f"[BULK] Completed: {created_count} created, {skipped_count} skipped, {len(errors)} errors in {elapsed:.2f}s")
+
     return {
         "created": created_count,
+        "skipped": skipped_count,
         "errors": errors,
         "total": len(items),
         "duration_seconds": round(elapsed, 2)
@@ -1809,7 +1874,6 @@ async def export_backlinks(
 async def check_backlink(
     project_id: str,
     backlink_id: str,
-    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db)
 ):
     """Check backlink HTTP status and auto-detect info."""
@@ -1853,7 +1917,6 @@ async def check_backlink(
 @app.post("/api/projects/{project_id}/backlinks/check-all")
 async def check_all_backlinks(
     project_id: str,
-    background_tasks: BackgroundTasks,
     status: Optional[str] = None,
     db: AsyncSession = Depends(get_db)
 ):
@@ -1871,11 +1934,11 @@ async def check_all_backlinks(
     result = await db.execute(query)
     backlink_ids = [r[0] for r in result.all()]
 
-    # Use backlink_checker for batch processing
+    # Use backlink_checker for batch processing (synchronous for serverless)
     from backend.services.backlink_checker import check_backlinks_batch
-    background_tasks.add_task(check_backlinks_batch, backlink_ids)
+    await check_backlinks_batch(backlink_ids)
 
-    return {"detail": f"Vérification de {len(backlink_ids)} backlinks lancée", "count": len(backlink_ids)}
+    return {"detail": f"Vérification de {len(backlink_ids)} backlinks terminée", "count": len(backlink_ids)}
 
 
 @app.post("/api/projects/{project_id}/backlinks/{backlink_id}/index-check")
@@ -1907,10 +1970,9 @@ async def check_indexation(
 
 
 @app.post("/api/projects/{project_id}/backlinks/index-check-batch")
-async def check_indexation_batch(
+async def check_indexation_batch_endpoint(
     project_id: str,
     backlink_ids: list[str],
-    background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db)
 ):
     """Check Google indexation for multiple backlinks."""
@@ -1924,9 +1986,9 @@ async def check_indexation_batch(
     valid_ids = [r[0] for r in result.all()]
 
     from backend.services.speedyindex import check_indexation_batch
-    background_tasks.add_task(check_indexation_batch, valid_ids)
+    await check_indexation_batch(valid_ids)
 
-    return {"detail": f"Vérification indexation de {len(valid_ids)} backlinks lancée", "count": len(valid_ids)}
+    return {"detail": f"Vérification indexation de {len(valid_ids)} backlinks terminée", "count": len(valid_ids)}
 
 
 @app.post("/api/projects/{project_id}/backlinks/{backlink_id}/submit-index")

@@ -62,12 +62,36 @@ export default function LinksTab({ projectId }) {
 
   const createMutation = useMutation({
     mutationFn: (data) => createBacklink(projectId, data),
-    onSuccess: () => { toast.success('Backlink cree avec succes'); setShowAddModal(false); invalidateAll(); },
-    onError: () => toast.error('Erreur lors de la creation'),
+    onSuccess: () => {
+      toast.success('Backlink cree avec succes');
+      toast.info('Analyse en cours (metriques + indexation)...', { duration: 4000 });
+      setShowAddModal(false);
+      invalidateAll();
+    },
+    onError: (error) => {
+      if (error.response?.status === 409) {
+        toast.error('Ce backlink existe deja dans le projet');
+      } else {
+        toast.error('Erreur lors de la creation');
+      }
+    },
   });
   const importMutation = useMutation({
     mutationFn: (items) => createBacklinksBulk(projectId, items),
-    onSuccess: (data) => { toast.success(`${data.created} backlinks importes`); setShowImportModal(false); invalidateAll(); },
+    onSuccess: (data) => {
+      toast.success(`${data.created} backlinks importes`);
+      if (data.skipped > 0) {
+        toast.info(`${data.skipped} doublons ignores`);
+      }
+      if (data.created > 0) {
+        toast.info('Analyse en cours (metriques + indexation)...', { duration: 4000 });
+      }
+      if (data.errors?.length > 0) {
+        toast.warning(`${data.errors.length} erreurs lors de l'import`);
+      }
+      setShowImportModal(false);
+      invalidateAll();
+    },
     onError: () => toast.error("Erreur lors de l'import"),
   });
   const updateMutation = useMutation({

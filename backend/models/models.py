@@ -4,7 +4,8 @@ import uuid
 import enum
 from datetime import datetime, timezone
 from sqlalchemy import (
-    String, Text, Integer, Float, Boolean, DateTime, Enum, JSON, ForeignKey
+    String, Text, Integer, Float, Boolean, DateTime, Enum, JSON, ForeignKey,
+    UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.db.database import Base
@@ -239,6 +240,9 @@ class Spot(Base):
 
 class Backlink(Base):
     __tablename__ = "backlinks"
+    __table_args__ = (
+        UniqueConstraint('project_id', 'source_url', name='uq_backlink_project_source'),
+    )
 
     id: Mapped[str] = mapped_column(
         String(36), primary_key=True, default=generate_uuid
