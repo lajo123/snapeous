@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #F5F0E8;
+    color: #1a1a1a;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+  }
+}
+
+@layer components {
+
+  /* ── Buttons ─────────────────────────────────────────────── */
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5
+           text-sm font-semibold text-white transition-all duration-150
+           disabled:opacity-40 disabled:cursor-not-allowed;
+    background-color: #059669;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background-color: #047857;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.28);
+    transform: translateY(-0.5px);
+  }
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-[#D6CEC2]
+           bg-white px-5 py-2.5 text-sm font-medium text-[#3a3a3a] transition-all duration-150
+           disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  .btn-secondary:hover:not(:disabled) {
+    background-color: #FAF7F2;
+    border-color: #C0B8AE;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-red-200
+           bg-white px-5 py-2.5 text-sm font-medium text-red-600 transition-all duration-150;
+  }
+  .btn-danger:hover {
+    @apply bg-red-50 border-red-300;
+  }
+
+  /* ── Cards ───────────────────────────────────────────────── */
+
+  .card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    border: 1px solid rgba(0,0,0,0.07);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  /* ── Form inputs ─────────────────────────────────────────── */
+
+  .input {
+    @apply w-full rounded-xl border text-sm text-gray-900
+           placeholder:text-[#999] transition-colors;
+    background-color: #FDFAF5;
+    border-color: #D6CEC2;
+    padding: 0.625rem 0.875rem;
+  }
+  .input:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+  }
+
+  .select {
+    @apply rounded-xl text-sm text-gray-900 transition-colors;
+    background-color: #FDFAF5;
+    border: 1px solid #D6CEC2;
+    padding: 0.625rem 0.875rem;
+  }
+  .select:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+  }
+
+  /* ── Badges ──────────────────────────────────────────────── */
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium;
+  }
+
+  /* ── Section label ───────────────────────────────────────── */
+
+  .section-label {
+    @apply text-[11px] font-semibold uppercase tracking-widest;
+    color: #9a9080;
+  }
+
+  /* ── Page header ─────────────────────────────────────────── */
+
+  .page-title {
+    @apply text-3xl font-bold tracking-tight;
+    color: #1a1a1a;
+  }
+
+  .page-subtitle {
+    @apply mt-1.5 text-sm;
+    color: #6b6560;
+  }
+
+  /* ── Table header ────────────────────────────────────────── */
+  .table-header {
+    @apply text-xs font-semibold uppercase tracking-wider text-left;
+    color: #9a9080;
+  }
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: #D6CEC2; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #B0A898; }
+
+/* ── Selection ──────────────────────────────────────────────── */
+
+::selection { background: #d1fae5; color: #064e3b; }
+
+/* ── Focus ring global ──────────────────────────────────────── */
+
+*:focus-visible {
+  outline: 2px solid #059669;
+  outline-offset: 2px;
+}
