@@ -20,6 +20,7 @@ import LegalNotice from './pages/LegalNotice';
 import Privacy from './pages/Privacy';
 import Terms from './pages/Terms';
 import Gdpr from './pages/Gdpr';
+import Contact from './pages/Contact';
 
 function App() {
   return (
@@ -39,6 +40,9 @@ function App() {
         <Route path="privacy" element={<Privacy />} />
         <Route path="terms" element={<Terms />} />
         <Route path="gdpr" element={<Gdpr />} />
+
+        {/* Contact */}
+        <Route path="contact" element={<Contact />} />
 
         {/* Plan selection (protected but outside Layout) */}
         <Route

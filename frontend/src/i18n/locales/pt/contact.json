@@ -1,0 +1,26 @@
+{
+  "title": "Fale Conosco",
+  "subtitle": "Tem alguma pergunta ou sugestão? Adoraríamos ouvir de você.",
+  "backToHome": "Voltar ao início",
+  "securityCheck": "Por favor, complete a verificação de segurança.",
+  "errorGeneric": "Ocorreu um erro. Tente novamente mais tarde.",
+  "successTitle": "Mensagem enviada!",
+  "successMessage": "Obrigado pela sua mensagem. Responderemos o mais breve possível.",
+  "directEmail": "Você também pode nos contatar em",
+  "form": {
+    "name": "Nome",
+    "namePlaceholder": "Seu nome",
+    "email": "Email",
+    "emailPlaceholder": "seu@email.com",
+    "subject": "Assunto",
+    "subjectPlaceholder": "Como podemos ajudar?",
+    "message": "Mensagem",
+    "messagePlaceholder": "Conte-nos mais sobre sua solicitação...",
+    "submit": "Enviar mensagem"
+  },
+  "footer": {
+    "legalNotice": "Aviso legal",
+    "privacy": "Política de privacidade",
+    "terms": "Termos de serviço"
+  }
+}

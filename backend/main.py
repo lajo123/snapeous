@@ -293,6 +293,13 @@ class TurnstileVerifyRequest(BaseModel):
     token: str
 
 
+class ContactRequest(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100)
+    email: str = Field(..., min_length=1, max_length=200)
+    subject: str = Field(..., min_length=1, max_length=200)
+    message: str = Field(..., min_length=10, max_length=5000)
+
+
 @app.post("/api/auth/verify-turnstile")
 async def verify_turnstile(body: TurnstileVerifyRequest, request: Request):
     """Verify a Cloudflare Turnstile token server-side."""
@@ -334,6 +341,50 @@ async def verify_turnstile(body: TurnstileVerifyRequest, request: Request):
             status_code=400,
             detail=f"Vérification Turnstile échouée ({', '.join(error_codes) if error_codes else 'unknown'}). Veuillez réessayer.",
         )
+
+    return {"success": True}
+
+
+# ── Contact Form ─────────────────────────────────────────────────────
+
+
+@app.post("/api/contact")
+async def send_contact_message(body: ContactRequest):
+    """Send a contact form email via Resend API."""
+    if not settings.resend_api_key:
+        raise HTTPException(status_code=500, detail="Email service not configured.")
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {settings.resend_api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "from": f"Snapeous Contact <noreply@snapeous.com>",
+                    "to": ["contact@snapeous.com"],
+                    "reply_to": body.email,
+                    "subject": f"[Contact] {body.subject}",
+                    "html": (
+                        f"<h2>New contact message from Snapeous</h2>"
+                        f"<p><strong>Name:</strong> {body.name}</p>"
+                        f"<p><strong>Email:</strong> {body.email}</p>"
+                        f"<p><strong>Subject:</strong> {body.subject}</p>"
+                        f"<hr/>"
+                        f"<p>{body.message.replace(chr(10), '<br/>')}</p>"
+                    ),
+                },
+            )
+            if resp.status_code not in (200, 201):
+                raise HTTPException(status_code=500, detail="Failed to send email. Please try again later.")
+    except httpx.TimeoutException:
+        raise HTTPException(status_code=500, detail="Email service timeout. Please try again later.")
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(status_code=500, detail="Email service error. Please try again later.")
 
     return {"success": True}
 

@@ -1,0 +1,26 @@
+{
+  "title": "Kontaktieren Sie uns",
+  "subtitle": "Haben Sie eine Frage oder einen Vorschlag? Wir freuen uns, von Ihnen zu hören.",
+  "backToHome": "Zurück zur Startseite",
+  "securityCheck": "Bitte vervollständigen Sie die Sicherheitsüberprüfung.",
+  "errorGeneric": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
+  "successTitle": "Nachricht gesendet!",
+  "successMessage": "Vielen Dank für Ihre Nachricht. Wir melden uns so schnell wie möglich bei Ihnen.",
+  "directEmail": "Sie können uns auch erreichen unter",
+  "form": {
+    "name": "Name",
+    "namePlaceholder": "Ihr Name",
+    "email": "E-Mail",
+    "emailPlaceholder": "ihre@email.com",
+    "subject": "Betreff",
+    "subjectPlaceholder": "Wie können wir Ihnen helfen?",
+    "message": "Nachricht",
+    "messagePlaceholder": "Erzählen Sie uns mehr über Ihre Anfrage...",
+    "submit": "Nachricht senden"
+  },
+  "footer": {
+    "legalNotice": "Impressum",
+    "privacy": "Datenschutz",
+    "terms": "Nutzungsbedingungen"
+  }
+}

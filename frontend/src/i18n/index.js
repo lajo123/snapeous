@@ -14,6 +14,7 @@ import frSearch from './locales/fr/search.json';
 import frDashboard from './locales/fr/dashboard.json';
 import frSeo from './locales/fr/seo.json';
 import frLegal from './locales/fr/legal.json';
+import frContact from './locales/fr/contact.json';
 
 // ── EN ────────────────────────────────────────────────────────────
 import enCommon from './locales/en/common.json';
@@ -27,6 +28,7 @@ import enSearch from './locales/en/search.json';
 import enDashboard from './locales/en/dashboard.json';
 import enSeo from './locales/en/seo.json';
 import enLegal from './locales/en/legal.json';
+import enContact from './locales/en/contact.json';
 
 // ── ES ────────────────────────────────────────────────────────────
 import esCommon from './locales/es/common.json';
@@ -40,6 +42,7 @@ import esSearch from './locales/es/search.json';
 import esDashboard from './locales/es/dashboard.json';
 import esSeo from './locales/es/seo.json';
 import esLegal from './locales/es/legal.json';
+import esContact from './locales/es/contact.json';
 
 // ── DE ────────────────────────────────────────────────────────────
 import deCommon from './locales/de/common.json';
@@ -53,6 +56,7 @@ import deSearch from './locales/de/search.json';
 import deDashboard from './locales/de/dashboard.json';
 import deSeo from './locales/de/seo.json';
 import deLegal from './locales/de/legal.json';
+import deContact from './locales/de/contact.json';
 
 // ── IT ────────────────────────────────────────────────────────────
 import itCommon from './locales/it/common.json';
@@ -66,6 +70,7 @@ import itSearch from './locales/it/search.json';
 import itDashboard from './locales/it/dashboard.json';
 import itSeo from './locales/it/seo.json';
 import itLegal from './locales/it/legal.json';
+import itContact from './locales/it/contact.json';
 
 // ── PT ────────────────────────────────────────────────────────────
 import ptCommon from './locales/pt/common.json';
@@ -79,6 +84,7 @@ import ptSearch from './locales/pt/search.json';
 import ptDashboard from './locales/pt/dashboard.json';
 import ptSeo from './locales/pt/seo.json';
 import ptLegal from './locales/pt/legal.json';
+import ptContact from './locales/pt/contact.json';
 
 export const SUPPORTED_LANGS = ['en', 'fr', 'es', 'de', 'it', 'pt'];
 export const DEFAULT_LANG = 'en';
@@ -106,16 +112,16 @@ i18n
   .use(initReactI18next)
   .init({
     resources: {
-      en: { common: enCommon, landing: enLanding, auth: enAuth, app: enApp, analysis: enAnalysis, spots: enSpots, backlinks: enBacklinks, search: enSearch, dashboard: enDashboard, seo: enSeo, legal: enLegal },
-      fr: { common: frCommon, landing: frLanding, auth: frAuth, app: frApp, analysis: frAnalysis, spots: frSpots, backlinks: frBacklinks, search: frSearch, dashboard: frDashboard, seo: frSeo, legal: frLegal },
-      es: { common: esCommon, landing: esLanding, auth: esAuth, app: esApp, analysis: esAnalysis, spots: esSpots, backlinks: esBacklinks, search: esSearch, dashboard: esDashboard, seo: esSeo, legal: esLegal },
-      de: { common: deCommon, landing: deLanding, auth: deAuth, app: deApp, analysis: deAnalysis, spots: deSpots, backlinks: deBacklinks, search: deSearch, dashboard: deDashboard, seo: deSeo, legal: deLegal },
-      it: { common: itCommon, landing: itLanding, auth: itAuth, app: itApp, analysis: itAnalysis, spots: itSpots, backlinks: itBacklinks, search: itSearch, dashboard: itDashboard, seo: itSeo, legal: itLegal },
-      pt: { common: ptCommon, landing: ptLanding, auth: ptAuth, app: ptApp, analysis: ptAnalysis, spots: ptSpots, backlinks: ptBacklinks, search: ptSearch, dashboard: ptDashboard, seo: ptSeo, legal: ptLegal },
+      en: { common: enCommon, landing: enLanding, auth: enAuth, app: enApp, analysis: enAnalysis, spots: enSpots, backlinks: enBacklinks, search: enSearch, dashboard: enDashboard, seo: enSeo, legal: enLegal, contact: enContact },
+      fr: { common: frCommon, landing: frLanding, auth: frAuth, app: frApp, analysis: frAnalysis, spots: frSpots, backlinks: frBacklinks, search: frSearch, dashboard: frDashboard, seo: frSeo, legal: frLegal, contact: frContact },
+      es: { common: esCommon, landing: esLanding, auth: esAuth, app: esApp, analysis: esAnalysis, spots: esSpots, backlinks: esBacklinks, search: esSearch, dashboard: esDashboard, seo: esSeo, legal: esLegal, contact: esContact },
+      de: { common: deCommon, landing: deLanding, auth: deAuth, app: deApp, analysis: deAnalysis, spots: deSpots, backlinks: deBacklinks, search: deSearch, dashboard: deDashboard, seo: deSeo, legal: deLegal, contact: deContact },
+      it: { common: itCommon, landing: itLanding, auth: itAuth, app: itApp, analysis: itAnalysis, spots: itSpots, backlinks: itBacklinks, search: itSearch, dashboard: itDashboard, seo: itSeo, legal: itLegal, contact: itContact },
+      pt: { common: ptCommon, landing: ptLanding, auth: ptAuth, app: ptApp, analysis: ptAnalysis, spots: ptSpots, backlinks: ptBacklinks, search: ptSearch, dashboard: ptDashboard, seo: ptSeo, legal: ptLegal, contact: ptContact },
     },
     fallbackLng: DEFAULT_LANG,
     defaultNS: 'common',
-    ns: ['common', 'landing', 'auth', 'app', 'analysis', 'spots', 'backlinks', 'search', 'dashboard', 'seo', 'legal'],
+    ns: ['common', 'landing', 'auth', 'app', 'analysis', 'spots', 'backlinks', 'search', 'dashboard', 'seo', 'legal', 'contact'],
     interpolation: {
       escapeValue: false,
     },

@@ -19,5 +19,7 @@
   "settings.description": "Configurez vos cles API et preferences.",
   "keywords.title": "Mots-cles - Snapeous",
   "keywords.description": "Suivez les positions de vos mots-cles et vos performances en recherche organique.",
+  "contact.title": "Contact - Snapeous",
+  "contact.description": "Contactez l'equipe Snapeous. Nous sommes la pour repondre a vos questions SEO.",
   "og.siteName": "Snapeous"
 }

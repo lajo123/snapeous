@@ -1,0 +1,26 @@
+{
+  "title": "Contact Us",
+  "subtitle": "Have a question or suggestion? We'd love to hear from you.",
+  "backToHome": "Back to home",
+  "securityCheck": "Please complete the security check.",
+  "errorGeneric": "An error occurred. Please try again later.",
+  "successTitle": "Message sent!",
+  "successMessage": "Thank you for your message. We'll get back to you as soon as possible.",
+  "directEmail": "You can also reach us at",
+  "form": {
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "subject": "Subject",
+    "subjectPlaceholder": "How can we help?",
+    "message": "Message",
+    "messagePlaceholder": "Tell us more about your request...",
+    "submit": "Send message"
+  },
+  "footer": {
+    "legalNotice": "Legal Notice",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}

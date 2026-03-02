@@ -53,6 +53,9 @@ class Settings(BaseSettings):
     # Cloudflare Turnstile
     turnstile_secret_key: str = ""
 
+    # Resend (email sending for contact form)
+    resend_api_key: str = ""
+
     # Debug
     debug: bool = True
 

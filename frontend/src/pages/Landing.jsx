@@ -549,7 +549,7 @@ export default function Landing() {
                 { label: t('footer.resourceLinks.blog'), href: '#' },
                 { label: t('footer.resourceLinks.netlinkingGuide'), href: '#' },
                 { label: t('footer.resourceLinks.apiDocs'), href: '#' },
-                { label: t('footer.resourceLinks.support'), href: '#' },
+                { label: t('footer.resourceLinks.contact'), href: 'contact' },
               ]},
               { heading: t('footer.legal'), links: [
                 { label: t('footer.legalLinks.legalNotice'), href: 'legal-notice' },

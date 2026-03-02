@@ -113,6 +113,10 @@ export const cancelSubscription = () => api.post('/billing/cancel').then(r => r.
 export const reactivateSubscription = () => api.post('/billing/reactivate').then(r => r.data);
 export const getBillingPortalUrl = () => api.post('/billing/portal').then(r => r.data);
 
+// ── Contact ─────────────────────────────────────────────────────────
+
+export const sendContactMessage = (data) => api.post('/contact', data).then(r => r.data);
+
 // ── Dashboard ────────────────────────────────────────────────────────
 
 export const getDashboardStats = () => api.get('/dashboard/stats').then(r => r.data);

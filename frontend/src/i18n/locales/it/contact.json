@@ -1,0 +1,26 @@
+{
+  "title": "Contattaci",
+  "subtitle": "Hai una domanda o un suggerimento? Ci piacerebbe sentirti.",
+  "backToHome": "Torna alla home",
+  "securityCheck": "Per favore, completa il controllo di sicurezza.",
+  "errorGeneric": "Si è verificato un errore. Riprova più tardi.",
+  "successTitle": "Messaggio inviato!",
+  "successMessage": "Grazie per il tuo messaggio. Ti risponderemo il prima possibile.",
+  "directEmail": "Puoi anche scriverci a",
+  "form": {
+    "name": "Nome",
+    "namePlaceholder": "Il tuo nome",
+    "email": "Email",
+    "emailPlaceholder": "tua@email.com",
+    "subject": "Oggetto",
+    "subjectPlaceholder": "Come possiamo aiutarti?",
+    "message": "Messaggio",
+    "messagePlaceholder": "Raccontaci di più sulla tua richiesta...",
+    "submit": "Invia messaggio"
+  },
+  "footer": {
+    "legalNotice": "Note legali",
+    "privacy": "Privacy",
+    "terms": "Termini di servizio"
+  }
+}

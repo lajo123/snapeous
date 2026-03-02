@@ -1,0 +1,26 @@
+{
+  "title": "Contáctenos",
+  "subtitle": "¿Tiene alguna pregunta o sugerencia? Nos encantaría escucharle.",
+  "backToHome": "Volver al inicio",
+  "securityCheck": "Por favor, complete la verificación de seguridad.",
+  "errorGeneric": "Se produjo un error. Inténtelo de nuevo más tarde.",
+  "successTitle": "¡Mensaje enviado!",
+  "successMessage": "Gracias por su mensaje. Le responderemos lo antes posible.",
+  "directEmail": "También puede escribirnos a",
+  "form": {
+    "name": "Nombre",
+    "namePlaceholder": "Su nombre",
+    "email": "Email",
+    "emailPlaceholder": "su@email.com",
+    "subject": "Asunto",
+    "subjectPlaceholder": "¿Cómo podemos ayudarle?",
+    "message": "Mensaje",
+    "messagePlaceholder": "Cuéntenos más sobre su solicitud...",
+    "submit": "Enviar mensaje"
+  },
+  "footer": {
+    "legalNotice": "Aviso legal",
+    "privacy": "Política de privacidad",
+    "terms": "Términos de servicio"
+  }
+}

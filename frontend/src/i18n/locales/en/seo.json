@@ -19,5 +19,7 @@
   "settings.description": "Configure your API keys and preferences.",
   "keywords.title": "Keywords - Snapeous",
   "keywords.description": "Track keyword positions and organic search performance.",
+  "contact.title": "Contact Us - Snapeous",
+  "contact.description": "Get in touch with the Snapeous team. We're here to help with your SEO questions.",
   "og.siteName": "Snapeous"
 }
