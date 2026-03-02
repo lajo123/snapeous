@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
@@ -23,7 +23,6 @@ function App() {
           </ProtectedRoute>
         }
       >
-        {/* Root redirects to first project */}
         <Route path="/dashboard" element={<Dashboard />} />
 
         {/* Project pages */}
@@ -37,6 +36,9 @@ function App() {
         {/* Settings */}
         <Route path="/settings" element={<Settings />} />
       </Route>
+
+      {/* Catch-all: redirect to dashboard */}
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 }
