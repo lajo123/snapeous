@@ -7,6 +7,7 @@ from sqlalchemy import (
     String, Text, Integer, Float, Boolean, DateTime, Enum, JSON, ForeignKey,
     UniqueConstraint,
 )
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID, TIMESTAMP
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.db.database import Base
 
@@ -335,10 +336,10 @@ class Subscription(Base):
     __tablename__ = "subscriptions"
 
     id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=generate_uuid
+        PG_UUID(as_uuid=False), primary_key=True, default=generate_uuid
     )
     user_id: Mapped[str] = mapped_column(
-        String(255), nullable=False, unique=True, index=True
+        Text, nullable=False, unique=True, index=True
     )
 
     # Plan info — use schema_name to match existing PostgreSQL enum types
@@ -357,35 +358,35 @@ class Subscription(Base):
 
     # Stripe references
     stripe_customer_id: Mapped[str | None] = mapped_column(
-        String(255), nullable=True, index=True
+        Text, nullable=True, index=True
     )
     stripe_subscription_id: Mapped[str | None] = mapped_column(
-        String(255), nullable=True, unique=True
+        Text, nullable=True, unique=True
     )
     stripe_price_id: Mapped[str | None] = mapped_column(
-        String(255), nullable=True
+        Text, nullable=True
     )
 
     # Trial tracking
-    trial_start: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
-    trial_end: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    trial_start: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
+    trial_end: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
 
     # Period tracking
     current_period_start: Mapped[datetime | None] = mapped_column(
-        DateTime, nullable=True
+        TIMESTAMP(timezone=True), nullable=True
     )
     current_period_end: Mapped[datetime | None] = mapped_column(
-        DateTime, nullable=True
+        TIMESTAMP(timezone=True), nullable=True
     )
 
     # Cancel tracking
     cancel_at_period_end: Mapped[bool] = mapped_column(Boolean, default=False)
-    canceled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    canceled_at: Mapped[datetime | None] = mapped_column(TIMESTAMP(timezone=True), nullable=True)
 
     # Timestamps
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    created_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=utcnow, onupdate=utcnow
+        TIMESTAMP(timezone=True), default=utcnow, onupdate=utcnow
     )
 
 
