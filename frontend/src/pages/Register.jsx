@@ -4,7 +4,6 @@ import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTurnstile } from '@/hooks/useTurnstile';
-import { verifyTurnstile } from '@/lib/api';
 import useLocalizedPath from '@/hooks/useLocalizedPath';
 import SEOHead from '@/components/SEOHead';
 
@@ -33,13 +32,7 @@ export default function Register() {
 
     setLoading(true);
 
-    try { await verifyTurnstile(token); } catch (err) {
-      const detail = err?.response?.data?.detail;
-      setError(detail || t('securityFailed'));
-      reset(); setLoading(false); return;
-    }
-
-    const { error: authError } = await signUp(email, password);
+    const { error: authError } = await signUp(email, password, token);
 
     if (authError) {
       const msg = authError.message === 'User already registered' ? t('register.alreadyRegistered') : authError.message;

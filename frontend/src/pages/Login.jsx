@@ -4,7 +4,6 @@ import { Eye, EyeOff, LogIn } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTurnstile } from '@/hooks/useTurnstile';
-import { verifyTurnstile } from '@/lib/api';
 import useLocalizedNavigate from '@/hooks/useLocalizedNavigate';
 import useLocalizedPath from '@/hooks/useLocalizedPath';
 import SEOHead from '@/components/SEOHead';
@@ -36,17 +35,7 @@ export default function Login() {
 
     setLoading(true);
 
-    try {
-      await verifyTurnstile(token);
-    } catch (err) {
-      const detail = err?.response?.data?.detail;
-      setError(detail || t('securityFailed'));
-      reset();
-      setLoading(false);
-      return;
-    }
-
-    const { error: authError } = await signIn(email, password);
+    const { error: authError } = await signIn(email, password, token);
 
     if (authError) {
       setError(authError.message === 'Invalid login credentials'
