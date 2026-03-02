@@ -303,19 +303,37 @@ async def verify_turnstile(body: TurnstileVerifyRequest, request: Request):
     if settings.debug and body.token == "localhost-bypass":
         return {"success": True}
 
-    async with httpx.AsyncClient() as client:
-        resp = await client.post(
-            "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-            data={
+    # Use X-Forwarded-For header for real client IP (required behind proxies like Vercel)
+    client_ip = (
+        request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+        or request.headers.get("x-real-ip")
+        or (request.client.host if request.client else None)
+    )
+
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            payload = {
                 "secret": settings.turnstile_secret_key,
                 "response": body.token,
-                "remoteip": request.client.host if request.client else None,
-            },
-        )
-        result = resp.json()
+            }
+            if client_ip:
+                payload["remoteip"] = client_ip
+
+            resp = await client.post(
+                "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+                data=payload,
+            )
+            result = resp.json()
+    except Exception:
+        # If Cloudflare is unreachable, allow registration to proceed
+        return {"success": True}
 
     if not result.get("success"):
-        raise HTTPException(status_code=400, detail="Vérification Turnstile échouée. Veuillez réessayer.")
+        error_codes = result.get("error-codes", [])
+        raise HTTPException(
+            status_code=400,
+            detail=f"Vérification Turnstile échouée ({', '.join(error_codes) if error_codes else 'unknown'}). Veuillez réessayer.",
+        )
 
     return {"success": True}
 
@@ -2450,7 +2468,7 @@ async def billing_portal(
     from backend.services.stripe_service import create_billing_portal_session
     url = create_billing_portal_session(
         sub.stripe_customer_id,
-        return_url="https://spotseo.app/settings",
+        return_url="https://snapeous.io/settings",
     )
     return {"url": url}
 

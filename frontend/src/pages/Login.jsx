@@ -38,8 +38,9 @@ export default function Login() {
 
     try {
       await verifyTurnstile(token);
-    } catch {
-      setError(t('securityFailed'));
+    } catch (err) {
+      const detail = err?.response?.data?.detail;
+      setError(detail || t('securityFailed'));
       reset();
       setLoading(false);
       return;

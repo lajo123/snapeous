@@ -33,8 +33,9 @@ export default function Register() {
 
     setLoading(true);
 
-    try { await verifyTurnstile(token); } catch {
-      setError(t('securityFailed'));
+    try { await verifyTurnstile(token); } catch (err) {
+      const detail = err?.response?.data?.detail;
+      setError(detail || t('securityFailed'));
       reset(); setLoading(false); return;
     }
 
