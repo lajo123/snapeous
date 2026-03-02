@@ -32,9 +32,22 @@ export function AuthProvider({ children }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = (email, password) => {
+  const signIn = (email, password, captchaToken) => {
     if (!supabase) return { error: { message: 'Supabase is not configured. Check your environment variables.' } };
-    return supabase.auth.signInWithPassword({ email, password });
+    return supabase.auth.signInWithPassword({
+      email,
+      password,
+      options: captchaToken ? { captchaToken } : undefined,
+    });
+  };
+
+  const signUp = (email, password, captchaToken) => {
+    if (!supabase) return { error: { message: 'Supabase is not configured. Check your environment variables.' } };
+    return supabase.auth.signUp({
+      email,
+      password,
+      options: captchaToken ? { captchaToken } : undefined,
+    });
   };
 
   const signOut = () => {
@@ -43,7 +56,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
