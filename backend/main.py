@@ -286,6 +286,12 @@ async def health():
     return {"status": "ok", "app": "Snapeous", "version": "1.0.0"}
 
 
+@app.get("/api/auth/debug")
+async def auth_debug(user_id: str = Depends(get_current_user)):
+    """Temporary debug endpoint to test JWT verification."""
+    return {"status": "ok", "user_id": user_id}
+
+
 # ── Turnstile Verification ───────────────────────────────────────────
 
 

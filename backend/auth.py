@@ -4,6 +4,7 @@ Uses the JWKS endpoint to automatically fetch and cache public keys,
 supporting both ECC (ES256) and legacy HS256 algorithms.
 """
 
+import logging
 import jwt
 from jwt import PyJWKClient
 from fastapi import Depends, HTTPException, status
@@ -11,6 +12,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from backend.config import settings
 
+logger = logging.getLogger(__name__)
 _bearer = HTTPBearer()
 
 # JWKS client — fetches public keys from Supabase and caches them (5 min)
@@ -21,6 +23,7 @@ def _get_jwks_client() -> PyJWKClient:
     global _jwks_client
     if _jwks_client is None:
         jwks_url = f"{settings.supabase_url}/auth/v1/.well-known/jwks.json"
+        logger.info(f"Initializing JWKS client with URL: {jwks_url}")
         _jwks_client = PyJWKClient(jwks_url, cache_keys=True, lifespan=300)
     return _jwks_client
 
@@ -56,15 +59,17 @@ async def get_current_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token expired",
         )
-    except jwt.InvalidTokenError:
+    except jwt.InvalidTokenError as e:
+        logger.warning(f"JWT InvalidTokenError: {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token",
+            detail=f"Invalid token: {e}",
         )
-    except Exception:
+    except Exception as e:
+        logger.error(f"JWT verification error: {type(e).__name__}: {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate token",
+            detail=f"Could not validate token: {type(e).__name__}: {e}",
         )
 
     user_id = payload.get("sub")
