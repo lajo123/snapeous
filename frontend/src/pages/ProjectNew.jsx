@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { createProject } from '@/lib/api'
+import { createProject, analyzeProject } from '@/lib/api'
+import useLocalizedNavigate from '@/hooks/useLocalizedNavigate'
 import { ArrowLeft, Globe, FolderOpen } from 'lucide-react'
 
 export default function ProjectNew() {
-  const navigate = useNavigate()
+  const navigate = useLocalizedNavigate()
   const queryClient = useQueryClient()
   const [name, setName] = useState('')
   const [domain, setDomain] = useState('')
@@ -15,14 +16,17 @@ export default function ProjectNew() {
     mutationFn: () => createProject({ name, client_domain: domain }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['projects'] })
-      toast.success('Projet cree avec succes')
+      toast.success('Projet créé avec succès')
       navigate(`/projects/${data.id}`)
+      // Trigger analysis in background (fire-and-forget)
+      analyzeProject(data.id).catch(() => {})
     },
     onError: (error) => {
       toast.error(
-        error?.response?.data?.message ||
+        error?.response?.data?.detail?.message ||
+          error?.response?.data?.message ||
           error?.message ||
-          'Erreur lors de la creation du projet'
+          'Erreur lors de la création du projet'
       )
     },
   })

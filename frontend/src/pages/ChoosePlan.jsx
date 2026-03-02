@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -8,6 +7,7 @@ import { stripePromise } from '@/lib/stripe';
 import { createSetupIntent, subscribe } from '@/lib/api';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useAuth } from '@/contexts/AuthContext';
+import useLocalizedNavigate from '@/hooks/useLocalizedNavigate';
 import { cn } from '@/lib/utils';
 
 const PLANS = [
@@ -154,15 +154,15 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
 /* ── Main Page ─────────────────────────────────────────────── */
 
 export default function ChoosePlan() {
-  const navigate = useNavigate();
+  const navigate = useLocalizedNavigate();
   const { refetchSubscription } = useSubscription();
   const [interval, setInterval] = useState('monthly');
   const [checkoutPlan, setCheckoutPlan] = useState(null);
 
   const freeMutation = useMutation({
     mutationFn: () => subscribe({ plan: 'free' }),
-    onSuccess: () => {
-      refetchSubscription();
+    onSuccess: async () => {
+      await refetchSubscription();
       toast.success('Plan Free activé !');
       navigate('/dashboard');
     },
@@ -174,14 +174,14 @@ export default function ChoosePlan() {
     else setCheckoutPlan(planId);
   };
 
-  const handleCheckoutSuccess = () => {
+  const handleCheckoutSuccess = async () => {
     setCheckoutPlan(null);
-    refetchSubscription();
+    await refetchSubscription();
     navigate('/dashboard');
   };
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden grain-bg">
+    <div className="min-h-[100dvh] flex flex-col overflow-x-hidden grain-bg">
       {/* Ambient glows */}
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-brand-200/25 blur-[100px] rounded-full pointer-events-none" />
       <div className="fixed bottom-0 right-0 w-[350px] h-[350px] bg-cream-200/40 blur-[120px] rounded-full pointer-events-none" />
@@ -231,7 +231,7 @@ export default function ChoosePlan() {
       </header>
 
       {/* ── Plans Grid ───────────────────────────────────────── */}
-      <div className="flex-1 min-h-0 flex items-start md:items-center justify-center px-3 md:px-4 pb-4 relative z-10">
+      <div className="flex-1 flex items-start md:items-center justify-center px-3 md:px-4 py-4 relative z-10">
         <div
           className={cn(
             /* Mobile: horizontal scroll */

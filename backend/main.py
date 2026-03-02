@@ -478,10 +478,9 @@ async def create_project(
     await db.commit()
     await db.refresh(project)
 
-    # Launch automatic analysis (synchronous for serverless)
-    from backend.services.site_analyzer import analyze_site
-    await analyze_site(project.id, project.client_domain)
-    
+    # Analysis is triggered separately by the frontend via POST /api/projects/{id}/analyze
+    # to avoid serverless timeout on project creation.
+
     return ProjectOut(
         **{
             "id": project.id,

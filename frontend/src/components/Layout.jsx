@@ -18,7 +18,7 @@ import {
   LogOut,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getProject, getProjects, createProject, deleteProject } from '@/lib/api';
+import { getProject, getProjects, createProject, deleteProject, analyzeProject } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import UpgradeModal from './UpgradeModal';
@@ -94,6 +94,8 @@ export default function Layout() {
       setNewName('');
       setNewDomain('');
       navigate(`/projects/${data.id}`);
+      // Trigger site analysis in background (fire-and-forget)
+      analyzeProject(data.id).catch(() => {});
     },
     onError: () => toast.error(t('toast.createError')),
   });
