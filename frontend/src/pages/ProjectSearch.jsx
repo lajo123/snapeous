@@ -192,7 +192,7 @@ export default function ProjectSearch() {
       <div className="text-center py-16">
         <p className="text-gray-400">Projet introuvable.</p>
         <Link
-          to="/"
+          to="/dashboard"
           className="mt-4 inline-flex items-center gap-1.5 text-sm text-emerald-600 hover:text-emerald-700 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
