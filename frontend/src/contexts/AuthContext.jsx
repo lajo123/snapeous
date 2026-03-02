@@ -50,11 +50,6 @@ export function AuthProvider({ children }) {
     });
   };
 
-  const signUp = (email, password) => {
-    if (!supabase) return { error: { message: 'Supabase is not configured. Check your environment variables.' } };
-    return supabase.auth.signUp({ email, password });
-  };
-
   const signOut = () => {
     if (!supabase) return;
     return supabase.auth.signOut();
