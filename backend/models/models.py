@@ -92,6 +92,27 @@ class BacklinkLinkType(str, enum.Enum):
     nofollow = "nofollow"
 
 
+class SubscriptionPlan(str, enum.Enum):
+    free = "free"
+    starter = "starter"
+    pro = "pro"
+    agency = "agency"
+
+
+class SubscriptionStatus(str, enum.Enum):
+    active = "active"
+    trialing = "trialing"
+    past_due = "past_due"
+    canceled = "canceled"
+    incomplete = "incomplete"
+    unpaid = "unpaid"
+
+
+class BillingInterval(str, enum.Enum):
+    monthly = "monthly"
+    annual = "annual"
+
+
 # ── Models ─────────────────────────────────────────────────────────────
 
 
@@ -101,6 +122,7 @@ class Project(Base):
     id: Mapped[str] = mapped_column(
         String(36), primary_key=True, default=generate_uuid
     )
+    user_id: Mapped[str | None] = mapped_column(String(255), nullable=True, index=True)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     client_domain: Mapped[str] = mapped_column(String(255), nullable=False)
     target_urls: Mapped[dict | None] = mapped_column(JSON, default=list)
@@ -306,6 +328,61 @@ class Backlink(Base):
     project: Mapped["Project"] = relationship(back_populates="backlinks")
     history: Mapped[list["BacklinkHistory"]] = relationship(
         back_populates="backlink", cascade="all, delete-orphan"
+    )
+
+
+class Subscription(Base):
+    __tablename__ = "subscriptions"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=generate_uuid
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(255), nullable=False, unique=True, index=True
+    )
+
+    # Plan info
+    plan: Mapped[str] = mapped_column(
+        Enum(SubscriptionPlan), default=SubscriptionPlan.free
+    )
+    status: Mapped[str] = mapped_column(
+        Enum(SubscriptionStatus), default=SubscriptionStatus.active
+    )
+    billing_interval: Mapped[str | None] = mapped_column(
+        Enum(BillingInterval), nullable=True
+    )
+
+    # Stripe references
+    stripe_customer_id: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, index=True
+    )
+    stripe_subscription_id: Mapped[str | None] = mapped_column(
+        String(255), nullable=True, unique=True
+    )
+    stripe_price_id: Mapped[str | None] = mapped_column(
+        String(255), nullable=True
+    )
+
+    # Trial tracking
+    trial_start: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    trial_end: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    # Period tracking
+    current_period_start: Mapped[datetime | None] = mapped_column(
+        DateTime, nullable=True
+    )
+    current_period_end: Mapped[datetime | None] = mapped_column(
+        DateTime, nullable=True
+    )
+
+    # Cancel tracking
+    cancel_at_period_end: Mapped[bool] = mapped_column(Boolean, default=False)
+    canceled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    # Timestamps
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=utcnow, onupdate=utcnow
     )
 
 

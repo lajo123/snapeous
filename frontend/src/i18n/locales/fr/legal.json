@@ -1,0 +1,160 @@
+{
+  "backToHome": "Retour a l'accueil",
+  "lastUpdated": "Derniere mise a jour : {{date}}",
+
+  "legalNotice": {
+    "title": "Mentions legales",
+    "sections": [
+      {
+        "title": "Editeur du site",
+        "content": "Le site Snapeous (ci-apres \"le Site\") est edite par la societe Snapeous SAS, au capital de 1 000 euros, immatriculee au Registre du Commerce et des Societes sous le numero [RCS a completer].\n\nSiege social : [Adresse a completer]\nNumero de TVA intracommunautaire : [TVA a completer]\nDirecteur de la publication : [Nom a completer]\nEmail de contact : contact@snapeous.io"
+      },
+      {
+        "title": "Hebergement",
+        "content": "Le Site est heberge par :\n[Nom de l'hebergeur]\n[Adresse de l'hebergeur]\n[Telephone de l'hebergeur]"
+      },
+      {
+        "title": "Propriete intellectuelle",
+        "content": "L'ensemble des contenus presents sur le Site (textes, images, graphismes, logo, icones, logiciels, etc.) sont proteges par les lois francaises et internationales relatives a la propriete intellectuelle. Toute reproduction, representation, modification, publication, adaptation de tout ou partie des elements du Site, quel que soit le moyen ou le procede utilise, est interdite sans autorisation ecrite prealable de Snapeous SAS."
+      },
+      {
+        "title": "Responsabilite",
+        "content": "Snapeous SAS s'efforce d'assurer l'exactitude et la mise a jour des informations diffusees sur le Site. Toutefois, Snapeous SAS ne peut garantir l'exactitude, la precision ou l'exhaustivite des informations mises a disposition sur le Site. En consequence, Snapeous SAS decline toute responsabilite pour toute imprecision, inexactitude ou omission portant sur des informations disponibles sur le Site."
+      },
+      {
+        "title": "Liens hypertextes",
+        "content": "Le Site peut contenir des liens hypertextes vers d'autres sites. Snapeous SAS n'exerce aucun controle sur ces sites et decline toute responsabilite quant a leur contenu. La decision d'activer ces liens releve de la pleine et entiere responsabilite de l'utilisateur."
+      }
+    ]
+  },
+
+  "privacy": {
+    "title": "Politique de confidentialite",
+    "sections": [
+      {
+        "title": "Introduction",
+        "content": "Snapeous SAS (ci-apres \"Snapeous\", \"nous\", \"notre\") s'engage a proteger la vie privee des utilisateurs de sa plateforme. La presente politique de confidentialite decrit comment nous collectons, utilisons, stockons et protegeons vos donnees personnelles conformement au Reglement General sur la Protection des Donnees (RGPD) et a la loi Informatique et Libertes."
+      },
+      {
+        "title": "Donnees collectees",
+        "content": "Nous collectons les categories de donnees suivantes :\n\n- Donnees d'identification : nom, prenom, adresse email, mot de passe (chiffre)\n- Donnees de facturation : adresse de facturation, informations de paiement (traitees par Stripe)\n- Donnees d'utilisation : pages visitees, fonctionnalites utilisees, projets crees, backlinks analyses\n- Donnees techniques : adresse IP, type de navigateur, systeme d'exploitation, cookies\n- Donnees de communication : historique des echanges avec le support"
+      },
+      {
+        "title": "Finalites du traitement",
+        "content": "Vos donnees sont traitees pour les finalites suivantes :\n\n- Fourniture et gestion de votre compte utilisateur\n- Execution des services d'analyse et de monitoring de backlinks\n- Gestion de la facturation et des abonnements\n- Envoi de notifications et alertes liees au service\n- Amelioration de nos services et de l'experience utilisateur\n- Communication marketing (avec votre consentement)\n- Respect de nos obligations legales"
+      },
+      {
+        "title": "Base legale du traitement",
+        "content": "Les traitements de donnees sont fondes sur :\n\n- L'execution du contrat : gestion de votre compte et fourniture des services\n- Le consentement : communication marketing et cookies non essentiels\n- L'interet legitime : amelioration de nos services, securite de la plateforme\n- L'obligation legale : conservation des donnees de facturation"
+      },
+      {
+        "title": "Duree de conservation",
+        "content": "Vos donnees personnelles sont conservees pendant la duree necessaire aux finalites pour lesquelles elles ont ete collectees :\n\n- Donnees de compte : pendant la duree de votre inscription, puis 3 ans apres la suppression du compte\n- Donnees de facturation : 10 ans conformement aux obligations comptables\n- Donnees de navigation : 13 mois maximum\n- Cookies : selon leur duree de vie (voir la section RGPD)"
+      },
+      {
+        "title": "Partage des donnees",
+        "content": "Vos donnees peuvent etre partagees avec :\n\n- Stripe : pour le traitement des paiements\n- Notre hebergeur : pour l'hebergement de la plateforme\n- Services d'analyse : pour l'amelioration de nos services (donnees anonymisees)\n\nNous ne vendons jamais vos donnees personnelles a des tiers."
+      },
+      {
+        "title": "Securite",
+        "content": "Nous mettons en oeuvre des mesures de securite techniques et organisationnelles appropriees pour proteger vos donnees personnelles contre tout acces non autorise, toute modification, divulgation ou destruction. Cela inclut le chiffrement des donnees en transit (TLS/SSL), le chiffrement des mots de passe, et des controles d'acces stricts."
+      },
+      {
+        "title": "Vos droits",
+        "content": "Conformement au RGPD, vous disposez des droits suivants :\n\n- Droit d'acces : obtenir une copie de vos donnees personnelles\n- Droit de rectification : corriger vos donnees inexactes ou incompletes\n- Droit a l'effacement : demander la suppression de vos donnees\n- Droit a la limitation : limiter le traitement de vos donnees\n- Droit a la portabilite : recevoir vos donnees dans un format structure\n- Droit d'opposition : vous opposer au traitement de vos donnees\n- Droit de retrait du consentement : retirer votre consentement a tout moment\n\nPour exercer ces droits, contactez-nous a : privacy@snapeous.io"
+      },
+      {
+        "title": "Contact",
+        "content": "Pour toute question relative a la presente politique de confidentialite ou a la protection de vos donnees personnelles, vous pouvez nous contacter :\n\nEmail : privacy@snapeous.io\nAdresse : [Adresse a completer]\n\nVous pouvez egalement introduire une reclamation aupres de la CNIL (Commission Nationale de l'Informatique et des Libertes)."
+      }
+    ]
+  },
+
+  "terms": {
+    "title": "Conditions Generales d'Utilisation",
+    "sections": [
+      {
+        "title": "Objet",
+        "content": "Les presentes Conditions Generales d'Utilisation (ci-apres \"CGU\") ont pour objet de definir les conditions d'acces et d'utilisation de la plateforme Snapeous, accessible a l'adresse snapeous.io. En creant un compte ou en utilisant le Service, vous acceptez sans reserve les presentes CGU."
+      },
+      {
+        "title": "Description du service",
+        "content": "Snapeous est une plateforme SaaS de monitoring et d'analyse de backlinks qui propose :\n\n- Le suivi en temps reel des backlinks pointant vers votre site\n- L'analyse des metriques de domaine (DA, DR, Trust Flow, etc.)\n- Un score de sante du profil de liens\n- Des recommandations personnalisees pour ameliorer votre profil\n- Des alertes en cas de changement de statut des liens\n- L'export de donnees et de rapports"
+      },
+      {
+        "title": "Inscription et compte",
+        "content": "Pour utiliser le Service, vous devez creer un compte en fournissant des informations exactes et a jour. Vous etes responsable de la confidentialite de vos identifiants de connexion et de toutes les activites effectuees sous votre compte. Vous vous engagez a nous notifier immediatement toute utilisation non autorisee de votre compte."
+      },
+      {
+        "title": "Abonnements et paiement",
+        "content": "Snapeous propose plusieurs formules d'abonnement (Free, Starter, Pro, Agency). Les abonnements payants sont factures mensuellement ou annuellement selon votre choix. Les paiements sont traites de maniere securisee par Stripe. Vous pouvez annuler votre abonnement a tout moment. L'annulation prend effet a la fin de la periode de facturation en cours."
+      },
+      {
+        "title": "Essai gratuit",
+        "content": "Les plans payants beneficient d'une periode d'essai gratuit de 7 jours. Pendant cette periode, vous avez acces a l'ensemble des fonctionnalites du plan choisi. A l'issue de la periode d'essai, votre carte bancaire sera debitee sauf annulation prealable."
+      },
+      {
+        "title": "Utilisation acceptable",
+        "content": "Vous vous engagez a utiliser le Service de maniere licite et conforme aux presentes CGU. Il est notamment interdit de :\n\n- Utiliser le Service a des fins illegales ou non autorisees\n- Tenter de compromettre la securite ou l'integrite du Service\n- Effectuer du scraping ou de l'extraction automatisee de donnees au-dela des limites de l'API\n- Revendre ou redistribuer le Service sans autorisation\n- Utiliser le Service pour harceler, diffamer ou porter atteinte aux droits de tiers"
+      },
+      {
+        "title": "Propriete intellectuelle",
+        "content": "L'ensemble des elements de la plateforme Snapeous (logiciel, design, textes, marques, logos) sont la propriete exclusive de Snapeous SAS. L'abonnement vous confere un droit d'utilisation personnel, non exclusif et non transferable du Service pour la duree de votre abonnement."
+      },
+      {
+        "title": "Limitation de responsabilite",
+        "content": "Snapeous fournit le Service \"en l'etat\". Nous ne garantissons pas que le Service sera exempt d'erreurs ou d'interruptions. Dans les limites autorisees par la loi, la responsabilite totale de Snapeous ne pourra exceder le montant des sommes versees par l'utilisateur au cours des 12 derniers mois."
+      },
+      {
+        "title": "Modification des CGU",
+        "content": "Snapeous se reserve le droit de modifier les presentes CGU a tout moment. Les utilisateurs seront informes de toute modification par email ou par notification sur la plateforme. La poursuite de l'utilisation du Service apres modification vaut acceptation des nouvelles CGU."
+      },
+      {
+        "title": "Resiliation",
+        "content": "Vous pouvez resilier votre compte a tout moment depuis les parametres de votre compte. Snapeous se reserve le droit de suspendre ou de supprimer votre compte en cas de violation des presentes CGU, apres mise en demeure restee sans effet pendant 15 jours."
+      },
+      {
+        "title": "Droit applicable et juridiction",
+        "content": "Les presentes CGU sont soumises au droit francais. En cas de litige, les parties s'efforceront de trouver une solution amiable. A defaut, les tribunaux competents de Paris seront seuls competents."
+      }
+    ]
+  },
+
+  "gdpr": {
+    "title": "Conformite RGPD",
+    "sections": [
+      {
+        "title": "Notre engagement RGPD",
+        "content": "Snapeous s'engage a respecter le Reglement General sur la Protection des Donnees (RGPD - Reglement UE 2016/679) dans l'ensemble de ses traitements de donnees personnelles. Nous avons mis en place des mesures techniques et organisationnelles pour garantir la conformite de nos pratiques."
+      },
+      {
+        "title": "Responsable du traitement",
+        "content": "Le responsable du traitement des donnees personnelles est :\n\nSnapeous SAS\n[Adresse a completer]\nEmail : privacy@snapeous.io\n\nVous pouvez contacter notre Delegue a la Protection des Donnees (DPO) a l'adresse : dpo@snapeous.io"
+      },
+      {
+        "title": "Registre des traitements",
+        "content": "Conformement a l'article 30 du RGPD, nous tenons un registre des activites de traitement comprenant :\n\n- Gestion des comptes utilisateurs\n- Fourniture des services d'analyse de backlinks\n- Gestion des abonnements et facturation\n- Communication marketing (avec consentement)\n- Analyse et amelioration des services\n- Gestion du support client\n- Securite et prevention de la fraude"
+      },
+      {
+        "title": "Cookies et traceurs",
+        "content": "Nous utilisons differents types de cookies :\n\n- Cookies essentiels : necessaires au fonctionnement du site (authentification, preferences de langue). Ils ne necessitent pas votre consentement.\n- Cookies analytiques : pour analyser l'utilisation du site et ameliorer nos services. Deposes uniquement avec votre consentement.\n- Cookies marketing : pour personnaliser les publicites. Deposes uniquement avec votre consentement.\n\nVous pouvez gerer vos preferences de cookies a tout moment depuis le bandeau de consentement ou les parametres de votre navigateur."
+      },
+      {
+        "title": "Transfert de donnees hors UE",
+        "content": "Certains de nos sous-traitants peuvent traiter des donnees en dehors de l'Union europeenne. Dans ce cas, nous nous assurons que des garanties appropriees sont en place :\n\n- Clauses contractuelles types approuvees par la Commission europeenne\n- Certification du sous-traitant (le cas echeant)\n- Mesures supplementaires de securite"
+      },
+      {
+        "title": "Analyse d'impact",
+        "content": "Conformement a l'article 35 du RGPD, nous realisons des analyses d'impact relatives a la protection des donnees (AIPD) pour les traitements susceptibles d'engendrer un risque eleve pour les droits et libertes des personnes concernees."
+      },
+      {
+        "title": "Notification des violations",
+        "content": "En cas de violation de donnees personnelles susceptible d'engendrer un risque pour les droits et libertes des personnes, nous nous engageons a :\n\n- Notifier l'autorite de controle (CNIL) dans les 72 heures\n- Informer les personnes concernees si le risque est eleve\n- Documenter la violation et les mesures prises"
+      },
+      {
+        "title": "Exercice de vos droits",
+        "content": "Pour exercer vos droits (acces, rectification, effacement, limitation, portabilite, opposition), vous pouvez :\n\n- Envoyer un email a : privacy@snapeous.io\n- Utiliser les parametres de votre compte pour modifier ou supprimer vos donnees\n- Nous ecrire a l'adresse postale de Snapeous SAS\n\nNous nous engageons a repondre a votre demande dans un delai de 30 jours.\n\nEn cas de difficulte, vous pouvez introduire une reclamation aupres de la CNIL :\nCNIL - 3 Place de Fontenoy, TSA 80715 - 75334 Paris Cedex 07\nwww.cnil.fr"
+      }
+    ]
+  }
+}

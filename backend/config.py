@@ -39,6 +39,20 @@ class Settings(BaseSettings):
     # DomDetailer API (domain metrics)
     domdetailer_api_key: str = ""
 
+    # Stripe
+    stripe_secret_key: str = ""
+    stripe_publishable_key: str = ""
+    stripe_webhook_secret: str = ""
+    stripe_price_starter_monthly: str = ""
+    stripe_price_starter_annual: str = ""
+    stripe_price_pro_monthly: str = ""
+    stripe_price_pro_annual: str = ""
+    stripe_price_agency_monthly: str = ""
+    stripe_price_agency_annual: str = ""
+
+    # Cloudflare Turnstile
+    turnstile_secret_key: str = ""
+
     # Debug
     debug: bool = True
 
@@ -79,6 +93,10 @@ class Settings(BaseSettings):
     @property
     def has_domdetailer(self) -> bool:
         return bool(self.domdetailer_api_key)
+
+    @property
+    def has_stripe(self) -> bool:
+        return bool(self.stripe_secret_key)
 
     model_config = {
         "env_file": os.path.join(os.path.dirname(__file__), "..", "config", ".env"),

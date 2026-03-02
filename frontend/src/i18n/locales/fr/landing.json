@@ -1,0 +1,211 @@
+{
+  "nav": {
+    "features": "Fonctionnalités",
+    "howItWorks": "Comment ça marche",
+    "pricing": "Tarifs",
+    "faq": "FAQ",
+    "login": "Connexion",
+    "freeTrial": "Essai gratuit",
+    "dashboard": "Tableau de bord"
+  },
+  "hero": {
+    "badge": "Monitoring intelligent de backlinks",
+    "titleLine1": "Trackez vos",
+    "titleHighlight": "backlinks",
+    "titleLine2": ", intelligemment.",
+    "description": "Monitoring en temps réel, analyse DA/DR, score de santé de votre profil de liens et recommandations personnalisées pour renforcer votre SEO.",
+    "cta": "Analyser mon site gratuitement",
+    "demo": "Voir la démo"
+  },
+  "mockup": {
+    "activeBacklinks": "Backlinks actifs",
+    "healthScore": "Score de santé",
+    "avgDA": "DA moyen",
+    "avgDR": "DR moyen",
+    "recentBacklinks": "Backlinks récents",
+    "lost": "Perdu",
+    "thisWeek": "+86 cette semaine",
+    "viewAll": "Voir tout",
+    "dofollowNofollow": "78% dofollow · 22% nofollow"
+  },
+  "socialProof": {
+    "title": "Utilisé par des équipes SEO exigeantes"
+  },
+  "features": {
+    "sectionLabel": "Fonctionnalités",
+    "title": "Votre profil de liens, sous contrôle total",
+    "subtitle": "Monitoring, analyse, recommandations : tout ce qu'il faut pour un profil de backlinks sain et performant.",
+    "items": [
+      {
+        "title": "Monitoring en temps réel",
+        "desc": "Surveillez chaque backlink 24/7. Détectez instantanément les liens perdus, les changements de statut (nofollow, redirect, 404) et les modifications d'ancre."
+      },
+      {
+        "title": "Analyse DA / DR",
+        "desc": "Obtenez les métriques clés de chaque domaine : Domain Authority, Domain Rating, Trust Flow, Citation Flow, spam score et historique d'autorité."
+      },
+      {
+        "title": "Score de santé du profil",
+        "desc": "Un score global évalue la qualité de votre profil de liens : ratio dofollow/nofollow, diversité des ancres, répartition des TLD et vélocité d'acquisition."
+      },
+      {
+        "title": "Recommandations intelligentes",
+        "desc": "Notre moteur analyse votre profil et celui de vos concurrents pour recommander les types de backlinks à prioriser : guest posts, annuaires, liens cassés, PBN."
+      },
+      {
+        "title": "Statistiques avancées",
+        "desc": "Visualisez l'évolution de vos backlinks, la distribution des ancres, les referring domains, les IP C-class et l'impact sur vos positions."
+      },
+      {
+        "title": "Alertes & rapports",
+        "desc": "Recevez des notifications par email quand un lien tombe ou qu'un nouveau backlink est détecté. Exportez des rapports PDF pour vos clients."
+      }
+    ]
+  },
+  "howItWorks": {
+    "sectionLabel": "Comment ça marche",
+    "title": "Opérationnel en 3 minutes",
+    "subtitle": "Ajoutez votre domaine. Snapeous analyse, monitore et vous guide.",
+    "steps": [
+      {
+        "title": "Ajoutez votre domaine",
+        "desc": "Entrez l'URL de votre site. Snapeous lance automatiquement un crawl complet et récupère tous vos backlinks existants."
+      },
+      {
+        "title": "Analyse automatique",
+        "desc": "Notre moteur évalue chaque lien : statut HTTP, attribut rel, ancre, DA/DR du domaine source, pertinence thématique et potentiel SEO."
+      },
+      {
+        "title": "Suivez & optimisez",
+        "desc": "Consultez votre tableau de bord, recevez des alertes en temps réel et suivez les recommandations pour renforcer votre profil de liens."
+      }
+    ]
+  },
+  "metrics": {
+    "backlinkMonitored": "Backlinks monitorés",
+    "uptimeMonitoring": "Uptime monitoring",
+    "daDrAnalysis": "Analyse DA/DR",
+    "activeProjects": "Projets actifs"
+  },
+  "testimonials": {
+    "sectionLabel": "Témoignages",
+    "title": "Ce qu'en disent nos utilisateurs",
+    "items": [
+      {
+        "name": "Marie Laurent",
+        "role": "Consultante SEO, DigiVox",
+        "text": "Grâce au monitoring en temps réel, on a détecté et récupéré 12 backlinks perdus en un mois. Le ROI est immédiat."
+      },
+      {
+        "name": "Thomas Durand",
+        "role": "Head of SEO, NetRank",
+        "text": "L'analyse DA/DR intégrée nous évite de jongler entre 3 outils. On voit d'un coup d'œil la qualité de chaque lien entrant."
+      },
+      {
+        "name": "Sophie Chen",
+        "role": "Fondatrice, LinkForge Agency",
+        "text": "Les recommandations intelligentes ont changé notre stratégie. On sait exactement quel type de backlinks acquérir en priorité."
+      }
+    ]
+  },
+  "pricing": {
+    "sectionLabel": "Tarifs",
+    "title": "Simple, transparent, sans surprise",
+    "subtitle": "Commencez gratuitement. Essayez 7 jours gratuit sur les plans payants. Aucun engagement.",
+    "monthly": "Mensuel",
+    "annual": "Annuel",
+    "annualDiscount": "-20%",
+    "recommended": "Recommandé",
+    "free": "Gratuit",
+    "perMonth": "/mois",
+    "billedAnnually": "Facturé {{amount}}€/an",
+    "trialBadge": "7 jours d'essai gratuit",
+    "plans": [
+      {
+        "name": "Free",
+        "sub": "Pour découvrir Snapeous",
+        "items": ["1 projet", "50 backlinks monitorés", "Dashboard basique", "Alertes email basiques"],
+        "cta": "Commencer gratuitement"
+      },
+      {
+        "name": "Starter",
+        "sub": "Pour les indépendants",
+        "items": ["3 projets", "500 backlinks monitorés", "Analyse complète", "Détection liens toxiques", "Export CSV", "Alertes email complètes"],
+        "cta": "Démarrer l'essai gratuit"
+      },
+      {
+        "name": "Pro",
+        "sub": "Pour les freelances & équipes",
+        "items": ["10 projets", "5 000 backlinks monitorés", "Tout du Starter", "Recommandations IA", "3 concurrents", "Rapports PDF", "Intégration GSC", "Accès API"],
+        "cta": "Démarrer l'essai gratuit"
+      },
+      {
+        "name": "Agency",
+        "sub": "Pour les agences SEO",
+        "items": ["Projets illimités", "25 000 backlinks monitorés", "Tout du Pro", "Concurrents illimités", "Sous-comptes", "Rapports planifiés", "Support prioritaire", "API avancée"],
+        "cta": "Démarrer l'essai gratuit"
+      }
+    ]
+  },
+  "faq": {
+    "sectionLabel": "FAQ",
+    "title": "Questions fréquentes",
+    "items": [
+      {
+        "q": "Comment fonctionne le monitoring de backlinks ?",
+        "a": "Snapeous crawle régulièrement les pages qui pointent vers votre site pour vérifier le statut de chaque lien (200, 301, 404, etc.), son attribut rel (dofollow/nofollow), son ancre et la présence effective du lien. Toute modification déclenche une alerte."
+      },
+      {
+        "q": "Quelles métriques de domaine sont disponibles ?",
+        "a": "Snapeous affiche le Domain Authority (DA), le Domain Rating (DR), le Trust Flow, le Citation Flow, le Spam Score, l'adresse IP, le nombre de backlinks, les referring domains et le statut d'indexation pour chaque domaine analysé."
+      },
+      {
+        "q": "Comment sont générées les recommandations ?",
+        "a": "Notre algorithme analyse la composition de votre profil (types de liens, ancres, TLD, thématiques) et le compare aux profils des sites les mieux positionnés dans votre niche. Il identifie les lacunes et recommande les actions à prioriser."
+      },
+      {
+        "q": "Quelle est la différence avec Ahrefs ou Moz ?",
+        "a": "Snapeous se concentre sur le monitoring actif et les recommandations actionables. Plutôt qu'un outil d'analyse passif, c'est un copilote qui vous alerte en temps réel et vous guide pour améliorer votre profil de liens."
+      },
+      {
+        "q": "Puis-je exporter mes données ?",
+        "a": "Oui, tous les plans permettent l'export CSV des backlinks et métriques. Les plans Pro et Agency offrent en plus des rapports PDF personnalisés avec votre branding, parfaits pour les présentations clients."
+      },
+      {
+        "q": "Y a-t-il un engagement ?",
+        "a": "Non, tous les plans sont sans engagement. Vous pouvez annuler à tout moment. Le plan Starter est gratuit à vie et les plans payants incluent un essai de 14 jours."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Reprenez le contrôle de vos backlinks",
+    "description": "Monitoring temps réel, analyse DA/DR, recommandations personnalisées. Tout ce qu'il faut pour un profil de liens performant.",
+    "button": "Analyser mon site gratuitement",
+    "note": "Gratuit pour toujours. Aucune carte bancaire requise."
+  },
+  "footer": {
+    "description": "La plateforme intelligente pour tracker, analyser et optimiser votre profil de backlinks.",
+    "product": "Produit",
+    "productLinks": {
+      "features": "Fonctionnalités",
+      "pricing": "Tarifs",
+      "faq": "FAQ",
+      "changelog": "Changelog"
+    },
+    "resources": "Ressources",
+    "resourceLinks": {
+      "blog": "Blog",
+      "netlinkingGuide": "Guide du netlinking",
+      "apiDocs": "Documentation API",
+      "support": "Support"
+    },
+    "legal": "Légal",
+    "legalLinks": {
+      "legalNotice": "Mentions légales",
+      "privacy": "Politique de confidentialité",
+      "terms": "CGU",
+      "gdpr": "RGPD"
+    },
+    "copyright": "© {{year}} Snapeous. Tous droits réservés."
+  }
+}

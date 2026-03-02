@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Upload } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 
 export default function ImportBacklinksModal({ onClose, onSubmit, isPending }) {
+  const { t } = useTranslation('backlinks');
   const [csvText, setCsvText] = useState('');
   const [isDragging, setIsDragging] = useState(false);
 
@@ -16,7 +18,7 @@ export default function ImportBacklinksModal({ onClose, onSubmit, isPending }) {
       reader.onload = (event) => setCsvText(event.target.result);
       reader.readAsText(file);
     } else {
-      toast.error('Veuillez deposer un fichier CSV');
+      toast.error(t('importModal.csvError'));
     }
   };
 
@@ -44,7 +46,7 @@ export default function ImportBacklinksModal({ onClose, onSubmit, isPending }) {
   const handleSubmit = () => {
     const items = parseCSV();
     if (items.length === 0) {
-      toast.error('Aucune URL valide trouvee dans le CSV');
+      toast.error(t('importModal.noUrls'));
       return;
     }
     onSubmit(items);
@@ -53,9 +55,9 @@ export default function ImportBacklinksModal({ onClose, onSubmit, isPending }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Importer des backlinks</h2>
+        <h2 className="text-lg font-bold text-gray-900 mb-4">{t('importModal.title')}</h2>
         <p className="text-sm text-[#6b6560] mb-4">
-          Importez uniquement les URLs sources. L'outil detectera automatiquement les liens vers votre projet.
+          {t('importModal.desc')}
         </p>
 
         <div
@@ -64,32 +66,32 @@ export default function ImportBacklinksModal({ onClose, onSubmit, isPending }) {
           onDrop={handleDrop}
           className={cn(
             "border-2 border-dashed rounded-xl p-8 text-center transition-colors",
-            isDragging ? "border-emerald-400 bg-emerald-50" : "border-gray-300 hover:border-gray-400"
+            isDragging ? "border-brand-400 bg-brand-50" : "border-gray-300 hover:border-gray-400"
           )}
         >
           <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-          <p className="text-sm text-gray-600 mb-2">Glissez-deposez un fichier CSV ici</p>
-          <p className="text-xs text-gray-400 mb-4">ou</p>
+          <p className="text-sm text-gray-600 mb-2">{t('importModal.dropzone')}</p>
+          <p className="text-xs text-gray-400 mb-4">{t('importModal.or')}</p>
           <label className="btn-secondary cursor-pointer">
             <input type="file" accept=".csv" onChange={handleFileSelect} className="hidden" />
-            Selectionner un fichier
+            {t('importModal.selectFile')}
           </label>
         </div>
 
         <div className="mt-4">
-          <p className="text-xs text-gray-500 mb-2">Format CSV: une URL par ligne</p>
+          <p className="text-xs text-gray-500 mb-2">{t('importModal.csvFormat')}</p>
           <textarea
             value={csvText}
             onChange={(e) => setCsvText(e.target.value)}
             placeholder={"https://site1.com/page\nhttps://site2.com/article\nhttps://site3.com/blog/post"}
-            className="w-full h-32 px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm font-mono focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+            className="w-full h-32 px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm font-mono focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
           />
         </div>
 
         <div className="flex items-center justify-end gap-3 pt-4">
-          <button type="button" onClick={onClose} className="btn-secondary">Annuler</button>
+          <button type="button" onClick={onClose} className="btn-secondary">{t('importModal.cancel')}</button>
           <button onClick={handleSubmit} disabled={isPending || !csvText.trim()} className="btn-primary">
-            {isPending ? 'Import...' : `Importer (${parseCSV().length})`}
+            {isPending ? t('importModal.importing') : t('importModal.submit', { count: parseCSV().length })}
           </button>
         </div>
       </div>

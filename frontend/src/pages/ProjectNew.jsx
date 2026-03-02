@@ -49,8 +49,8 @@ export default function ProjectNew() {
 
         <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-8">
           <div className="flex items-center gap-3 mb-8">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50">
-              <FolderOpen className="h-5 w-5 text-emerald-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50">
+              <FolderOpen className="h-5 w-5 text-brand-600" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-gray-900">
@@ -74,7 +74,7 @@ export default function ProjectNew() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Ex: Campagne SEO Q1 2026"
-                className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-300 focus:border-emerald-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-100 transition-all"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 text-sm text-gray-900 placeholder:text-gray-300 focus:border-brand-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100 transition-all"
                 required
               />
             </div>
@@ -94,7 +94,7 @@ export default function ProjectNew() {
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
                   placeholder="monsite.com"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 pl-11 pr-4 py-3 text-sm text-gray-900 placeholder:text-gray-300 focus:border-emerald-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-100 transition-all"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 pl-11 pr-4 py-3 text-sm text-gray-900 placeholder:text-gray-300 focus:border-brand-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100 transition-all"
                   required
                 />
               </div>

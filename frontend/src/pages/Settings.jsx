@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Key,
   Shield,
@@ -12,50 +14,65 @@ import {
   Globe,
   BarChart3,
   Layers,
+  CreditCard,
   Settings as SettingsIcon,
 } from 'lucide-react';
 import { getSettings } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import SEOHead from '@/components/SEOHead';
 import { Loader } from 'lucide-react';
 import FootprintsPanel from './FootprintsPanel';
-
-const TABS = [
-  { id: 'settings', label: 'Paramètres', icon: SettingsIcon },
-  { id: 'footprints', label: 'Footprints', icon: Layers },
-];
-
-function StatusBadge({ configured }) {
-  if (configured) {
-    return (
-      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700">
-        <CheckCircle className="h-3.5 w-3.5" />
-        Configuré
-      </span>
-    );
-  }
-  return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600">
-      <XCircle className="h-3.5 w-3.5" />
-      Non configuré
-    </span>
-  );
-}
+import SubscriptionTab from '@/components/settings/SubscriptionTab';
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState('settings');
+  const { t } = useTranslation('app');
+  const tc = useTranslation('common').t;
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState(location.state?.tab || 'subscription');
+
+  const TABS = [
+    { id: 'subscription', label: t('settings.tabs.subscription'), icon: CreditCard },
+    { id: 'settings', label: t('settings.tabs.settings'), icon: SettingsIcon },
+    { id: 'footprints', label: t('settings.tabs.footprints'), icon: Layers },
+  ];
+
+  // Allow navigating to a specific tab via location state
+  useEffect(() => {
+    if (location.state?.tab) {
+      setActiveTab(location.state.tab);
+    }
+  }, [location.state]);
 
   const { data: settings, isLoading } = useQuery({
     queryKey: ['settings'],
     queryFn: getSettings,
   });
 
+  function StatusBadge({ configured }) {
+    if (configured) {
+      return (
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1.5 text-xs font-medium text-brand-700">
+          <CheckCircle className="h-3.5 w-3.5" />
+          {tc('configured')}
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600">
+        <XCircle className="h-3.5 w-3.5" />
+        {tc('notConfigured')}
+      </span>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      <SEOHead pageKey="settings" />
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Paramètres</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t('settings.title')}</h1>
         <p className="mt-1.5 text-sm text-gray-400">
-          Configuration et outils de l'application
+          {t('settings.subtitle')}
         </p>
       </div>
 
@@ -69,7 +86,7 @@ export default function Settings() {
               className={cn(
                 'flex items-center gap-2 px-5 py-4 text-sm font-medium border-b-2 transition-all',
                 activeTab === id
-                  ? 'border-emerald-500 text-emerald-700'
+                  ? 'border-brand-500 text-brand-700'
                   : 'border-transparent text-gray-400 hover:text-gray-700 hover:border-gray-200'
               )}
             >
@@ -80,12 +97,15 @@ export default function Settings() {
         </nav>
       </div>
 
-      {/* Tab: Paramètres */}
+      {/* Tab: Subscription */}
+      {activeTab === 'subscription' && <SubscriptionTab />}
+
+      {/* Tab: Settings */}
       {activeTab === 'settings' && (
         <>
           {isLoading ? (
             <div className="flex items-center justify-center h-64">
-              <Loader className="h-8 w-8 text-emerald-500 animate-spin" />
+              <Loader className="h-8 w-8 text-brand-500 animate-spin" />
             </div>
           ) : (
             <>
@@ -93,34 +113,47 @@ export default function Settings() {
               <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50/80 p-5">
                 <Info className="h-5 w-5 text-amber-600 mt-0.5 shrink-0" />
                 <p className="text-sm text-amber-800">
-                  Pour modifier les paramètres, éditez le fichier{' '}
-                  <code className="rounded-lg bg-amber-100 px-2 py-0.5 text-xs font-mono font-semibold">
-                    config/.env
-                  </code>{' '}
-                  et redémarrez le serveur.
+                  {t('settings.readOnlyNotice').split('<code>').map((part, i) => {
+                    if (i === 0) return part;
+                    const [code, rest] = part.split('</code>');
+                    return (
+                      <span key={i}>
+                        <code className="rounded-lg bg-amber-100 px-2 py-0.5 text-xs font-mono font-semibold">{code}</code>
+                        {rest}
+                      </span>
+                    );
+                  })}
                 </p>
               </div>
 
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-                {/* OpenRouter / IA */}
+                {/* OpenRouter / AI */}
                 <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <div className="rounded-xl bg-violet-50 p-2.5">
                         <Key className="h-4 w-4 text-violet-600" />
                       </div>
-                      <h2 className="text-sm font-semibold text-gray-900">OpenRouter / IA</h2>
+                      <h2 className="text-sm font-semibold text-gray-900">{t('settings.openrouterTitle')}</h2>
                     </div>
                     <StatusBadge configured={settings?.has_ai} />
                   </div>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-                      <span className="text-xs font-medium text-gray-400">Modèle</span>
+                      <span className="text-xs font-medium text-gray-400">{t('settings.openrouterModel')}</span>
                       <span className="text-xs font-mono text-gray-900">{settings?.openrouter_model || '--'}</span>
                     </div>
                     <p className="text-xs text-gray-400 leading-relaxed">
-                      Utilisé pour l'analyse IA des sites. Clé dans{' '}
-                      <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono">config/.env</code>
+                      {t('settings.openrouterDesc').split('<code>').map((part, i) => {
+                        if (i === 0) return part;
+                        const [code, rest] = part.split('</code>');
+                        return (
+                          <span key={i}>
+                            <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono">{code}</code>
+                            {rest}
+                          </span>
+                        );
+                      })}
                     </p>
                   </div>
                 </div>
@@ -132,13 +165,21 @@ export default function Settings() {
                       <div className="rounded-xl bg-blue-50 p-2.5">
                         <Shield className="h-4 w-4 text-blue-600" />
                       </div>
-                      <h2 className="text-sm font-semibold text-gray-900">Proxy Decodo</h2>
+                      <h2 className="text-sm font-semibold text-gray-900">{t('settings.proxyTitle')}</h2>
                     </div>
                     <StatusBadge configured={settings?.has_proxy} />
                   </div>
                   <p className="text-xs text-gray-400 leading-relaxed">
-                    Utilisé pour le scraping Google. Configurez dans{' '}
-                    <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono">config/.env</code>
+                    {t('settings.proxyDesc').split('<code>').map((part, i) => {
+                      if (i === 0) return part;
+                      const [code, rest] = part.split('</code>');
+                      return (
+                        <span key={i}>
+                          <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono">{code}</code>
+                          {rest}
+                        </span>
+                      );
+                    })}
                   </p>
                 </div>
 
@@ -149,21 +190,21 @@ export default function Settings() {
                       <div className="rounded-xl bg-indigo-50 p-2.5">
                         <Globe className="h-4 w-4 text-indigo-600" />
                       </div>
-                      <h2 className="text-sm font-semibold text-gray-900">SERP API</h2>
+                      <h2 className="text-sm font-semibold text-gray-900">{t('settings.serpTitle')}</h2>
                     </div>
                     <StatusBadge configured={settings?.has_dataforseo || settings?.has_serpapi} />
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
                       <span className="text-xs font-medium text-gray-400">dataforSEO</span>
-                      <span className={cn('text-xs font-medium', settings?.has_dataforseo ? 'text-emerald-600' : 'text-gray-400')}>
-                        {settings?.has_dataforseo ? 'Configuré' : 'Non configuré'}
+                      <span className={cn('text-xs font-medium', settings?.has_dataforseo ? 'text-brand-600' : 'text-gray-400')}>
+                        {settings?.has_dataforseo ? tc('configured') : tc('notConfigured')}
                       </span>
                     </div>
                     <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
                       <span className="text-xs font-medium text-gray-400">SerpAPI</span>
-                      <span className={cn('text-xs font-medium', settings?.has_serpapi ? 'text-emerald-600' : 'text-gray-400')}>
-                        {settings?.has_serpapi ? 'Configuré' : 'Non configuré'}
+                      <span className={cn('text-xs font-medium', settings?.has_serpapi ? 'text-brand-600' : 'text-gray-400')}>
+                        {settings?.has_serpapi ? tc('configured') : tc('notConfigured')}
                       </span>
                     </div>
                   </div>
@@ -176,12 +217,12 @@ export default function Settings() {
                       <div className="rounded-xl bg-cyan-50 p-2.5">
                         <Globe className="h-4 w-4 text-cyan-600" />
                       </div>
-                      <h2 className="text-sm font-semibold text-gray-900">SpeedyIndex</h2>
+                      <h2 className="text-sm font-semibold text-gray-900">{t('settings.speedyindexTitle')}</h2>
                     </div>
                     <StatusBadge configured={settings?.has_speedyindex} />
                   </div>
                   <p className="text-xs text-gray-400 leading-relaxed">
-                    Vérification d'indexation Google des URLs.
+                    {t('settings.speedyindexDesc')}
                   </p>
                 </div>
 
@@ -192,73 +233,73 @@ export default function Settings() {
                       <div className="rounded-xl bg-amber-50 p-2.5">
                         <BarChart3 className="h-4 w-4 text-amber-600" />
                       </div>
-                      <h2 className="text-sm font-semibold text-gray-900">DomDetailer</h2>
+                      <h2 className="text-sm font-semibold text-gray-900">{t('settings.domdetailerTitle')}</h2>
                     </div>
                     <StatusBadge configured={settings?.has_domdetailer} />
                   </div>
                   <p className="text-xs text-gray-400 leading-relaxed">
-                    Métriques de domaine (DR, UR, backlinks, domaines référents).
+                    {t('settings.domdetailerDesc')}
                   </p>
                 </div>
 
-                {/* Base de données */}
+                {/* Database */}
                 <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
                   <div className="flex items-center gap-3 mb-5">
-                    <div className="rounded-xl bg-emerald-50 p-2.5">
-                      <Database className="h-4 w-4 text-emerald-600" />
+                    <div className="rounded-xl bg-brand-50 p-2.5">
+                      <Database className="h-4 w-4 text-brand-600" />
                     </div>
-                    <h2 className="text-sm font-semibold text-gray-900">Base de données</h2>
+                    <h2 className="text-sm font-semibold text-gray-900">{t('settings.databaseTitle')}</h2>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-                      <span className="text-xs font-medium text-gray-400">Type</span>
+                      <span className="text-xs font-medium text-gray-400">{t('settings.databaseType')}</span>
                       <span className="text-xs font-mono text-gray-900">SQLite</span>
                     </div>
                     <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-                      <span className="text-xs font-medium text-gray-400">Chemin</span>
+                      <span className="text-xs font-medium text-gray-400">{t('settings.databasePath')}</span>
                       <span className="text-xs font-mono text-gray-900">data/snapeous.db</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Guide de démarrage */}
+              {/* Getting started guide */}
               <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-7">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="rounded-xl bg-violet-50 p-2.5">
                     <Rocket className="h-4 w-4 text-violet-600" />
                   </div>
-                  <h2 className="text-sm font-semibold text-gray-900">Guide de démarrage</h2>
+                  <h2 className="text-sm font-semibold text-gray-900">{t('settings.guideTitle')}</h2>
                 </div>
 
                 <div className="space-y-6">
                   {[
                     {
-                      n: 1, title: 'Configurez config/.env',
-                      desc: 'Ajoutez vos clés API dans le fichier de configuration.',
+                      n: 1, title: t('settings.guideStep1Title'),
+                      desc: t('settings.guideStep1Desc'),
                       code: 'OPENROUTER_API_KEY=sk-or-v1-...\nDECODO_PROXY_URL=http://...',
                       isCode: true,
                     },
                     {
-                      n: 2, title: 'Lancez le backend',
-                      desc: 'Démarrez le serveur FastAPI.',
+                      n: 2, title: t('settings.guideStep2Title'),
+                      desc: t('settings.guideStep2Desc'),
                       code: 'python -m uvicorn backend.main:app --reload',
                       isCode: false,
                     },
                     {
-                      n: 3, title: 'Lancez le frontend',
-                      desc: 'Démarrez le serveur de développement React.',
+                      n: 3, title: t('settings.guideStep3Title'),
+                      desc: t('settings.guideStep3Desc'),
                       code: 'cd frontend && npm run dev',
                       isCode: false,
                     },
                     {
-                      n: 4, title: 'Créez votre premier projet',
-                      desc: 'Depuis le dashboard, cliquez sur "Nouveau projet" pour commencer.',
+                      n: 4, title: t('settings.guideStep4Title'),
+                      desc: t('settings.guideStep4Desc'),
                       code: null,
                     },
                   ].map(({ n, title, desc, code, isCode }) => (
                     <div key={n} className="flex gap-4">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-100 text-xs font-bold text-brand-700">
                         {n}
                       </div>
                       <div className="flex-1">

@@ -1,0 +1,92 @@
+{
+  "category": {
+    "blog_comments": "Blog-Kommentare",
+    "forums": "Foren",
+    "directories": "Verzeichnisse",
+    "guestbooks": "Gaestebuecher",
+    "profiles": "Profile",
+    "social": "Soziale Netzwerke",
+    "authority": "Authority-Seiten",
+    "serp_exploration": "SERP-Erkundung",
+    "files": "Dateien",
+    "guest_posts": "Gastbeitraege",
+    "wikis": "Wikis",
+    "ereputation": "E-Reputation",
+    "web20": "Web 2.0"
+  },
+  "difficulty": {
+    "easy": "Einfach",
+    "medium": "Mittel",
+    "hard": "Schwer"
+  },
+  "linkType": {
+    "dofollow": "Dofollow",
+    "nofollow": "Nofollow",
+    "ugc": "UGC",
+    "sponsored": "Sponsored",
+    "mix": "Gemischt"
+  },
+  "spotStatus": {
+    "discovered": "Entdeckt",
+    "qualified": "Qualifiziert",
+    "selected": "Ausgewaehlt",
+    "rejected": "Abgelehnt",
+    "contacted": "Kontaktiert",
+    "link_posted": "Link gesetzt",
+    "failed": "Fehlgeschlagen"
+  },
+  "searchStatus": {
+    "pending": "Ausstehend",
+    "running": "Laeuft",
+    "completed": "Abgeschlossen",
+    "failed": "Fehlgeschlagen"
+  },
+  "backlinkStatus": {
+    "active": "Aktiv",
+    "lost": "Verloren",
+    "pending": "Ausstehend"
+  },
+  "backlinkLinkType": {
+    "dofollow": "Dofollow",
+    "nofollow": "Nofollow"
+  },
+  "indexation": {
+    "indexed": "Indexiert",
+    "notIndexed": "Nicht indexiert",
+    "notChecked": "Nicht geprueft"
+  },
+  "configured": "Konfiguriert",
+  "notConfigured": "Nicht konfiguriert",
+  "cancel": "Abbrechen",
+  "delete": "Loeschen",
+  "confirm": "Bestaetigen",
+  "save": "Speichern",
+  "create": "Erstellen",
+  "edit": "Bearbeiten",
+  "close": "Schliessen",
+  "loading": "Wird geladen...",
+  "noResults": "Keine Ergebnisse",
+  "error": "Fehler",
+  "success": "Erfolg",
+  "viewAll": "Alle anzeigen",
+  "actions": "Aktionen",
+  "status": "Status",
+  "type": "Typ",
+  "name": "Name",
+  "domain": "Domain",
+  "date": "Datum",
+  "url": "URL",
+  "search": "Suchen",
+  "export": "Exportieren",
+  "filter": "Filter",
+  "all": "Alle",
+  "yes": "Ja",
+  "no": "Nein",
+  "back": "Zurueck",
+  "next": "Weiter",
+  "previous": "Zurueck",
+  "of": "von",
+  "perPage": "pro Seite",
+  "total": "Gesamt",
+  "noData": "Keine Daten"
+}

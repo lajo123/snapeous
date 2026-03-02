@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { AlertTriangle, Info, RefreshCw } from 'lucide-react';
 import { getBacklinkHistory, getBacklinkDomains } from '@/lib/api';
 import DofollowNofollowChart from './charts/DofollowNofollowChart';
@@ -6,7 +7,7 @@ import TopDomainsChart from './charts/TopDomainsChart';
 import DADistributionChart from './charts/DADistributionChart';
 import GainedLostChart from './charts/GainedLostChart';
 
-function generateAlerts(stats) {
+function generateAlerts(stats, t) {
   if (!stats) return [];
   const alerts = [];
 
@@ -14,7 +15,7 @@ function generateAlerts(stats) {
     alerts.push({
       type: 'danger',
       icon: AlertTriangle,
-      message: `${stats.lost_count} lien(s) perdu(s) detecte(s). Verifiez les liens et tentez une recuperation.`,
+      message: t('dashboard.lostAlert', { count: stats.lost_count }),
     });
   }
 
@@ -22,7 +23,7 @@ function generateAlerts(stats) {
     alerts.push({
       type: 'info',
       icon: RefreshCw,
-      message: `${stats.not_checked_count} liens n'ont pas encore ete verifies pour l'indexation. Lancez une verification.`,
+      message: t('dashboard.notCheckedAlert', { count: stats.not_checked_count }),
     });
   }
 
@@ -36,6 +37,8 @@ const ALERT_STYLES = {
 };
 
 export default function DashboardTab({ projectId, stats }) {
+  const { t } = useTranslation('backlinks');
+
   const { data: historyData } = useQuery({
     queryKey: ['backlink-history', projectId, 'month'],
     queryFn: () => getBacklinkHistory(projectId, { period: 'month', limit: 50 }),
@@ -48,7 +51,7 @@ export default function DashboardTab({ projectId, stats }) {
     staleTime: 60000,
   });
 
-  const alerts = generateAlerts(stats);
+  const alerts = generateAlerts(stats, t);
 
   return (
     <div className="space-y-6">
@@ -67,7 +70,7 @@ export default function DashboardTab({ projectId, stats }) {
       {/* Charts Grid */}
       <div className="grid grid-cols-2 gap-4">
         <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">Dofollow vs Nofollow</h3>
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('dashboard.dofollowVsNofollow')}</h3>
           <DofollowNofollowChart
             dofollow={stats?.dofollow_count || 0}
             nofollow={stats?.nofollow_count || 0}
@@ -75,17 +78,17 @@ export default function DashboardTab({ projectId, stats }) {
         </div>
 
         <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">Top Domaines Referents</h3>
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('dashboard.topDomains')}</h3>
           <TopDomainsChart domains={domains || stats?.top_referring_domains || []} />
         </div>
 
         <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">Distribution DA</h3>
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('dashboard.daDistribution')}</h3>
           <DADistributionChart distribution={stats?.da_distribution || {}} />
         </div>
 
         <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">Liens Gagnes / Perdus</h3>
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('dashboard.gainedLost')}</h3>
           <GainedLostChart timeline={historyData?.timeline || []} />
         </div>
       </div>

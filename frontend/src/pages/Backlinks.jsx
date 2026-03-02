@@ -191,8 +191,8 @@ export default function Backlinks() {
       <div className="grid grid-cols-4 gap-4">
         <div className="card p-4">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-emerald-100 flex items-center justify-center">
-              <CheckCircle className="h-5 w-5 text-emerald-600" />
+            <div className="h-10 w-10 rounded-xl bg-brand-100 flex items-center justify-center">
+              <CheckCircle className="h-5 w-5 text-brand-600" />
             </div>
             <div>
               <p className="text-2xl font-bold text-gray-900">{counts?.by_status?.active || 0}</p>

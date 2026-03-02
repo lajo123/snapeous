@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, Fragment } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import {
   useReactTable,
@@ -22,19 +23,16 @@ import {
   getSearches,
   createSearch,
 } from '@/lib/api';
+import SEOHead from '@/components/SEOHead';
 import {
   cn,
   truncateUrl,
   formatDate,
-  SPOT_STATUS_LABELS,
   SPOT_STATUS_COLORS,
-  LINK_TYPE_LABELS,
-  CATEGORY_LABELS,
-  SEARCH_STATUS_LABELS,
   SEARCH_STATUS_COLORS,
-  DIFFICULTY_LABELS,
   DIFFICULTY_COLORS,
 } from '@/lib/utils';
+import useLocalizedPath from '@/hooks/useLocalizedPath';
 import {
   ArrowLeft,
   ExternalLink,
@@ -59,37 +57,20 @@ import {
 
 const PAGE_SIZE = 50;
 
-const SPOT_TYPES = [
-  { value: 'blog', label: 'Blog' },
-  { value: 'forum', label: 'Forum' },
-  { value: 'directory', label: 'Annuaire' },
-  { value: 'guestbook', label: "Livre d'or" },
-  { value: 'wiki', label: 'Wiki' },
-  { value: 'social', label: 'Social' },
-  { value: 'news', label: 'Actualites' },
-  { value: 'other', label: 'Autre' },
-];
-
-const SPOT_TYPE_LABELS = Object.fromEntries(
-  SPOT_TYPES.map((t) => [t.value, t.label])
-);
+const SPOT_TYPE_KEYS = ['blog', 'forum', 'directory', 'guestbook', 'wiki', 'social', 'news', 'other'];
 
 const SPOT_TYPE_COLORS = {
   blog: 'bg-blue-50 text-blue-700',
   forum: 'bg-violet-50 text-violet-700',
-  directory: 'bg-emerald-50 text-emerald-700',
+  directory: 'bg-brand-50 text-brand-700',
   guestbook: 'bg-amber-50 text-amber-700',
   wiki: 'bg-cyan-50 text-cyan-700',
   social: 'bg-indigo-50 text-indigo-700',
-  news: 'bg-emerald-50 text-emerald-700',
+  news: 'bg-brand-50 text-brand-700',
   other: 'bg-gray-50 text-gray-600',
 };
 
-const SORT_OPTIONS = [
-  { value: 'quality_score', label: 'Score qualite' },
-  { value: 'da', label: 'DA' },
-  { value: 'created_at', label: 'Date de decouverte' },
-];
+const SORT_OPTION_KEYS = ['quality_score', 'da', 'created_at'];
 
 const DEFAULT_FILTERS = {
   status: '',
@@ -106,6 +87,9 @@ const DEFAULT_FILTERS = {
 export default function ProjectSpots() {
   const { id: project_id } = useParams();
   const queryClient = useQueryClient();
+  const { t, i18n } = useTranslation('spots');
+  const tc = (key) => i18n.t('common:' + key);
+  const lp = useLocalizedPath();
 
   // ── State ──────────────────────────────────────────────────────────
 
@@ -223,18 +207,18 @@ export default function ProjectSpots() {
     mutationFn: ({ id, data }) => updateSpot(id, data),
     onSuccess: () => {
       invalidateSpots();
-      toast.success('Spot mis a jour');
+      toast.success(t('updateSuccess'));
     },
-    onError: () => toast.error('Erreur lors de la mise a jour'),
+    onError: () => toast.error(t('updateError')),
   });
 
   const qualifyMutation = useMutation({
     mutationFn: (id) => qualifySpot(id),
     onSuccess: () => {
       invalidateSpots();
-      toast.success('Spot requalifie');
+      toast.success(t('requalifySuccess'));
     },
-    onError: () => toast.error('Erreur lors de la requalification'),
+    onError: () => toast.error(t('requalifyError')),
   });
 
   const deleteMutation = useMutation({
@@ -242,9 +226,9 @@ export default function ProjectSpots() {
     onSuccess: () => {
       invalidateSpots();
       setExpandedSpotId(null);
-      toast.success('Spot supprime');
+      toast.success(t('deleteSuccess'));
     },
-    onError: () => toast.error('Erreur lors de la suppression'),
+    onError: () => toast.error(t('deleteError')),
   });
 
   const bulkMutation = useMutation({
@@ -252,18 +236,18 @@ export default function ProjectSpots() {
     onSuccess: () => {
       invalidateSpots();
       setSelectedIds(new Set());
-      toast.success('Spots mis a jour en masse');
+      toast.success(t('bulkUpdateSuccess', { count: selectedIds.size }));
     },
-    onError: () => toast.error('Erreur lors de la mise a jour en masse'),
+    onError: () => toast.error(t('bulkUpdateError')),
   });
 
   const verifyMutation = useMutation({
     mutationFn: ({ id, isRelevant, reason }) => verifySpot(id, isRelevant, reason),
     onSuccess: (data) => {
       invalidateSpots();
-      toast.success(data.detail || 'Spot verifie');
+      toast.success(data.detail || t('verifySuccess'));
     },
-    onError: () => toast.error('Erreur lors de la verification'),
+    onError: () => toast.error(t('verifyError')),
   });
 
   const searchMutation = useMutation({
@@ -271,13 +255,13 @@ export default function ProjectSpots() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['searches', project_id] });
       queryClient.invalidateQueries({ queryKey: ['project', project_id] });
-      toast.success(`Recherche lancée — ${totalQueries} requête(s) créée(s)`);
+      toast.success(t('searchLaunched', { count: totalQueries }));
     },
     onError: (error) => {
       toast.error(
         error?.response?.data?.message ||
           error?.message ||
-          'Erreur lors du lancement de la recherche'
+          t('searchLaunchError')
       );
     },
   });
@@ -346,7 +330,7 @@ export default function ProjectSpots() {
   const handleLaunchSearch = useCallback(() => {
     if (totalQueries === 0) return;
     const confirmed = window.confirm(
-      `Cela va lancer ${totalQueries} requêtes Google. Continuer ?`
+      t('searchConfirm', { count: totalQueries })
     );
     if (!confirmed) return;
     searchMutation.mutate({
@@ -354,7 +338,7 @@ export default function ProjectSpots() {
       footprint_ids: Array.from(selectedFootprints),
       keywords: Array.from(selectedKeywords),
     });
-  }, [totalQueries, searchMutation, project_id, selectedFootprints, selectedKeywords]);
+  }, [totalQueries, searchMutation, project_id, selectedFootprints, selectedKeywords, t]);
 
   // ── Spot handlers ─────────────────────────────────────────────────
 
@@ -399,9 +383,9 @@ export default function ProjectSpots() {
 
   const handleExport = useCallback(() => {
     exportSpots(project_id, queryParams)
-      .then(() => toast.success('Export CSV telecharge'))
-      .catch(() => toast.error("Erreur lors de l'export"));
-  }, [project_id, queryParams]);
+      .then(() => toast.success(t('exportSuccess')))
+      .catch(() => toast.error(t('exportError')));
+  }, [project_id, queryParams, t]);
 
   const handleRefresh = useCallback(() => {
     invalidateSpots();
@@ -435,12 +419,10 @@ export default function ProjectSpots() {
 
   const handleDeleteSpot = useCallback(
     (spotId) => {
-      const confirmed = window.confirm(
-        'Etes-vous sur de vouloir supprimer ce spot ? Cette action est irreversible.'
-      );
+      const confirmed = window.confirm(t('confirmDeleteSingle'));
       if (confirmed) deleteMutation.mutate(spotId);
     },
-    [deleteMutation]
+    [deleteMutation, t]
   );
 
   // ── Table columns ──────────────────────────────────────────────────
@@ -454,7 +436,7 @@ export default function ProjectSpots() {
             type="checkbox"
             checked={spots.length > 0 && selectedIds.size === spots.length}
             onChange={toggleSelectAll}
-            className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
           />
         ),
         cell: ({ row }) => (
@@ -465,14 +447,14 @@ export default function ProjectSpots() {
               e.stopPropagation();
               toggleSelect(row.original.id);
             }}
-            className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
           />
         ),
         size: 40,
       },
       {
         accessorKey: 'url',
-        header: 'URL',
+        header: t('tableHeader.url'),
         cell: ({ getValue }) => (
           <span className="text-gray-900 font-mono text-xs" title={getValue()}>
             {truncateUrl(getValue(), 40)}
@@ -482,7 +464,7 @@ export default function ProjectSpots() {
       },
       {
         accessorKey: 'domain',
-        header: 'Domaine',
+        header: t('tableHeader.domain'),
         cell: ({ getValue }) => (
           <span className="text-gray-700 text-xs font-medium">
             {getValue() || '--'}
@@ -492,7 +474,7 @@ export default function ProjectSpots() {
       },
       {
         accessorKey: 'type',
-        header: 'Type',
+        header: t('tableHeader.type'),
         cell: ({ getValue }) => {
           const v = getValue();
           return v ? (
@@ -502,7 +484,7 @@ export default function ProjectSpots() {
                 SPOT_TYPE_COLORS[v] || 'bg-gray-50 text-gray-600'
               )}
             >
-              {SPOT_TYPE_LABELS[v] || v}
+              {t(`spotType.${v}`, { defaultValue: v })}
             </span>
           ) : (
             <span className="text-gray-300 text-xs">--</span>
@@ -512,7 +494,7 @@ export default function ProjectSpots() {
       },
       {
         accessorKey: 'platform',
-        header: 'Plateforme',
+        header: t('tableHeader.platform'),
         cell: ({ getValue }) => (
           <span className="text-gray-500 text-xs">{getValue() || '--'}</span>
         ),
@@ -520,7 +502,7 @@ export default function ProjectSpots() {
       },
       {
         accessorKey: 'link_type',
-        header: 'Lien',
+        header: t('tableHeader.link'),
         cell: ({ getValue }) => {
           const v = getValue();
           const isDofollow = v === 'dofollow';
@@ -529,11 +511,11 @@ export default function ProjectSpots() {
               className={cn(
                 'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
                 isDofollow
-                  ? 'bg-emerald-50 text-emerald-700'
+                  ? 'bg-brand-50 text-brand-700'
                   : 'bg-gray-50 text-gray-500'
               )}
             >
-              {LINK_TYPE_LABELS[v] || v}
+              {tc(`linkType.${v}`) || v}
             </span>
           ) : (
             <span className="text-gray-300 text-xs">--</span>
@@ -543,22 +525,22 @@ export default function ProjectSpots() {
       },
       {
         accessorKey: 'has_form',
-        header: 'Formulaire',
+        header: t('tableHeader.form'),
         cell: ({ getValue }) => {
           const v = getValue();
           return v ? (
-            <span className="inline-flex items-center rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-1 text-xs font-medium">
-              Oui
+            <span className="inline-flex items-center rounded-full bg-brand-50 text-brand-700 px-2.5 py-1 text-xs font-medium">
+              {tc('yes')}
             </span>
           ) : (
-            <span className="text-gray-300 text-xs">Non</span>
+            <span className="text-gray-300 text-xs">{tc('no')}</span>
           );
         },
         size: 90,
       },
       {
         accessorKey: 'da',
-        header: 'DA',
+        header: t('tableHeader.da'),
         cell: ({ getValue }) => {
           const v = getValue();
           return v != null ? (
@@ -566,7 +548,7 @@ export default function ProjectSpots() {
               className={cn(
                 'text-xs font-bold',
                 v >= 40
-                  ? 'text-emerald-600'
+                  ? 'text-brand-600'
                   : v >= 20
                     ? 'text-amber-600'
                     : 'text-gray-500'
@@ -582,7 +564,7 @@ export default function ProjectSpots() {
       },
       {
         accessorKey: 'quality_score',
-        header: 'Score',
+        header: t('tableHeader.score'),
         cell: ({ getValue }) => {
           const v = getValue();
           return v != null ? (
@@ -590,7 +572,7 @@ export default function ProjectSpots() {
               className={cn(
                 'text-xs font-bold',
                 v >= 70
-                  ? 'text-emerald-600'
+                  ? 'text-brand-600'
                   : v >= 40
                     ? 'text-amber-600'
                     : 'text-red-500'
@@ -606,7 +588,7 @@ export default function ProjectSpots() {
       },
       {
         accessorKey: 'status',
-        header: 'Statut',
+        header: t('tableHeader.status'),
         cell: ({ getValue }) => {
           const v = getValue();
           return (
@@ -616,7 +598,7 @@ export default function ProjectSpots() {
                 SPOT_STATUS_COLORS[v] || 'bg-gray-100 text-gray-800'
               )}
             >
-              {SPOT_STATUS_LABELS[v] || v}
+              {tc(`spotStatus.${v}`) || v}
             </span>
           );
         },
@@ -624,7 +606,7 @@ export default function ProjectSpots() {
       },
       {
         id: 'actions',
-        header: 'Actions',
+        header: t('tableHeader.actions'),
         cell: ({ row }) => {
           const spot = row.original;
           return (
@@ -635,8 +617,8 @@ export default function ProjectSpots() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="p-1.5 text-gray-300 hover:text-emerald-600 transition-colors rounded-lg hover:bg-emerald-50"
-                  title="Ouvrir l'URL"
+                  className="p-1.5 text-gray-300 hover:text-brand-600 transition-colors rounded-lg hover:bg-brand-50"
+                  title={t('openUrl')}
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                 </a>
@@ -655,7 +637,7 @@ export default function ProjectSpots() {
         size: 70,
       },
     ],
-    [spots, selectedIds, toggleSelectAll, toggleSelect]
+    [spots, selectedIds, toggleSelectAll, toggleSelect, t, tc]
   );
 
   // ── Table instance ─────────────────────────────────────────────────
@@ -681,11 +663,12 @@ export default function ProjectSpots() {
 
   return (
     <div className="space-y-6">
+      <SEOHead pageKey="spots" />
       {/* Header + Tabs */}
       <div>
-        <h1 className="page-title">Spots</h1>
+        <h1 className="page-title">{t('title')}</h1>
         <p className="page-subtitle">
-          Gérez et qualifiez les spots découverts pour votre campagne de netlinking.
+          {t('manageDesc')}
         </p>
       </div>
 
@@ -696,12 +679,12 @@ export default function ProjectSpots() {
           className={cn(
             'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all',
             activeTab === 'spots'
-              ? 'bg-emerald-500 text-white shadow-sm'
+              ? 'bg-brand-500 text-white shadow-sm'
               : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
           )}
         >
           <Target className="h-4 w-4" />
-          Mes Spots
+          {t('tab.mySpots')}
           {stats?.total != null && (
             <span className={cn(
               'text-xs rounded-full px-2 py-0.5 font-semibold',
@@ -716,12 +699,12 @@ export default function ProjectSpots() {
           className={cn(
             'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all',
             activeTab === 'search'
-              ? 'bg-emerald-500 text-white shadow-sm'
+              ? 'bg-brand-500 text-white shadow-sm'
               : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
           )}
         >
           <Search className="h-4 w-4" />
-          Rechercher des spots
+          {t('tab.searchSpots')}
         </button>
       </div>
 
@@ -758,7 +741,7 @@ export default function ProjectSpots() {
       {stats && (
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center rounded-full bg-white text-gray-700 px-3 py-1.5 text-xs font-medium border border-[#D6CEC2]">
-            Total : {stats.total ?? 0}
+            {tc('total')} : {stats.total ?? 0}
           </span>
           {stats.by_status &&
             Object.entries(stats.by_status).map(([status, count]) => (
@@ -769,7 +752,7 @@ export default function ProjectSpots() {
                   SPOT_STATUS_COLORS[status] || 'bg-gray-100 text-gray-800'
                 )}
               >
-                {SPOT_STATUS_LABELS[status] || status} : {count}
+                {tc(`spotStatus.${status}`) || status} : {count}
               </span>
             ))}
           {stats.by_type &&
@@ -781,7 +764,7 @@ export default function ProjectSpots() {
                   SPOT_TYPE_COLORS[type] || 'bg-gray-50 text-gray-600'
                 )}
               >
-                {SPOT_TYPE_LABELS[type] || type} : {count}
+                {t(`spotType.${type}`, { defaultValue: type })} : {count}
               </span>
             ))}
         </div>
@@ -791,22 +774,22 @@ export default function ProjectSpots() {
       <div className="card p-5">
         <div className="flex items-center gap-2 mb-4">
           <Filter className="h-4 w-4 text-gray-300" />
-          <span className="text-sm font-medium text-gray-700">Filtres</span>
+          <span className="text-sm font-medium text-gray-700">{t('filters')}</span>
         </div>
 
         <div className="flex flex-wrap items-end gap-3">
           {/* Status */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-400 font-medium">Statut</label>
+            <label className="text-xs text-gray-400 font-medium">{t('filterLabel.status')}</label>
             <select
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
             >
-              <option value="">Tous</option>
-              {Object.entries(SPOT_STATUS_LABELS).map(([k, v]) => (
+              <option value="">{tc('all')}</option>
+              {Object.keys(SPOT_STATUS_COLORS).map((k) => (
                 <option key={k} value={k}>
-                  {v}
+                  {tc(`spotStatus.${k}`)}
                 </option>
               ))}
             </select>
@@ -814,16 +797,16 @@ export default function ProjectSpots() {
 
           {/* Type */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-400 font-medium">Type</label>
+            <label className="text-xs text-gray-400 font-medium">{t('filterLabel.type')}</label>
             <select
               value={filters.type}
               onChange={(e) => handleFilterChange('type', e.target.value)}
-              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
             >
-              <option value="">Tous</option>
-              {SPOT_TYPES.map(({ value, label }) => (
-                <option key={value} value={value}>
-                  {label}
+              <option value="">{tc('all')}</option>
+              {SPOT_TYPE_KEYS.map((val) => (
+                <option key={val} value={val}>
+                  {t(`spotType.${val}`)}
                 </option>
               ))}
             </select>
@@ -831,13 +814,13 @@ export default function ProjectSpots() {
 
           {/* Platform */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-400 font-medium">Plateforme</label>
+            <label className="text-xs text-gray-400 font-medium">{t('filterLabel.platform')}</label>
             <input
               type="text"
               value={filters.platform}
               onChange={(e) => handleFilterChange('platform', e.target.value)}
               placeholder="WordPress, Joomla..."
-              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none w-36 transition-all"
+              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none w-36 transition-all"
             />
           </div>
 
@@ -849,9 +832,9 @@ export default function ProjectSpots() {
               onChange={(e) =>
                 handleFilterChange('dofollow_only', e.target.checked)
               }
-              className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+              className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
             />
-            <span className="text-sm text-gray-700">Dofollow seulement</span>
+            <span className="text-sm text-gray-700">{t('dofollowOnly')}</span>
           </label>
 
           {/* Has form */}
@@ -862,14 +845,14 @@ export default function ProjectSpots() {
               onChange={(e) =>
                 handleFilterChange('has_form', e.target.checked)
               }
-              className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+              className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
             />
-            <span className="text-sm text-gray-700">Avec formulaire</span>
+            <span className="text-sm text-gray-700">{t('withForm')}</span>
           </label>
 
           {/* DA min */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-400 font-medium">DA minimum</label>
+            <label className="text-xs text-gray-400 font-medium">{t('filterLabel.daMin')}</label>
             <input
               type="number"
               min="0"
@@ -877,21 +860,21 @@ export default function ProjectSpots() {
               value={filters.da_min}
               onChange={(e) => handleFilterChange('da_min', e.target.value)}
               placeholder="0"
-              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none w-20 transition-all"
+              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none w-20 transition-all"
             />
           </div>
 
           {/* Sort by */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-400 font-medium">Trier par</label>
+            <label className="text-xs text-gray-400 font-medium">{t('sortBy')}</label>
             <select
               value={filters.sort_by}
               onChange={(e) => handleFilterChange('sort_by', e.target.value)}
-              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
             >
-              {SORT_OPTIONS.map(({ value, label }) => (
-                <option key={value} value={value}>
-                  {label}
+              {SORT_OPTION_KEYS.map((val) => (
+                <option key={val} value={val}>
+                  {t(`sort.${val === 'created_at' ? 'createdAt' : val}`)}
                 </option>
               ))}
             </select>
@@ -904,7 +887,7 @@ export default function ProjectSpots() {
               className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500 hover:bg-gray-50 transition-all"
             >
               <X className="h-3.5 w-3.5" />
-              Reinitialiser
+              {t('clearFilters')}
             </button>
           )}
         </div>
@@ -916,15 +899,15 @@ export default function ProjectSpots() {
           {selectedIds.size > 0 && (
             <>
               <span className="text-sm text-gray-500 font-medium">
-                {selectedIds.size} selectionne(s)
+                {t('selected', { count: selectedIds.size })}
               </span>
               <button
                 onClick={handleBulkSelect}
                 disabled={bulkMutation.isPending}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 transition-all disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-brand-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-brand-700 transition-all disabled:opacity-50"
               >
                 <Check className="h-3.5 w-3.5" />
-                Selectionner
+                {t('selectBtn')}
               </button>
               <button
                 onClick={handleBulkReject}
@@ -932,7 +915,7 @@ export default function ProjectSpots() {
                 className="inline-flex items-center gap-1.5 rounded-xl bg-red-500 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-600 transition-all disabled:opacity-50"
               >
                 <X className="h-3.5 w-3.5" />
-                Rejeter
+                {t('rejectBtn')}
               </button>
             </>
           )}
@@ -944,7 +927,7 @@ export default function ProjectSpots() {
             className="btn-secondary py-2"
           >
             <Download className="h-3.5 w-3.5" />
-            Exporter CSV
+            {t('exportCsv')}
           </button>
           <button
             onClick={handleRefresh}
@@ -954,7 +937,7 @@ export default function ProjectSpots() {
             <RefreshCw
               className={cn('h-3.5 w-3.5', isRefetching && 'animate-spin')}
             />
-            Actualiser
+            {t('refresh')}
           </button>
         </div>
       </div>
@@ -992,9 +975,9 @@ export default function ProjectSpots() {
                     colSpan={columns.length}
                     className="px-4 py-20 text-center"
                   >
-                    <RefreshCw className="h-6 w-6 text-emerald-500 animate-spin mx-auto" />
+                    <RefreshCw className="h-6 w-6 text-brand-500 animate-spin mx-auto" />
                     <p className="mt-3 text-sm text-[#6b6560]">
-                      Chargement des spots...
+                      {t('loadingSpots')}
                     </p>
                   </td>
                 </tr>
@@ -1008,14 +991,14 @@ export default function ProjectSpots() {
                       <Search className="h-7 w-7 text-gray-300" />
                     </div>
                     <p className="mt-3 text-sm text-[#6b6560]">
-                      Aucun spot trouve.
+                      {t('noSpotsFiltered')}
                     </p>
                     {hasFilters && (
                       <button
                         onClick={handleClearFilters}
-                        className="mt-2 text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
+                        className="mt-2 text-xs text-brand-600 hover:text-brand-700 transition-colors"
                       >
-                        Reinitialiser les filtres
+                        {t('clearFiltersBtn')}
                       </button>
                     )}
                   </td>
@@ -1032,9 +1015,9 @@ export default function ProjectSpots() {
                         className={cn(
                           'cursor-pointer transition-colors duration-150',
                           isExpanded
-                            ? 'bg-emerald-50/50'
+                            ? 'bg-brand-50/50'
                             : 'hover:bg-[#FAF7F2]',
-                          selectedIds.has(spot.id) && 'bg-emerald-50/30'
+                          selectedIds.has(spot.id) && 'bg-brand-50/30'
                         )}
                       >
                         {row.getVisibleCells().map((cell) => (
@@ -1084,7 +1067,7 @@ export default function ProjectSpots() {
         {totalCount > PAGE_SIZE && (
           <div className="flex items-center justify-between px-5 py-4 border-t border-gray-100 bg-[#FAF7F2]/50">
             <p className="text-xs text-gray-400">
-              Page {page + 1} sur {totalPages} -- {totalCount} spots au total
+              {t('pagination', { current: page + 1, total: totalPages, count: totalCount })}
             </p>
             <div className="flex items-center gap-2">
               <button
@@ -1093,7 +1076,7 @@ export default function ProjectSpots() {
                 className="btn-secondary py-2 text-xs"
               >
                 <ChevronLeft className="h-4 w-4" />
-                Precedent
+                {t('previous')}
               </button>
               <button
                 onClick={() =>
@@ -1102,7 +1085,7 @@ export default function ProjectSpots() {
                 disabled={page >= totalPages - 1}
                 className="btn-secondary py-2 text-xs"
               >
-                Suivant
+                {t('next')}
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
@@ -1135,19 +1118,23 @@ function SearchPanel({
   toggleAllKeywords,
   handleLaunchSearch,
 }) {
+  const { t, i18n } = useTranslation('spots');
+  const tc = (key) => i18n.t('common:' + key);
+  const lp = useLocalizedPath();
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* ── Footprint selection ──────────────────────────────────── */}
         <div className="card">
-          <div className="px-7 py-5 border-b border-[#EDE4D3] flex items-center justify-between">
-            <h2 className="text-base font-bold text-gray-900">Footprints</h2>
-            <span className="text-xs font-medium text-[#9a9080] bg-[#F5F0E8] rounded-full px-2.5 py-1">
-              {selectedFootprints.size} sélectionné(s)
+          <div className="px-7 py-5 border-b border-[#E8DCCB] flex items-center justify-between">
+            <h2 className="text-base font-bold text-gray-900">{t('search.footprints')}</h2>
+            <span className="text-xs font-medium text-[#9a9080] bg-[#F0E6D8] rounded-full px-2.5 py-1">
+              {t('search.selectedCount', { count: selectedFootprints.size })}
             </span>
           </div>
 
-          <div className="divide-y divide-[#EDE4D3] max-h-[480px] overflow-y-auto">
+          <div className="divide-y divide-[#E8DCCB] max-h-[480px] overflow-y-auto">
             {Object.entries(footprintsByCategory).map(([cat, fps]) => {
               const isExpanded = expandedCategories.has(cat);
               const catIds = fps.map((fp) => fp.id);
@@ -1162,13 +1149,13 @@ function SearchPanel({
                   <div className="flex items-center gap-2 px-7 py-3 bg-[#FAF7F2]/50 hover:bg-gray-50 transition-colors cursor-pointer select-none">
                     <button
                       onClick={() => toggleSearchCategoryAll(cat)}
-                      className="flex-shrink-0 text-gray-400 hover:text-emerald-600 transition-colors"
-                      title="Tout sélectionner / désélectionner"
+                      className="flex-shrink-0 text-gray-400 hover:text-brand-600 transition-colors"
+                      title={t('search.selectDeselectAll')}
                     >
                       {allSelected ? (
-                        <CheckSquare className="h-4 w-4 text-emerald-600" />
+                        <CheckSquare className="h-4 w-4 text-brand-600" />
                       ) : someSelected ? (
-                        <CheckSquare className="h-4 w-4 text-emerald-300" />
+                        <CheckSquare className="h-4 w-4 text-brand-300" />
                       ) : (
                         <Square className="h-4 w-4" />
                       )}
@@ -1183,7 +1170,7 @@ function SearchPanel({
                         <ChevronRight className="h-4 w-4 text-gray-300" />
                       )}
                       <span className="text-sm font-medium text-gray-700">
-                        {CATEGORY_LABELS[cat] || cat}
+                        {tc(`category.${cat}`) || cat}
                       </span>
                       <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">
                         {fps.length}
@@ -1196,13 +1183,13 @@ function SearchPanel({
                       {fps.map((fp) => (
                         <label
                           key={fp.id}
-                          className="flex items-center gap-3 px-7 pl-16 py-3 hover:bg-emerald-50/40 transition-colors cursor-pointer"
+                          className="flex items-center gap-3 px-7 pl-16 py-3 hover:bg-brand-50/40 transition-colors cursor-pointer"
                         >
                           <input
                             type="checkbox"
                             checked={selectedFootprints.has(fp.id)}
                             onChange={() => toggleFootprint(fp.id)}
-                            className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                           />
                           <span className="flex-1 text-sm text-gray-700 truncate">
                             {fp.name}
@@ -1215,7 +1202,7 @@ function SearchPanel({
                                   'bg-gray-100 text-gray-600'
                               )}
                             >
-                              {DIFFICULTY_LABELS[fp.difficulty] || fp.difficulty}
+                              {tc(`difficulty.${fp.difficulty}`) || fp.difficulty}
                             </span>
                           )}
                         </label>
@@ -1228,7 +1215,7 @@ function SearchPanel({
 
             {Object.keys(footprintsByCategory).length === 0 && (
               <div className="px-7 py-10 text-center text-sm text-gray-400">
-                Aucun footprint disponible.
+                {t('search.noFootprints')}
               </div>
             )}
           </div>
@@ -1237,16 +1224,16 @@ function SearchPanel({
         {/* ── Keywords + Launch ─────────────────────────────────────── */}
         <div className="space-y-6">
           <div className="card">
-            <div className="px-7 py-5 border-b border-[#EDE4D3] flex items-center justify-between">
-              <h2 className="text-base font-bold text-gray-900">Mots-clés</h2>
+            <div className="px-7 py-5 border-b border-[#E8DCCB] flex items-center justify-between">
+              <h2 className="text-base font-bold text-gray-900">{t('search.keywords')}</h2>
               {keywords.length > 0 && (
                 <button
                   onClick={toggleAllKeywords}
-                  className="text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
+                  className="text-xs font-medium text-brand-600 hover:text-brand-700 transition-colors"
                 >
                   {selectedKeywords.size === keywords.length
-                    ? 'Tout désélectionner'
-                    : 'Tout sélectionner'}
+                    ? t('search.deselectAll')
+                    : t('search.selectAll')}
                 </button>
               )}
             </div>
@@ -1254,30 +1241,30 @@ function SearchPanel({
             {keywords.length === 0 ? (
               <div className="px-7 py-10 text-center">
                 <p className="text-sm text-amber-600 font-medium">
-                  Analysez le site d'abord
+                  {t('search.analyzeSiteFirst')}
                 </p>
                 <p className="mt-1.5 text-xs text-gray-400">
-                  Lancez une analyse du site pour générer des mots-clés.
+                  {t('search.analyzeSiteDesc')}
                 </p>
                 <Link
-                  to={`/projects/${project_id}/analysis`}
-                  className="mt-3 inline-flex items-center gap-1.5 text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
+                  to={lp(`/projects/${project_id}/analysis`)}
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs text-brand-600 hover:text-brand-700 transition-colors"
                 >
-                  Aller à l'analyse
+                  {t('search.goToAnalysis')}
                 </Link>
               </div>
             ) : (
-              <div className="divide-y divide-[#EDE4D3] max-h-[280px] overflow-y-auto">
+              <div className="divide-y divide-[#E8DCCB] max-h-[280px] overflow-y-auto">
                 {keywords.map((kw) => (
                   <label
                     key={kw}
-                    className="flex items-center gap-3 px-7 py-3 hover:bg-emerald-50/40 transition-colors cursor-pointer"
+                    className="flex items-center gap-3 px-7 py-3 hover:bg-brand-50/40 transition-colors cursor-pointer"
                   >
                     <input
                       type="checkbox"
                       checked={selectedKeywords.has(kw)}
                       onChange={() => toggleKeyword(kw)}
-                      className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                     />
                     <span className="text-sm text-gray-700">{kw}</span>
                   </label>
@@ -1289,25 +1276,25 @@ function SearchPanel({
           {/* ── Search preview ──────────────────────────────────────── */}
           <div className="card p-7">
             <h2 className="text-base font-bold text-gray-900 mb-5">
-              Aperçu de la recherche
+              {t('search.preview')}
             </h2>
 
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#FAF7F2', border: '1px solid #EDE4D3' }}>
-                <p className="text-xs text-[#9a9080]">Footprints</p>
+              <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#FAF7F2', border: '1px solid #E8DCCB' }}>
+                <p className="text-xs text-[#9a9080]">{t('search.footprints')}</p>
                 <p className="mt-1.5 text-xl font-bold text-gray-900">
                   {selectedFootprints.size}
                 </p>
               </div>
-              <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#FAF7F2', border: '1px solid #EDE4D3' }}>
-                <p className="text-xs text-[#9a9080]">Mots-clés</p>
+              <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#FAF7F2', border: '1px solid #E8DCCB' }}>
+                <p className="text-xs text-[#9a9080]">{t('search.keywords')}</p>
                 <p className="mt-1.5 text-xl font-bold text-gray-900">
                   {selectedKeywords.size}
                 </p>
               </div>
-              <div className="rounded-xl p-4 text-center bg-emerald-50 border border-emerald-100">
-                <p className="text-xs font-medium text-emerald-600">Total requêtes</p>
-                <p className="mt-1.5 text-xl font-bold text-emerald-700">
+              <div className="rounded-xl p-4 text-center bg-brand-50 border border-brand-100">
+                <p className="text-xs font-medium text-brand-600">{t('search.totalQueries')}</p>
+                <p className="mt-1.5 text-xl font-bold text-brand-700">
                   {totalQueries}
                 </p>
               </div>
@@ -1321,12 +1308,12 @@ function SearchPanel({
               {searchMutation.isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Lancement en cours...
+                  {t('search.launching')}
                 </>
               ) : (
                 <>
                   <Search className="h-4 w-4" />
-                  Lancer la recherche
+                  {t('search.launchBtn')}
                 </>
               )}
             </button>
@@ -1337,24 +1324,24 @@ function SearchPanel({
       {/* ── Search history table ─────────────────────────────────── */}
       {searches.length > 0 && (
         <div className="card overflow-hidden">
-          <div className="px-7 py-5 border-b border-[#EDE4D3]">
+          <div className="px-7 py-5 border-b border-[#E8DCCB]">
             <h2 className="text-base font-bold text-gray-900">
-              Historique des recherches ({searches.length})
+              {t('search.history', { count: searches.length })}
             </h2>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead style={{ backgroundColor: '#FAF7F2' }} className="border-b border-[#EDE4D3]">
+              <thead style={{ backgroundColor: '#FAF7F2' }} className="border-b border-[#E8DCCB]">
                 <tr className="text-left">
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">Requête</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">Mot-clé</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">Statut</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">Résultats</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">Date</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('search.historyCol.query')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('search.historyCol.keyword')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('search.historyCol.status')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('search.historyCol.results')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('search.historyCol.date')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#EDE4D3]">
+              <tbody className="divide-y divide-[#E8DCCB]">
                 {searches.map((search) => (
                   <tr
                     key={search.id}
@@ -1371,17 +1358,17 @@ function SearchPanel({
                         className={cn(
                           'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
                           SEARCH_STATUS_COLORS[search.status] ||
-                            'bg-[#EDE4D3] text-gray-700'
+                            'bg-[#E8DCCB] text-gray-700'
                         )}
                       >
-                        {SEARCH_STATUS_LABELS[search.status] || search.status}
+                        {tc(`searchStatus.${search.status}`) || search.status}
                       </span>
                     </td>
                     <td className="px-7 py-3.5 text-gray-700 font-semibold">
                       {search.results_count ?? '--'}
                     </td>
                     <td className="px-7 py-3.5 text-[#9a9080] text-xs">
-                      {formatDate(search.created_at)}
+                      {formatDate(search.created_at, i18n.language)}
                     </td>
                   </tr>
                 ))}
@@ -1408,86 +1395,89 @@ function SpotDetailPanel({
   isUpdating,
   isQualifying,
 }) {
+  const { t, i18n } = useTranslation('spots');
+  const tc = (key) => i18n.t('common:' + key);
+
   return (
     <div className="px-7 py-5 space-y-5">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* ── Info column ──────────────────────────────────────────── */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-gray-900">
-            Informations
+            {t('detail.info')}
           </h3>
 
           <div className="space-y-2.5 text-xs">
             <div className="flex justify-between">
-              <span className="text-gray-400">URL complete</span>
+              <span className="text-gray-400">{t('detail.fullUrl')}</span>
               <a
                 href={spot.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-emerald-600 hover:text-emerald-700 truncate max-w-[200px] inline-flex items-center gap-1"
+                className="text-brand-600 hover:text-brand-700 truncate max-w-[200px] inline-flex items-center gap-1"
               >
                 {truncateUrl(spot.url, 35)}
                 <ExternalLink className="h-3 w-3 flex-shrink-0" />
               </a>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Domaine</span>
+              <span className="text-gray-400">{t('detail.domain')}</span>
               <span className="text-gray-900 font-medium">
                 {spot.domain || '--'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Type</span>
+              <span className="text-gray-400">{t('detail.type')}</span>
               <span
                 className={cn(
                   'inline-flex items-center rounded-full px-2 py-0.5 font-medium',
                   SPOT_TYPE_COLORS[spot.type] || 'bg-gray-50 text-gray-600'
                 )}
               >
-                {SPOT_TYPE_LABELS[spot.type] || spot.type || '--'}
+                {t(`spotType.${spot.type}`, { defaultValue: spot.type || '--' })}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Plateforme</span>
+              <span className="text-gray-400">{t('detail.platform')}</span>
               <span className="text-gray-900">
                 {spot.platform || '--'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Type de lien</span>
+              <span className="text-gray-400">{t('detail.linkType')}</span>
               <span
                 className={cn(
                   'inline-flex items-center rounded-full px-2 py-0.5 font-medium',
                   spot.link_type === 'dofollow'
-                    ? 'bg-emerald-50 text-emerald-700'
+                    ? 'bg-brand-50 text-brand-700'
                     : 'bg-gray-50 text-gray-500'
                 )}
               >
-                {LINK_TYPE_LABELS[spot.link_type] || spot.link_type || '--'}
+                {tc(`linkType.${spot.link_type}`) || spot.link_type || '--'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Formulaire</span>
+              <span className="text-gray-400">{t('detail.form')}</span>
               <span className="text-gray-900">
-                {spot.has_form ? 'Oui' : 'Non'}
+                {spot.has_form ? tc('yes') : tc('no')}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">DA</span>
+              <span className="text-gray-400">{t('detail.da')}</span>
               <span className="text-gray-900 font-bold">
                 {spot.da ?? '--'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Score qualite</span>
+              <span className="text-gray-400">{t('detail.qualityScore')}</span>
               <span className="text-gray-900 font-bold">
                 {spot.quality_score ?? '--'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">Decouvert le</span>
+              <span className="text-gray-400">{t('detail.discoveredAt')}</span>
               <span className="text-gray-600">
-                {formatDate(spot.created_at)}
+                {formatDate(spot.created_at, i18n.language)}
               </span>
             </div>
           </div>
@@ -1495,13 +1485,13 @@ function SpotDetailPanel({
 
         {/* ── Notes column ────────────────────────────────────────── */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900">Notes</h3>
+          <h3 className="text-sm font-semibold text-gray-900">{t('detail.notes')}</h3>
           <textarea
             value={editNotes}
             onChange={(e) => setEditNotes(e.target.value)}
-            placeholder="Ajouter des notes sur ce spot..."
+            placeholder={t('detail.notesPlaceholder')}
             rows={5}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 placeholder:text-gray-300 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 resize-none outline-none transition-all"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 placeholder:text-gray-300 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 resize-none outline-none transition-all"
           />
           <button
             onClick={() => onSaveNotes(spot.id)}
@@ -1509,17 +1499,17 @@ function SpotDetailPanel({
             className="btn-primary text-xs py-2"
           >
             <Check className="h-3.5 w-3.5" />
-            Enregistrer les notes
+            {t('detail.saveNotes')}
           </button>
         </div>
 
         {/* ── Actions column ──────────────────────────────────────── */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-gray-900">
-            Changer le statut
+            {t('detail.changeStatus')}
           </h3>
           <div className="flex flex-wrap gap-2">
-            {Object.entries(SPOT_STATUS_LABELS).map(([key, label]) => (
+            {Object.keys(SPOT_STATUS_COLORS).map((key) => (
               <button
                 key={key}
                 onClick={() => onStatusChange(spot.id, key)}
@@ -1527,43 +1517,43 @@ function SpotDetailPanel({
                 className={cn(
                   'inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed',
                   spot.status === key
-                    ? cn(SPOT_STATUS_COLORS[key], 'ring-2 ring-offset-1 ring-emerald-400')
+                    ? cn(SPOT_STATUS_COLORS[key], 'ring-2 ring-offset-1 ring-brand-400')
                     : cn(
                         SPOT_STATUS_COLORS[key],
                         'opacity-60 hover:opacity-100 cursor-pointer'
                       )
                 )}
               >
-                {label}
+                {tc(`spotStatus.${key}`)}
               </button>
             ))}
           </div>
 
-          {/* ── Vérification manuelle ───────────────────────────── */}
+          {/* ── Manual verification ───────────────────────────── */}
           <div className="pt-4 border-t border-gray-200 space-y-3">
             <h3 className="text-sm font-semibold text-gray-900">
-              Vérification manuelle
+              {t('detail.manualVerification')}
             </h3>
             <p className="text-xs text-gray-400">
-              Ce spot est-il pertinent pour votre projet ?
+              {t('detail.isRelevant')}
             </p>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => onVerify(spot.id, true)}
                 disabled={isUpdating}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 border border-emerald-200 px-3.5 py-2 text-xs font-medium text-emerald-700 hover:bg-emerald-100 transition-all disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-brand-50 border border-brand-200 px-3.5 py-2 text-xs font-medium text-brand-700 hover:bg-brand-100 transition-all disabled:opacity-50"
               >
                 <Check className="h-3.5 w-3.5" />
-                Accepter (pertinent)
+                {t('detail.accept')}
               </button>
-              
+
               <button
-                onClick={() => onVerify(spot.id, false, 'Non pertinent')}
+                onClick={() => onVerify(spot.id, false, t('detail.notRelevant'))}
                 disabled={isUpdating}
                 className="inline-flex items-center gap-1.5 rounded-xl bg-red-50 border border-red-200 px-3.5 py-2 text-xs font-medium text-red-700 hover:bg-red-100 transition-all disabled:opacity-50"
               >
                 <X className="h-3.5 w-3.5" />
-                Rejeter (faux positif)
+                {t('detail.reject')}
               </button>
             </div>
           </div>
@@ -1580,7 +1570,7 @@ function SpotDetailPanel({
                   isQualifying && 'animate-spin'
                 )}
               />
-              Requalifier
+              {t('detail.requalify')}
             </button>
 
             <button
@@ -1588,7 +1578,7 @@ function SpotDetailPanel({
               className="inline-flex items-center gap-1.5 rounded-xl border border-red-100 bg-white px-3.5 py-2 text-xs font-medium text-red-500 hover:bg-red-50 hover:border-red-200 transition-all"
             >
               <Trash2 className="h-3.5 w-3.5" />
-              Supprimer
+              {t('detail.delete')}
             </button>
           </div>
         </div>

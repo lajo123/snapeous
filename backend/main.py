@@ -6,7 +6,8 @@ import io
 from datetime import datetime, timezone
 from typing import Optional
 
-from fastapi import FastAPI, Depends, HTTPException, Query
+import httpx
+from fastapi import FastAPI, Depends, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -19,17 +20,19 @@ from backend.db.database import get_db
 from backend.auth import get_current_user
 from backend.models.models import (
     Project, Footprint, Search, Spot, Backlink, BacklinkHistory,
+    Subscription, SubscriptionPlan, SubscriptionStatus, BillingInterval,
     ProjectStatus, FootprintCategory, LinkType, Difficulty,
     SearchStatus, SpotStatus, BacklinkStatus, BacklinkLinkType,
 )
 from backend.services.backlink_history import record_history
+from backend.subscription import get_user_subscription, check_domain_limit, check_backlink_limit
+from backend.plans import PLAN_LIMITS, get_plan_limits
 
 # ── App Setup ──────────────────────────────────────────────────────────
 
 app = FastAPI(
     title="Snapeous",
     version="1.0.0",
-    dependencies=[Depends(get_current_user)],
 )
 
 app.add_middleware(
@@ -43,6 +46,21 @@ app.add_middleware(
 
 # Note: init_db() removed — tables are managed in Supabase directly.
 # No need to run create_all on every serverless cold start.
+
+
+async def _verify_project_owner(
+    project_id: str,
+    db: AsyncSession,
+    user_id: str,
+) -> Project:
+    """Verify the project exists and belongs to the current user."""
+    result = await db.execute(
+        select(Project).where(Project.id == project_id, Project.user_id == user_id)
+    )
+    project = result.scalar_one_or_none()
+    if not project:
+        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    return project
 
 
 # ── Pydantic Schemas ──────────────────────────────────────────────────
@@ -268,6 +286,40 @@ async def health():
     return {"status": "ok", "app": "Snapeous", "version": "1.0.0"}
 
 
+# ── Turnstile Verification ───────────────────────────────────────────
+
+
+class TurnstileVerifyRequest(BaseModel):
+    token: str
+
+
+@app.post("/api/auth/verify-turnstile")
+async def verify_turnstile(body: TurnstileVerifyRequest, request: Request):
+    """Verify a Cloudflare Turnstile token server-side."""
+    if not settings.turnstile_secret_key:
+        return {"success": True}
+
+    # Allow localhost bypass in debug mode
+    if settings.debug and body.token == "localhost-bypass":
+        return {"success": True}
+
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+            data={
+                "secret": settings.turnstile_secret_key,
+                "response": body.token,
+                "remoteip": request.client.host if request.client else None,
+            },
+        )
+        result = resp.json()
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail="Vérification Turnstile échouée. Veuillez réessayer.")
+
+    return {"success": True}
+
+
 # ── Settings Routes ───────────────────────────────────────────────────
 
 
@@ -289,9 +341,14 @@ async def get_settings():
 
 
 @app.get("/api/projects", response_model=list[ProjectOut])
-async def list_projects(db: AsyncSession = Depends(get_db)):
+async def list_projects(
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+):
     result = await db.execute(
-        select(Project).order_by(Project.created_at.desc())
+        select(Project)
+        .where(Project.user_id == user_id)
+        .order_by(Project.created_at.desc())
     )
     projects = result.scalars().all()
 
@@ -328,8 +385,13 @@ async def list_projects(db: AsyncSession = Depends(get_db)):
 @app.post("/api/projects", response_model=ProjectOut)
 async def create_project(
     data: ProjectCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+    sub: Subscription = Depends(get_user_subscription),
 ):
+    # Check plan limit
+    await check_domain_limit(db, user_id, sub)
+
     # Clean domain
     domain = data.client_domain.strip()
     domain = domain.replace("https://", "").replace("http://", "").rstrip("/")
@@ -337,6 +399,7 @@ async def create_project(
     project = Project(
         name=data.name.strip(),
         client_domain=domain,
+        user_id=user_id,
         site_analysis={"status": "analyzing", "progress": "Analyse automatique en cours..."},
     )
     db.add(project)
@@ -372,8 +435,14 @@ async def create_project(
 
 
 @app.get("/api/projects/{project_id}", response_model=ProjectOut)
-async def get_project(project_id: str, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Project).where(Project.id == project_id))
+async def get_project(
+    project_id: str,
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+):
+    result = await db.execute(
+        select(Project).where(Project.id == project_id, Project.user_id == user_id)
+    )
     project = result.scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=404, detail="Projet non trouvé")
@@ -429,9 +498,14 @@ async def get_project(project_id: str, db: AsyncSession = Depends(get_db)):
 
 @app.patch("/api/projects/{project_id}", response_model=ProjectOut)
 async def update_project(
-    project_id: str, data: ProjectUpdate, db: AsyncSession = Depends(get_db)
+    project_id: str,
+    data: ProjectUpdate,
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
-    result = await db.execute(select(Project).where(Project.id == project_id))
+    result = await db.execute(
+        select(Project).where(Project.id == project_id, Project.user_id == user_id)
+    )
     project = result.scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=404, detail="Projet non trouvé")
@@ -484,8 +558,14 @@ async def update_project(
 
 
 @app.delete("/api/projects/{project_id}")
-async def delete_project(project_id: str, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(Project).where(Project.id == project_id))
+async def delete_project(
+    project_id: str,
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+):
+    result = await db.execute(
+        select(Project).where(Project.id == project_id, Project.user_id == user_id)
+    )
     project = result.scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=404, detail="Projet non trouvé")
@@ -612,8 +692,11 @@ async def analyze_project(
     project_id: str,
     language: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
-    result = await db.execute(select(Project).where(Project.id == project_id))
+    result = await db.execute(
+        select(Project).where(Project.id == project_id, Project.user_id == user_id)
+    )
     project = result.scalar_one_or_none()
     if not project:
         raise HTTPException(status_code=404, detail="Projet non trouvé")
@@ -637,11 +720,9 @@ async def get_sitemap_pages(
     page: int = Query(default=1, ge=1),
     per_page: int = Query(default=20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
-    result = await db.execute(select(Project).where(Project.id == project_id))
-    project = result.scalar_one_or_none()
-    if not project:
-        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    project = await _verify_project_owner(project_id, db, user_id)
 
     sitemap_pages = (project.site_analysis or {}).get("sitemap_pages", [])
 
@@ -784,7 +865,12 @@ async def create_search_bulk(
 
 
 @app.get("/api/projects/{project_id}/searches", response_model=list[SearchOut])
-async def list_searches(project_id: str, db: AsyncSession = Depends(get_db)):
+async def list_searches(
+    project_id: str,
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+):
+    await _verify_project_owner(project_id, db, user_id)
     result = await db.execute(
         select(Search)
         .where(Search.project_id == project_id)
@@ -810,7 +896,9 @@ async def list_spots(
     limit: int = Query(default=50, le=500),
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
+    await _verify_project_owner(project_id, db, user_id)
     query = select(Spot).where(Spot.project_id == project_id)
 
     if status:
@@ -842,7 +930,12 @@ async def list_spots(
 
 
 @app.get("/api/projects/{project_id}/spots/count")
-async def count_spots(project_id: str, db: AsyncSession = Depends(get_db)):
+async def count_spots(
+    project_id: str,
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+):
+    await _verify_project_owner(project_id, db, user_id)
     result = await db.execute(
         select(func.count(Spot.id)).where(Spot.project_id == project_id)
     )
@@ -980,7 +1073,9 @@ async def export_spots(
     status: Optional[str] = None,
     spot_type: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
+    await _verify_project_owner(project_id, db, user_id)
     query = select(Spot).where(Spot.project_id == project_id)
     if status:
         query = query.where(Spot.status == status)
@@ -1023,14 +1118,28 @@ async def export_spots(
 
 
 @app.get("/api/dashboard/stats")
-async def dashboard_stats(db: AsyncSession = Depends(get_db)):
-    projects_count = (await db.execute(select(func.count(Project.id)))).scalar()
-    spots_count = (await db.execute(select(func.count(Spot.id)))).scalar()
-    searches_count = (await db.execute(select(func.count(Search.id)))).scalar()
+async def dashboard_stats(
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+):
+    # Get user's project IDs
+    user_projects = select(Project.id).where(Project.user_id == user_id)
+
+    projects_count = (await db.execute(
+        select(func.count(Project.id)).where(Project.user_id == user_id)
+    )).scalar()
+    spots_count = (await db.execute(
+        select(func.count(Spot.id)).where(Spot.project_id.in_(user_projects))
+    )).scalar()
+    searches_count = (await db.execute(
+        select(func.count(Search.id)).where(Search.project_id.in_(user_projects))
+    )).scalar()
 
     # Spots by status
     status_result = await db.execute(
-        select(Spot.status, func.count(Spot.id)).group_by(Spot.status)
+        select(Spot.status, func.count(Spot.id))
+        .where(Spot.project_id.in_(user_projects))
+        .group_by(Spot.status)
     )
     spots_by_status = {}
     for s, c in status_result.all():
@@ -1040,7 +1149,8 @@ async def dashboard_stats(db: AsyncSession = Depends(get_db)):
     # Active searches
     active_searches = (await db.execute(
         select(func.count(Search.id)).where(
-            Search.status.in_([SearchStatus.pending, SearchStatus.running])
+            Search.project_id.in_(user_projects),
+            Search.status.in_([SearchStatus.pending, SearchStatus.running]),
         )
     )).scalar()
 
@@ -1082,13 +1192,10 @@ async def list_backlinks(
     page: int = Query(default=1, ge=1),
     per_page: int = Query(default=10, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
     """List all backlinks for a project with filters and pagination."""
-    # Verify project exists
-    result = await db.execute(select(Project).where(Project.id == project_id))
-    project = result.scalar_one_or_none()
-    if not project:
-        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    await _verify_project_owner(project_id, db, user_id)
 
     query = select(Backlink).where(Backlink.project_id == project_id)
 
@@ -1127,13 +1234,10 @@ async def count_backlinks(
     link_type: Optional[str] = None,
     search: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
     """Get backlink counts for a project."""
-    # Verify project exists
-    result = await db.execute(select(Project).where(Project.id == project_id))
-    project = result.scalar_one_or_none()
-    if not project:
-        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    await _verify_project_owner(project_id, db, user_id)
 
     query = select(func.count(Backlink.id)).where(Backlink.project_id == project_id)
 
@@ -1179,11 +1283,10 @@ async def count_backlinks(
 async def get_backlink_stats(
     project_id: str,
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
     """Get aggregated backlink statistics for dashboard KPIs and charts."""
-    result = await db.execute(select(Project).where(Project.id == project_id))
-    if not result.scalar_one_or_none():
-        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    await _verify_project_owner(project_id, db, user_id)
 
     base_filter = Backlink.project_id == project_id
 
@@ -1325,11 +1428,10 @@ async def get_backlink_stats(
 async def get_backlink_anchors(
     project_id: str,
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
     """Get anchor text analysis for a project's backlinks."""
-    result = await db.execute(select(Project).where(Project.id == project_id))
-    if not result.scalar_one_or_none():
-        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    await _verify_project_owner(project_id, db, user_id)
 
     anchor_result = await db.execute(
         select(
@@ -1380,11 +1482,10 @@ async def get_backlink_history(
     limit: int = Query(default=50, le=200),
     offset: int = Query(default=0, ge=0),
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
     """Get backlink history timeline with aggregation."""
-    result = await db.execute(select(Project).where(Project.id == project_id))
-    if not result.scalar_one_or_none():
-        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    await _verify_project_owner(project_id, db, user_id)
 
     # Get history events joined with backlink source_url
     events_result = await db.execute(
@@ -1478,11 +1579,10 @@ async def get_backlink_domains(
     project_id: str,
     limit: int = Query(default=20, le=100),
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
     """Get top referring domains with metrics."""
-    result = await db.execute(select(Project).where(Project.id == project_id))
-    if not result.scalar_one_or_none():
-        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    await _verify_project_owner(project_id, db, user_id)
 
     domains_result = await db.execute(
         select(
@@ -1544,14 +1644,15 @@ async def run_post_creation_analysis(backlink_ids: list[str]):
 async def create_backlink(
     project_id: str,
     data: BacklinkCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+    sub: Subscription = Depends(get_user_subscription),
 ):
     """Create a new backlink for a project. Auto-detects target URL from project domains."""
-    # Verify project exists
-    result = await db.execute(select(Project).where(Project.id == project_id))
-    project = result.scalar_one_or_none()
-    if not project:
-        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    project = await _verify_project_owner(project_id, db, user_id)
+
+    # Check plan limit
+    await check_backlink_limit(db, project_id, sub)
 
     # Clean source URL
     source_url = data.source_url.strip()
@@ -1630,17 +1731,18 @@ async def create_backlink(
 async def create_backlinks_bulk(
     project_id: str,
     items: list[BacklinkImportItem],
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+    sub: Subscription = Depends(get_user_subscription),
 ):
     """Create multiple backlinks at once (from CSV import). Auto-detects target URLs."""
     import time
     start_time = time.time()
 
-    # Verify project exists
-    result = await db.execute(select(Project).where(Project.id == project_id))
-    project = result.scalar_one_or_none()
-    if not project:
-        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    project = await _verify_project_owner(project_id, db, user_id)
+
+    # Check plan limit
+    await check_backlink_limit(db, project_id, sub)
 
     # Get project domains
     project_domains = [normalize_domain(project.client_domain)]
@@ -1839,13 +1941,10 @@ async def export_backlinks(
     status: Optional[str] = None,
     link_type: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
 ):
     """Export backlinks to CSV."""
-    # Verify project exists
-    result = await db.execute(select(Project).where(Project.id == project_id))
-    project = result.scalar_one_or_none()
-    if not project:
-        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    await _verify_project_owner(project_id, db, user_id)
 
     query = select(Backlink).where(Backlink.project_id == project_id)
     if status:
@@ -2089,3 +2188,364 @@ async def fetch_domain_metrics(
         await db.flush()
 
     return {"backlink_id": backlink_id, "metrics": metrics}
+
+
+# ── Billing / Subscription Routes ────────────────────────────────────
+
+
+class SubscribeRequest(BaseModel):
+    plan: str
+    interval: str = "monthly"
+    payment_method_id: Optional[str] = None
+    email: Optional[str] = None
+
+
+class ChangePlanRequest(BaseModel):
+    plan: str
+    interval: str = "monthly"
+
+
+class SubscriptionOut(BaseModel):
+    id: str
+    plan: str
+    status: str
+    billing_interval: Optional[str] = None
+    stripe_customer_id: Optional[str] = None
+    trial_start: Optional[datetime] = None
+    trial_end: Optional[datetime] = None
+    current_period_start: Optional[datetime] = None
+    current_period_end: Optional[datetime] = None
+    cancel_at_period_end: bool = False
+    canceled_at: Optional[datetime] = None
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+@app.get("/api/billing/subscription", response_model=SubscriptionOut)
+async def get_subscription(
+    sub: Subscription = Depends(get_user_subscription),
+    user_id: str = Depends(get_current_user),
+):
+    """Get the current user's subscription."""
+    return sub
+
+
+@app.get("/api/billing/plans")
+async def get_plans(
+    user_id: str = Depends(get_current_user),
+):
+    """Return plan definitions for frontend display."""
+    return PLAN_LIMITS
+
+
+@app.post("/api/billing/setup-intent")
+async def create_setup_intent_route(
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+):
+    """Create a Stripe SetupIntent for card collection via Stripe Elements."""
+    from backend.services.stripe_service import create_setup_intent, create_stripe_customer
+
+    result = await db.execute(
+        select(Subscription).where(Subscription.user_id == user_id)
+    )
+    sub = result.scalar_one_or_none()
+
+    if not sub:
+        sub = Subscription(
+            user_id=user_id,
+            plan=SubscriptionPlan.free,
+            status=SubscriptionStatus.active,
+        )
+        db.add(sub)
+        await db.flush()
+
+    if not sub.stripe_customer_id:
+        customer_id = create_stripe_customer(email="", user_id=user_id)
+        sub.stripe_customer_id = customer_id
+        await db.flush()
+
+    intent_data = create_setup_intent(sub.stripe_customer_id)
+    await db.commit()
+    return intent_data
+
+
+@app.post("/api/billing/subscribe", response_model=SubscriptionOut)
+async def subscribe(
+    data: SubscribeRequest,
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+):
+    """Create or update subscription. Free = DB only. Paid = Stripe flow."""
+    from backend.services.stripe_service import (
+        create_stripe_customer, create_subscription as create_stripe_sub,
+        get_price_id,
+    )
+
+    # Get or create subscription record
+    result = await db.execute(
+        select(Subscription).where(Subscription.user_id == user_id)
+    )
+    sub = result.scalar_one_or_none()
+
+    if data.plan == "free":
+        if sub:
+            sub.plan = SubscriptionPlan.free
+            sub.status = SubscriptionStatus.active
+            sub.billing_interval = None
+            sub.stripe_subscription_id = None
+            sub.stripe_price_id = None
+        else:
+            sub = Subscription(
+                user_id=user_id,
+                plan=SubscriptionPlan.free,
+                status=SubscriptionStatus.active,
+            )
+            db.add(sub)
+        await db.commit()
+        await db.refresh(sub)
+        return sub
+
+    # Paid plan flow
+    if not data.payment_method_id:
+        raise HTTPException(400, "payment_method_id requis pour les plans payants")
+
+    price_id = get_price_id(data.plan, data.interval)
+    if not price_id:
+        raise HTTPException(400, "Combinaison plan/intervalle invalide")
+
+    if not sub:
+        sub = Subscription(user_id=user_id)
+        db.add(sub)
+        await db.flush()
+
+    # Create Stripe customer if needed
+    if not sub.stripe_customer_id:
+        customer_id = create_stripe_customer(
+            email=data.email or "",
+            user_id=user_id,
+        )
+        sub.stripe_customer_id = customer_id
+
+    # Create Stripe subscription with 7-day trial
+    stripe_sub = create_stripe_sub(
+        customer_id=sub.stripe_customer_id,
+        price_id=price_id,
+        payment_method_id=data.payment_method_id,
+        trial_days=7,
+    )
+
+    # Update DB record
+    sub.plan = data.plan
+    sub.status = stripe_sub.status
+    sub.billing_interval = data.interval
+    sub.stripe_subscription_id = stripe_sub.id
+    sub.stripe_price_id = price_id
+
+    if stripe_sub.trial_start:
+        sub.trial_start = datetime.fromtimestamp(stripe_sub.trial_start)
+    if stripe_sub.trial_end:
+        sub.trial_end = datetime.fromtimestamp(stripe_sub.trial_end)
+    sub.current_period_start = datetime.fromtimestamp(stripe_sub.current_period_start)
+    sub.current_period_end = datetime.fromtimestamp(stripe_sub.current_period_end)
+
+    await db.commit()
+    await db.refresh(sub)
+    return sub
+
+
+@app.post("/api/billing/change-plan", response_model=SubscriptionOut)
+async def change_plan(
+    data: ChangePlanRequest,
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+    sub: Subscription = Depends(get_user_subscription),
+):
+    """Upgrade or downgrade plan."""
+    from backend.services.stripe_service import (
+        change_subscription_price, cancel_subscription, get_price_id,
+    )
+
+    if data.plan == "free":
+        # Downgrade to free = cancel Stripe subscription
+        if sub.stripe_subscription_id:
+            cancel_subscription(sub.stripe_subscription_id, at_period_end=False)
+        sub.plan = SubscriptionPlan.free
+        sub.status = SubscriptionStatus.active
+        sub.stripe_subscription_id = None
+        sub.stripe_price_id = None
+        sub.billing_interval = None
+        sub.cancel_at_period_end = False
+        await db.commit()
+        await db.refresh(sub)
+        return sub
+
+    price_id = get_price_id(data.plan, data.interval)
+    if not price_id:
+        raise HTTPException(400, "Combinaison plan/intervalle invalide")
+
+    if not sub.stripe_subscription_id:
+        raise HTTPException(
+            400,
+            "Pas d'abonnement payant actif. Utilisez /api/billing/subscribe.",
+        )
+
+    change_subscription_price(sub.stripe_subscription_id, price_id)
+    sub.plan = data.plan
+    sub.billing_interval = data.interval
+    sub.stripe_price_id = price_id
+    await db.commit()
+    await db.refresh(sub)
+    return sub
+
+
+@app.post("/api/billing/cancel")
+async def cancel_subscription_route(
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+    sub: Subscription = Depends(get_user_subscription),
+):
+    """Cancel subscription at end of billing period."""
+    if not sub.stripe_subscription_id:
+        raise HTTPException(400, "Pas d'abonnement actif à annuler")
+
+    from backend.services.stripe_service import cancel_subscription
+    cancel_subscription(sub.stripe_subscription_id, at_period_end=True)
+    sub.cancel_at_period_end = True
+    sub.canceled_at = datetime.now(timezone.utc).replace(tzinfo=None)
+    await db.commit()
+    return {"message": "L'abonnement sera annulé à la fin de la période en cours"}
+
+
+@app.post("/api/billing/reactivate")
+async def reactivate_subscription_route(
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+    sub: Subscription = Depends(get_user_subscription),
+):
+    """Reactivate a subscription that was set to cancel at period end."""
+    if not sub.stripe_subscription_id or not sub.cancel_at_period_end:
+        raise HTTPException(400, "Pas d'abonnement en cours d'annulation")
+
+    from backend.services.stripe_service import reactivate_subscription
+    reactivate_subscription(sub.stripe_subscription_id)
+    sub.cancel_at_period_end = False
+    sub.canceled_at = None
+    await db.commit()
+    return {"message": "Abonnement réactivé"}
+
+
+@app.post("/api/billing/portal")
+async def billing_portal(
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+    sub: Subscription = Depends(get_user_subscription),
+):
+    """Create a Stripe Billing Portal URL."""
+    if not sub.stripe_customer_id:
+        raise HTTPException(400, "Pas de client Stripe associé")
+
+    from backend.services.stripe_service import create_billing_portal_session
+    url = create_billing_portal_session(
+        sub.stripe_customer_id,
+        return_url="https://spotseo.app/settings",
+    )
+    return {"url": url}
+
+
+# ── Stripe Webhook (no auth) ─────────────────────────────────────────
+
+from fastapi import Request
+
+@app.post("/api/stripe/webhook")
+async def stripe_webhook(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Handle Stripe webhook events. No JWT auth required."""
+    import stripe
+    stripe.api_key = settings.stripe_secret_key
+
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature")
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, settings.stripe_webhook_secret
+        )
+    except (ValueError, stripe.error.SignatureVerificationError):
+        raise HTTPException(status_code=400, detail="Signature webhook invalide")
+
+    event_type = event["type"]
+    data_obj = event["data"]["object"]
+
+    if event_type in (
+        "customer.subscription.created",
+        "customer.subscription.updated",
+    ):
+        await _webhook_subscription_updated(db, data_obj)
+    elif event_type == "customer.subscription.deleted":
+        await _webhook_subscription_deleted(db, data_obj)
+    elif event_type == "invoice.payment_failed":
+        await _webhook_payment_failed(db, data_obj)
+
+    await db.commit()
+    return {"status": "ok"}
+
+
+async def _webhook_subscription_updated(db: AsyncSession, stripe_sub: dict):
+    """Sync Stripe subscription state to local DB."""
+    result = await db.execute(
+        select(Subscription).where(
+            Subscription.stripe_subscription_id == stripe_sub["id"]
+        )
+    )
+    sub = result.scalar_one_or_none()
+    if not sub:
+        return
+
+    sub.status = stripe_sub["status"]
+    sub.current_period_start = datetime.fromtimestamp(stripe_sub["current_period_start"])
+    sub.current_period_end = datetime.fromtimestamp(stripe_sub["current_period_end"])
+    sub.cancel_at_period_end = stripe_sub.get("cancel_at_period_end", False)
+
+    if stripe_sub.get("trial_end"):
+        sub.trial_end = datetime.fromtimestamp(stripe_sub["trial_end"])
+
+    # If subscription expired (trial ended without payment), downgrade to free
+    if stripe_sub["status"] in ("canceled", "unpaid"):
+        sub.plan = SubscriptionPlan.free
+        sub.stripe_subscription_id = None
+
+    sub.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+async def _webhook_subscription_deleted(db: AsyncSession, stripe_sub: dict):
+    """Stripe subscription was deleted. Downgrade to free."""
+    result = await db.execute(
+        select(Subscription).where(
+            Subscription.stripe_subscription_id == stripe_sub["id"]
+        )
+    )
+    sub = result.scalar_one_or_none()
+    if sub:
+        sub.plan = SubscriptionPlan.free
+        sub.status = SubscriptionStatus.canceled
+        sub.stripe_subscription_id = None
+        sub.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+
+
+async def _webhook_payment_failed(db: AsyncSession, invoice: dict):
+    """Mark subscription as past_due on payment failure."""
+    sub_id = invoice.get("subscription")
+    if not sub_id:
+        return
+    result = await db.execute(
+        select(Subscription).where(Subscription.stripe_subscription_id == sub_id)
+    )
+    sub = result.scalar_one_or_none()
+    if sub:
+        sub.status = SubscriptionStatus.past_due
+        sub.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)

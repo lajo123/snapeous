@@ -1,7 +1,9 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 export default function TopDomainsChart({ domains = [] }) {
-  if (domains.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-gray-400">Aucune donnee</div>;
+  const { t } = useTranslation('backlinks');
+  if (domains.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-gray-400">{t('charts.noData')}</div>;
 
   const data = domains.slice(0, 10).map(d => ({
     domain: d.domain?.length > 25 ? d.domain.slice(0, 22) + '...' : d.domain,
@@ -20,10 +22,10 @@ export default function TopDomainsChart({ domains = [] }) {
           tick={{ fontSize: 11, fill: '#6b6560' }}
         />
         <Tooltip
-          formatter={(value, name) => [value, name === 'count' ? 'Backlinks' : name]}
-          contentStyle={{ borderRadius: '0.75rem', border: '1px solid #EDE4D3', fontSize: '0.875rem' }}
+          formatter={(value, name) => [value, name === 'count' ? t('charts.backlinks') : name]}
+          contentStyle={{ borderRadius: '0.75rem', border: '1px solid #E8DCCB', fontSize: '0.875rem' }}
         />
-        <Bar dataKey="count" fill="#059669" radius={[0, 4, 4, 0]} barSize={18} />
+        <Bar dataKey="count" fill="#C9785D" radius={[0, 4, 4, 0]} barSize={18} />
       </BarChart>
     </ResponsiveContainer>
   );

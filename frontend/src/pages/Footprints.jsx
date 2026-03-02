@@ -150,7 +150,7 @@ export default function Footprints() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 text-emerald-500 animate-spin" />
+          <Loader2 className="h-8 w-8 text-brand-500 animate-spin" />
           <span className="text-sm text-gray-400">
             {seedMutation.isPending ? 'Initialisation des footprints...' : 'Chargement...'}
           </span>
@@ -228,7 +228,7 @@ export default function Footprints() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+            className="rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
           >
             <option value="">Toutes les categories</option>
             {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
@@ -242,7 +242,7 @@ export default function Footprints() {
           <select
             value={difficultyFilter}
             onChange={(e) => setDifficultyFilter(e.target.value)}
-            className="rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+            className="rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
           >
             <option value="">Toutes les difficultes</option>
             {Object.entries(DIFFICULTY_LABELS).map(([key, label]) => (
@@ -260,7 +260,7 @@ export default function Footprints() {
               placeholder="Rechercher un footprint..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50/50 pl-10 pr-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50/50 pl-10 pr-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
             />
           </div>
         </div>
@@ -279,7 +279,7 @@ export default function Footprints() {
                 className={cn(
                   'flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm transition-all',
                   !categoryFilter
-                    ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                    ? 'bg-brand-50 text-brand-700 font-semibold'
                     : 'text-gray-500 hover:bg-gray-50'
                 )}
               >
@@ -296,7 +296,7 @@ export default function Footprints() {
                     className={cn(
                       'flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm transition-all',
                       categoryFilter === key
-                        ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                        ? 'bg-brand-50 text-brand-700 font-semibold'
                         : 'text-gray-500 hover:bg-gray-50'
                     )}
                   >
@@ -344,7 +344,7 @@ export default function Footprints() {
                       <tr
                         key={fp.id}
                         className={cn(
-                          'transition-colors duration-150 hover:bg-emerald-50/30',
+                          'transition-colors duration-150 hover:bg-brand-50/30',
                           idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'
                         )}
                       >
@@ -455,7 +455,7 @@ export default function Footprints() {
                   value={form.name}
                   onChange={(e) => handleFormChange('name', e.target.value)}
                   placeholder="Ex: Forums WordPress FR"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 />
               </div>
 
@@ -467,7 +467,7 @@ export default function Footprints() {
                 <select
                   value={form.category}
                   onChange={(e) => handleFormChange('category', e.target.value)}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 >
                   <option value="">Selectionner une categorie</option>
                   {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
@@ -488,7 +488,7 @@ export default function Footprints() {
                   onChange={(e) => handleFormChange('query_template', e.target.value)}
                   rows={3}
                   placeholder='Ex: inurl:forum "{keyword}" site:.fr'
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm font-mono focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none resize-vertical transition-all"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm font-mono focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none resize-vertical transition-all"
                 />
               </div>
 
@@ -501,7 +501,7 @@ export default function Footprints() {
                   <select
                     value={form.expected_link_type}
                     onChange={(e) => handleFormChange('expected_link_type', e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                   >
                     <option value="">Non specifie</option>
                     {Object.entries(LINK_TYPE_LABELS).map(([key, label]) => (
@@ -518,7 +518,7 @@ export default function Footprints() {
                   <select
                     value={form.difficulty}
                     onChange={(e) => handleFormChange('difficulty', e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                   >
                     <option value="">Non specifie</option>
                     {Object.entries(DIFFICULTY_LABELS).map(([key, label]) => (
@@ -540,7 +540,7 @@ export default function Footprints() {
                   value={form.platform_target}
                   onChange={(e) => handleFormChange('platform_target', e.target.value)}
                   placeholder="Ex: WordPress, phpBB, Discourse..."
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 />
               </div>
 
@@ -554,7 +554,7 @@ export default function Footprints() {
                   onChange={(e) => handleFormChange('description', e.target.value)}
                   rows={2}
                   placeholder="Description optionnelle du footprint"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none resize-vertical transition-all"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none resize-vertical transition-all"
                 />
               </div>
 
@@ -568,7 +568,7 @@ export default function Footprints() {
                   value={form.tags}
                   onChange={(e) => handleFormChange('tags', e.target.value)}
                   placeholder="Separes par des virgules : seo, forum, fr"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 />
               </div>
 

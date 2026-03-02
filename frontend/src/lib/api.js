@@ -1,5 +1,24 @@
 import axios from 'axios';
+import { create } from 'zustand';
 import { supabase } from './supabase';
+
+// ── Upgrade modal store (triggered by 403 PLAN_LIMIT_REACHED) ────────
+
+export const useUpgradeStore = create((set) => ({
+  open: false,
+  limitType: null,
+  limit: null,
+  current: null,
+  currentPlan: null,
+  show: (detail) => set({
+    open: true,
+    limitType: detail.limit_type,
+    limit: detail.limit,
+    current: detail.current,
+    currentPlan: detail.current_plan,
+  }),
+  hide: () => set({ open: false, limitType: null, limit: null, current: null, currentPlan: null }),
+}));
 
 const api = axios.create({
   baseURL: '/api',
@@ -18,6 +37,24 @@ api.interceptors.request.use(async (config) => {
   }
   return config;
 });
+
+// Intercept 403 PLAN_LIMIT_REACHED to trigger upgrade modal
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (
+      error.response?.status === 403 &&
+      error.response?.data?.detail?.code === 'PLAN_LIMIT_REACHED'
+    ) {
+      useUpgradeStore.getState().show(error.response.data.detail);
+    }
+    return Promise.reject(error);
+  }
+);
+
+// ── Turnstile ────────────────────────────────────────────────────────
+
+export const verifyTurnstile = (token) => api.post('/auth/verify-turnstile', { token }).then(r => r.data);
 
 // ── Projects ─────────────────────────────────────────────────────────
 
@@ -64,6 +101,17 @@ export const exportSpots = (projectId, params) => {
     window.URL.revokeObjectURL(url);
   });
 };
+
+// ── Billing ──────────────────────────────────────────────────────────
+
+export const getSubscription = () => api.get('/billing/subscription').then(r => r.data);
+export const getPlans = () => api.get('/billing/plans').then(r => r.data);
+export const createSetupIntent = () => api.post('/billing/setup-intent').then(r => r.data);
+export const subscribe = (data) => api.post('/billing/subscribe', data).then(r => r.data);
+export const changePlan = (data) => api.post('/billing/change-plan', data).then(r => r.data);
+export const cancelSubscription = () => api.post('/billing/cancel').then(r => r.data);
+export const reactivateSubscription = () => api.post('/billing/reactivate').then(r => r.data);
+export const getBillingPortalUrl = () => api.post('/billing/portal').then(r => r.data);
 
 // ── Dashboard ────────────────────────────────────────────────────────
 

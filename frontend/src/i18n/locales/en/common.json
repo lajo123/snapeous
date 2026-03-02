@@ -1,0 +1,92 @@
+{
+  "category": {
+    "blog_comments": "Blog Comments",
+    "forums": "Forums",
+    "directories": "Directories",
+    "guestbooks": "Guestbooks",
+    "profiles": "Profiles",
+    "social": "Social Networks",
+    "authority": "Authority Sites",
+    "serp_exploration": "SERP Exploration",
+    "files": "Files",
+    "guest_posts": "Guest Posts",
+    "wikis": "Wikis",
+    "ereputation": "E-reputation",
+    "web20": "Web 2.0"
+  },
+  "difficulty": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
+  "linkType": {
+    "dofollow": "Dofollow",
+    "nofollow": "Nofollow",
+    "ugc": "UGC",
+    "sponsored": "Sponsored",
+    "mix": "Mix"
+  },
+  "spotStatus": {
+    "discovered": "Discovered",
+    "qualified": "Qualified",
+    "selected": "Selected",
+    "rejected": "Rejected",
+    "contacted": "Contacted",
+    "link_posted": "Link Posted",
+    "failed": "Failed"
+  },
+  "searchStatus": {
+    "pending": "Pending",
+    "running": "Running",
+    "completed": "Completed",
+    "failed": "Failed"
+  },
+  "backlinkStatus": {
+    "active": "Active",
+    "lost": "Lost",
+    "pending": "Pending"
+  },
+  "backlinkLinkType": {
+    "dofollow": "Dofollow",
+    "nofollow": "Nofollow"
+  },
+  "indexation": {
+    "indexed": "Indexed",
+    "notIndexed": "Not Indexed",
+    "notChecked": "Not Checked"
+  },
+  "configured": "Configured",
+  "notConfigured": "Not Configured",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "confirm": "Confirm",
+  "save": "Save",
+  "create": "Create",
+  "edit": "Edit",
+  "close": "Close",
+  "loading": "Loading...",
+  "noResults": "No results",
+  "error": "Error",
+  "success": "Success",
+  "viewAll": "View All",
+  "actions": "Actions",
+  "status": "Status",
+  "type": "Type",
+  "name": "Name",
+  "domain": "Domain",
+  "date": "Date",
+  "url": "URL",
+  "search": "Search",
+  "export": "Export",
+  "filter": "Filter",
+  "all": "All",
+  "yes": "Yes",
+  "no": "No",
+  "back": "Back",
+  "next": "Next",
+  "previous": "Previous",
+  "of": "of",
+  "perPage": "per page",
+  "total": "Total",
+  "noData": "No data"
+}

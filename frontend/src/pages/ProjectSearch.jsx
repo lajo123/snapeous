@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import {
   getProject,
   getFootprints,
@@ -11,13 +12,12 @@ import {
 } from '@/lib/api';
 import {
   cn,
-  CATEGORY_LABELS,
-  SEARCH_STATUS_LABELS,
   SEARCH_STATUS_COLORS,
-  DIFFICULTY_LABELS,
   DIFFICULTY_COLORS,
   formatDate,
 } from '@/lib/utils';
+import useLocalizedPath from '@/hooks/useLocalizedPath';
+import SEOHead from '@/components/SEOHead';
 import {
   ArrowLeft,
   Search,
@@ -29,6 +29,9 @@ import {
 } from 'lucide-react';
 
 export default function ProjectSearch() {
+  const { t, i18n } = useTranslation('search');
+  const tc = useTranslation('common').t;
+  const lp = useLocalizedPath();
   const { id: project_id } = useParams();
   const queryClient = useQueryClient();
 
@@ -96,16 +99,16 @@ export default function ProjectSearch() {
 
   const searchMutation = useMutation({
     mutationFn: (data) => createSearch(data),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['searches', project_id] });
       queryClient.invalidateQueries({ queryKey: ['project', project_id] });
-      toast.success(`Recherche lancee -- ${totalQueries} requete(s) creee(s)`);
+      toast.success(t('searchLaunched', { count: totalQueries }));
     },
     onError: (error) => {
       toast.error(
         error?.response?.data?.message ||
           error?.message ||
-          'Erreur lors du lancement de la recherche'
+          t('searchError')
       );
     },
   });
@@ -166,7 +169,7 @@ export default function ProjectSearch() {
   const handleLaunchSearch = () => {
     if (totalQueries === 0) return;
     const confirmed = window.confirm(
-      `Cela va lancer ${totalQueries} requetes Google. Continuer ?`
+      t('confirmSearch', { count: totalQueries })
     );
     if (!confirmed) return;
 
@@ -182,7 +185,7 @@ export default function ProjectSearch() {
   if (projectLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 text-emerald-500 animate-spin" />
+        <Loader2 className="h-8 w-8 text-brand-500 animate-spin" />
       </div>
     );
   }
@@ -190,13 +193,13 @@ export default function ProjectSearch() {
   if (projectError || !project) {
     return (
       <div className="text-center py-16">
-        <p className="text-gray-400">Projet introuvable.</p>
+        <p className="text-gray-400">{t('projectNotFound')}</p>
         <Link
-          to="/dashboard"
-          className="mt-4 inline-flex items-center gap-1.5 text-sm text-emerald-600 hover:text-emerald-700 transition-colors"
+          to={lp('/dashboard')}
+          className="mt-4 inline-flex items-center gap-1.5 text-sm text-brand-600 hover:text-brand-700 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
-          Retour au tableau de bord
+          {t('backToDashboard')}
         </Link>
       </div>
     );
@@ -206,12 +209,12 @@ export default function ProjectSearch() {
 
   return (
     <div className="space-y-6">
+      <SEOHead pageKey="search" />
       {/* Header */}
       <div>
-        <h1 className="page-title">Recherche SERP</h1>
+        <h1 className="page-title">{t('title')}</h1>
         <p className="page-subtitle">
-          Sélectionnez les footprints et mots-clés pour lancer une recherche
-          Google sur{' '}
+          {t('subtitle')}{' '}
           <span className="font-semibold text-gray-900">{project.client_domain}</span>
         </p>
       </div>
@@ -219,14 +222,14 @@ export default function ProjectSearch() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* ── Footprint selection ──────────────────────────────────── */}
         <div className="card">
-          <div className="px-7 py-5 border-b border-[#EDE4D3] flex items-center justify-between">
-            <h2 className="text-base font-bold text-gray-900">Footprints</h2>
-            <span className="text-xs font-medium text-[#9a9080] bg-[#F5F0E8] rounded-full px-2.5 py-1">
-              {selectedFootprints.size} sélectionné(s)
+          <div className="px-7 py-5 border-b border-[#E8DCCB] flex items-center justify-between">
+            <h2 className="text-base font-bold text-gray-900">{t('footprints')}</h2>
+            <span className="text-xs font-medium text-[#9a9080] bg-[#F0E6D8] rounded-full px-2.5 py-1">
+              {t('selected', { count: selectedFootprints.size })}
             </span>
           </div>
 
-          <div className="divide-y divide-[#EDE4D3] max-h-[480px] overflow-y-auto">
+          <div className="divide-y divide-[#E8DCCB] max-h-[480px] overflow-y-auto">
             {Object.entries(footprintsByCategory).map(([cat, fps]) => {
               const isExpanded = expandedCategories.has(cat);
               const catIds = fps.map((fp) => fp.id);
@@ -242,13 +245,12 @@ export default function ProjectSearch() {
                   <div className="flex items-center gap-2 px-7 py-3 bg-[#FAF7F2]/50 hover:bg-gray-50 transition-colors cursor-pointer select-none">
                     <button
                       onClick={() => toggleCategoryAll(cat)}
-                      className="flex-shrink-0 text-gray-400 hover:text-emerald-600 transition-colors"
-                      title="Tout selectionner / deselectionner"
+                      className="flex-shrink-0 text-gray-400 hover:text-brand-600 transition-colors"
                     >
                       {allSelected ? (
-                        <CheckSquare className="h-4 w-4 text-emerald-600" />
+                        <CheckSquare className="h-4 w-4 text-brand-600" />
                       ) : someSelected ? (
-                        <CheckSquare className="h-4 w-4 text-emerald-300" />
+                        <CheckSquare className="h-4 w-4 text-brand-300" />
                       ) : (
                         <Square className="h-4 w-4" />
                       )}
@@ -264,7 +266,7 @@ export default function ProjectSearch() {
                         <ChevronRight className="h-4 w-4 text-gray-300" />
                       )}
                       <span className="text-sm font-medium text-gray-700">
-                        {CATEGORY_LABELS[cat] || cat}
+                        {tc(`category.${cat}`, { defaultValue: cat })}
                       </span>
                       <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">
                         {fps.length}
@@ -278,13 +280,13 @@ export default function ProjectSearch() {
                       {fps.map((fp) => (
                         <label
                           key={fp.id}
-                          className="flex items-center gap-3 px-7 pl-16 py-3 hover:bg-emerald-50/40 transition-colors cursor-pointer"
+                          className="flex items-center gap-3 px-7 pl-16 py-3 hover:bg-brand-50/40 transition-colors cursor-pointer"
                         >
                           <input
                             type="checkbox"
                             checked={selectedFootprints.has(fp.id)}
                             onChange={() => toggleFootprint(fp.id)}
-                            className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                           />
                           <span className="flex-1 text-sm text-gray-700 truncate">
                             {fp.name}
@@ -297,7 +299,7 @@ export default function ProjectSearch() {
                                   'bg-gray-100 text-gray-600'
                               )}
                             >
-                              {DIFFICULTY_LABELS[fp.difficulty] || fp.difficulty}
+                              {tc(`difficulty.${fp.difficulty}`, { defaultValue: fp.difficulty })}
                             </span>
                           )}
                         </label>
@@ -310,7 +312,7 @@ export default function ProjectSearch() {
 
             {Object.keys(footprintsByCategory).length === 0 && (
               <div className="px-7 py-10 text-center text-sm text-gray-400">
-                Aucun footprint disponible.
+                {t('noFootprints')}
               </div>
             )}
           </div>
@@ -319,18 +321,18 @@ export default function ProjectSearch() {
         {/* ── Keywords selection ───────────────────────────────────── */}
         <div className="space-y-6">
           <div className="card">
-            <div className="px-7 py-5 border-b border-[#EDE4D3] flex items-center justify-between">
+            <div className="px-7 py-5 border-b border-[#E8DCCB] flex items-center justify-between">
               <h2 className="text-base font-bold text-gray-900">
-                Mots-clés
+                {t('keywords')}
               </h2>
               {keywords.length > 0 && (
                 <button
                   onClick={toggleAllKeywords}
-                  className="text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
+                  className="text-xs font-medium text-brand-600 hover:text-brand-700 transition-colors"
                 >
                   {selectedKeywords.size === keywords.length
-                    ? 'Tout deselectionner'
-                    : 'Tout selectionner'}
+                    ? t('deselectAll')
+                    : t('selectAll')}
                 </button>
               )}
             </div>
@@ -338,30 +340,30 @@ export default function ProjectSearch() {
             {keywords.length === 0 ? (
               <div className="px-7 py-10 text-center">
                 <p className="text-sm text-amber-600 font-medium">
-                  Analysez le site d'abord
+                  {t('analyzeFirst')}
                 </p>
                 <p className="mt-1.5 text-xs text-gray-400">
-                  Lancez une analyse du site pour generer des mots-cles.
+                  {t('analyzeFirstDesc')}
                 </p>
                 <Link
-                  to={`/projects/${project_id}/analysis`}
-                  className="mt-3 inline-flex items-center gap-1.5 text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
+                  to={lp(`/projects/${project_id}/analysis`)}
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs text-brand-600 hover:text-brand-700 transition-colors"
                 >
-                  Aller a l'analyse
+                  {t('goToAnalysis')}
                 </Link>
               </div>
             ) : (
-              <div className="divide-y divide-[#EDE4D3] max-h-[280px] overflow-y-auto">
+              <div className="divide-y divide-[#E8DCCB] max-h-[280px] overflow-y-auto">
                 {keywords.map((kw) => (
                   <label
                     key={kw}
-                    className="flex items-center gap-3 px-7 py-3 hover:bg-emerald-50/40 transition-colors cursor-pointer"
+                    className="flex items-center gap-3 px-7 py-3 hover:bg-brand-50/40 transition-colors cursor-pointer"
                   >
                     <input
                       type="checkbox"
                       checked={selectedKeywords.has(kw)}
                       onChange={() => toggleKeyword(kw)}
-                      className="h-4 w-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                     />
                     <span className="text-sm text-gray-700">{kw}</span>
                   </label>
@@ -373,25 +375,25 @@ export default function ProjectSearch() {
           {/* ── Search preview ──────────────────────────────────────── */}
           <div className="card p-7">
             <h2 className="text-base font-bold text-gray-900 mb-5">
-              Aperçu de la recherche
+              {t('searchPreview')}
             </h2>
 
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#FAF7F2', border: '1px solid #EDE4D3' }}>
-                <p className="text-xs text-[#9a9080]">Footprints</p>
+              <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#FAF7F2', border: '1px solid #E8DCCB' }}>
+                <p className="text-xs text-[#9a9080]">{t('footprints')}</p>
                 <p className="mt-1.5 text-xl font-bold text-gray-900">
                   {selectedFootprints.size}
                 </p>
               </div>
-              <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#FAF7F2', border: '1px solid #EDE4D3' }}>
-                <p className="text-xs text-[#9a9080]">Mots-clés</p>
+              <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#FAF7F2', border: '1px solid #E8DCCB' }}>
+                <p className="text-xs text-[#9a9080]">{t('keywords')}</p>
                 <p className="mt-1.5 text-xl font-bold text-gray-900">
                   {selectedKeywords.size}
                 </p>
               </div>
-              <div className="rounded-xl p-4 text-center bg-emerald-50 border border-emerald-100">
-                <p className="text-xs font-medium text-emerald-600">Total requêtes</p>
-                <p className="mt-1.5 text-xl font-bold text-emerald-700">
+              <div className="rounded-xl p-4 text-center bg-brand-50 border border-brand-100">
+                <p className="text-xs font-medium text-brand-600">{t('totalQueries')}</p>
+                <p className="mt-1.5 text-xl font-bold text-brand-700">
                   {totalQueries}
                 </p>
               </div>
@@ -407,12 +409,12 @@ export default function ProjectSearch() {
               {searchMutation.isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Lancement en cours...
+                  {t('launching')}
                 </>
               ) : (
                 <>
                   <Search className="h-4 w-4" />
-                  Lancer la recherche
+                  {t('launchSearch')}
                 </>
               )}
             </button>
@@ -423,24 +425,24 @@ export default function ProjectSearch() {
       {/* ── Search progress table ─────────────────────────────────── */}
       {searches.length > 0 && (
         <div className="card overflow-hidden">
-          <div className="px-7 py-5 border-b border-[#EDE4D3]">
+          <div className="px-7 py-5 border-b border-[#E8DCCB]">
             <h2 className="text-base font-bold text-gray-900">
-              Historique des recherches ({searches.length})
+              {t('searchHistory')} ({searches.length})
             </h2>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead style={{ backgroundColor: '#FAF7F2' }} className="border-b border-[#EDE4D3]">
+              <thead style={{ backgroundColor: '#FAF7F2' }} className="border-b border-[#E8DCCB]">
                 <tr className="text-left">
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">Requête</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">Mot-clé</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">Statut</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">Résultats</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">Date</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('query')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('keyword')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('status')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('results')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('date')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#EDE4D3]">
+              <tbody className="divide-y divide-[#E8DCCB]">
                 {searches.map((search) => (
                   <tr
                     key={search.id}
@@ -457,17 +459,17 @@ export default function ProjectSearch() {
                         className={cn(
                           'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
                           SEARCH_STATUS_COLORS[search.status] ||
-                            'bg-[#EDE4D3] text-gray-700'
+                            'bg-[#E8DCCB] text-gray-700'
                         )}
                       >
-                        {SEARCH_STATUS_LABELS[search.status] || search.status}
+                        {tc(`searchStatus.${search.status}`, { defaultValue: search.status })}
                       </span>
                     </td>
                     <td className="px-7 py-3.5 text-gray-700 font-semibold">
                       {search.results_count ?? '--'}
                     </td>
                     <td className="px-7 py-3.5 text-[#9a9080] text-xs">
-                      {formatDate(search.created_at)}
+                      {formatDate(search.created_at, i18n.language)}
                     </td>
                   </tr>
                 ))}

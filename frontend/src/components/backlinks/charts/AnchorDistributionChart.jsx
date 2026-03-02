@@ -1,9 +1,12 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
-const COLORS = ['#059669', '#10b981', '#34d399', '#3b82f6', '#6366f1', '#8b5cf6', '#f59e0b', '#ef4444', '#ec4899', '#6b7280', '#9ca3af'];
+const COLORS = ['#C9785D', '#e09070', '#edb097', '#1E3A5F', '#3d6690', '#5c84af', '#B09E7E', '#C9B899', '#9a5641', '#7d4636', '#6b7280'];
 
 export default function AnchorDistributionChart({ anchors = [] }) {
-  // Top 10 + "Autres" bucket
+  const { t } = useTranslation('backlinks');
+
+  // Top 10 + "Others" bucket
   const top10 = anchors.slice(0, 10);
   const rest = anchors.slice(10);
   const othersCount = rest.reduce((sum, a) => sum + a.count, 0);
@@ -14,10 +17,10 @@ export default function AnchorDistributionChart({ anchors = [] }) {
   }));
 
   if (othersCount > 0) {
-    data.push({ name: 'Autres', value: othersCount });
+    data.push({ name: t('charts.others'), value: othersCount });
   }
 
-  if (data.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-gray-400">Aucune donnee</div>;
+  if (data.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-gray-400">{t('charts.noData')}</div>;
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -36,8 +39,8 @@ export default function AnchorDistributionChart({ anchors = [] }) {
           ))}
         </Pie>
         <Tooltip
-          formatter={(value, name) => [`${value} liens`, name]}
-          contentStyle={{ borderRadius: '0.75rem', border: '1px solid #EDE4D3', fontSize: '0.875rem' }}
+          formatter={(value, name) => [`${value} ${t('charts.links')}`, name]}
+          contentStyle={{ borderRadius: '0.75rem', border: '1px solid #E8DCCB', fontSize: '0.875rem' }}
         />
         <Legend
           layout="vertical"

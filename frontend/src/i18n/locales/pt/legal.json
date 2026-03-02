@@ -1,0 +1,160 @@
+{
+  "backToHome": "Voltar ao inicio",
+  "lastUpdated": "Ultima atualizacao: {{date}}",
+
+  "legalNotice": {
+    "title": "Aviso Legal",
+    "sections": [
+      {
+        "title": "Editor do site",
+        "content": "O site Snapeous (doravante \"o Site\") e publicado pela Snapeous SAS, com capital social de 1.000 euros, registrada no Registro de Comercio sob o numero [RCS a preencher].\n\nSede social: [Endereco a preencher]\nNumero de IVA intracomunitario: [IVA a preencher]\nDiretor de publicacao: [Nome a preencher]\nE-mail de contato: contact@snapeous.io"
+      },
+      {
+        "title": "Hospedagem",
+        "content": "O Site e hospedado por:\n[Nome do provedor de hospedagem]\n[Endereco do provedor de hospedagem]\n[Telefone do provedor de hospedagem]"
+      },
+      {
+        "title": "Propriedade intelectual",
+        "content": "Todo o conteudo do Site (textos, imagens, graficos, logotipos, icones, softwares, etc.) e protegido pelas leis francesas e internacionais de propriedade intelectual. Qualquer reproducao, representacao, modificacao, publicacao ou adaptacao de qualquer parte dos elementos do Site, independentemente do meio ou processo utilizado, e proibida sem autorizacao previa por escrito da Snapeous SAS."
+      },
+      {
+        "title": "Responsabilidade",
+        "content": "A Snapeous SAS se esforza para garantir a precisao e atualizacao das informacoes publicadas no Site. No entanto, a Snapeous SAS nao pode garantir a exatidao, precisao ou completude das informacoes disponibilizadas no Site. Consequentemente, a Snapeous SAS nao se responsabiliza por qualquer imprecisao, erro ou omissao relativa as informacoes disponiveis no Site."
+      },
+      {
+        "title": "Hiperlinks",
+        "content": "O Site pode conter hiperlinks para outros sites. A Snapeous SAS nao exerce nenhum controle sobre esses sites e nao se responsabiliza pelo conteudo deles. A decisao de seguir esses links e de inteira responsabilidade do usuario."
+      }
+    ]
+  },
+
+  "privacy": {
+    "title": "Politica de Privacidade",
+    "sections": [
+      {
+        "title": "Introducao",
+        "content": "A Snapeous SAS (doravante \"Snapeous\", \"nos\", \"nosso\") se compromete a proteger a privacidade dos usuarios de sua plataforma. Esta politica de privacidade descreve como coletamos, usamos, armazenamos e protegemos seus dados pessoais em conformidade com o Regulamento Geral de Protecao de Dados (GDPR) e as leis aplicaveis de protecao de dados."
+      },
+      {
+        "title": "Dados coletados",
+        "content": "Coletamos as seguintes categorias de dados:\n\n- Dados de identificacao: nome, sobrenome, endereco de e-mail, senha (criptografada)\n- Dados de cobranca: endereco de cobranca, informacoes de pagamento (processadas pelo Stripe)\n- Dados de uso: paginas visitadas, funcionalidades utilizadas, projetos criados, backlinks analisados\n- Dados tecnicos: endereco IP, tipo de navegador, sistema operacional, cookies\n- Dados de comunicacao: historico de conversas com o suporte"
+      },
+      {
+        "title": "Finalidades do tratamento",
+        "content": "Seus dados sao tratados para as seguintes finalidades:\n\n- Fornecimento e gerenciamento da sua conta de usuario\n- Execucao dos servicos de analise e monitoramento de backlinks\n- Gerenciamento de cobranca e assinaturas\n- Envio de notificacoes e alertas relacionados ao servico\n- Melhoria de nossos servicos e da experiencia do usuario\n- Comunicacoes de marketing (com seu consentimento)\n- Cumprimento de nossas obrigacoes legais"
+      },
+      {
+        "title": "Base legal do tratamento",
+        "content": "O tratamento de dados se baseia em:\n\n- Execucao do contrato: gerenciamento da sua conta e prestacao dos servicos\n- Consentimento: comunicacoes de marketing e cookies nao essenciais\n- Interesse legitimo: melhoria de nossos servicos, seguranca da plataforma\n- Obrigacao legal: retencao de dados de cobranca"
+      },
+      {
+        "title": "Periodo de retencao de dados",
+        "content": "Seus dados pessoais sao retidos pelo periodo necessario para as finalidades para as quais foram coletados:\n\n- Dados da conta: durante a vigencia do seu cadastro, e por 3 anos apos a exclusao da conta\n- Dados de cobranca: 10 anos conforme obrigacoes contabeis\n- Dados de navegacao: no maximo 13 meses\n- Cookies: de acordo com sua validade (veja a secao GDPR)"
+      },
+      {
+        "title": "Compartilhamento de dados",
+        "content": "Seus dados podem ser compartilhados com:\n\n- Stripe: para processamento de pagamentos\n- Nosso provedor de hospedagem: para hospedagem da plataforma\n- Servicos de analise: para melhoria de nossos servicos (dados anonimizados)\n\nNunca vendemos seus dados pessoais a terceiros."
+      },
+      {
+        "title": "Seguranca",
+        "content": "Implementamos medidas de seguranca tecnicas e organizacionais adequadas para proteger seus dados pessoais contra acesso nao autorizado, modificacao, divulgacao ou destruicao. Isso inclui criptografia de dados em transito (TLS/SSL), criptografia de senhas e controles de acesso rigorosos."
+      },
+      {
+        "title": "Seus direitos",
+        "content": "Em conformidade com o GDPR, voce tem os seguintes direitos:\n\n- Direito de acesso: obter uma copia dos seus dados pessoais\n- Direito de retificacao: corrigir dados imprecisos ou incompletos\n- Direito de exclusao: solicitar a exclusao dos seus dados\n- Direito de restricao: restringir o tratamento dos seus dados\n- Direito de portabilidade: receber seus dados em formato estruturado\n- Direito de oposicao: se opor ao tratamento dos seus dados\n- Direito de retirar o consentimento: retirar seu consentimento a qualquer momento\n\nPara exercer esses direitos, entre em contato pelo e-mail: privacy@snapeous.io"
+      },
+      {
+        "title": "Contato",
+        "content": "Para qualquer duvida sobre esta politica de privacidade ou a protecao dos seus dados pessoais, voce pode entrar em contato conosco:\n\nE-mail: privacy@snapeous.io\nEndereco: [Endereco a preencher]\n\nVoce tambem pode registrar uma reclamacao junto a autoridade de protecao de dados do seu pais."
+      }
+    ]
+  },
+
+  "terms": {
+    "title": "Termos de Servico",
+    "sections": [
+      {
+        "title": "Objeto",
+        "content": "Estes Termos de Servico (doravante \"Termos\") definem as condicoes de acesso e uso da plataforma Snapeous, acessivel em snapeous.io. Ao criar uma conta ou usar o Servico, voce aceita estes Termos sem reservas."
+      },
+      {
+        "title": "Descricao do servico",
+        "content": "O Snapeous e uma plataforma SaaS de monitoramento e analise de backlinks que oferece:\n\n- Acompanhamento em tempo real dos backlinks que apontam para seu site\n- Analise de metricas de dominio (DA, DR, Trust Flow, etc.)\n- Score de saude do perfil de links\n- Recomendacoes personalizadas para melhorar seu perfil\n- Alertas sobre mudancas no status dos links\n- Exportacao de dados e relatorios"
+      },
+      {
+        "title": "Cadastro e conta",
+        "content": "Para usar o Servico, voce deve criar uma conta fornecendo informacoes precisas e atualizadas. Voce e responsavel pela confidencialidade das suas credenciais de acesso e por todas as atividades realizadas em sua conta. Voce concorda em nos notificar imediatamente sobre qualquer uso nao autorizado da sua conta."
+      },
+      {
+        "title": "Assinaturas e pagamento",
+        "content": "O Snapeous oferece varios planos de assinatura (Free, Starter, Pro, Agency). As assinaturas pagas sao cobradas mensal ou anualmente conforme sua escolha. Os pagamentos sao processados de forma segura pelo Stripe. Voce pode cancelar sua assinatura a qualquer momento. O cancelamento entra em vigor ao final do periodo de cobranca vigente."
+      },
+      {
+        "title": "Periodo de teste gratuito",
+        "content": "Os planos pagos incluem um periodo de teste gratuito de 7 dias. Durante esse periodo, voce tem acesso a todas as funcionalidades do plano escolhido. Ao final do periodo de teste, seu cartao de credito sera cobrado, a menos que voce cancele antes."
+      },
+      {
+        "title": "Uso aceitavel",
+        "content": "Voce concorda em usar o Servico de forma licita e em conformidade com estes Termos. E especificamente proibido:\n\n- Usar o Servico para fins ilegais ou nao autorizados\n- Tentar comprometer a seguranca ou integridade do Servico\n- Realizar scraping ou extracao automatizada de dados alem dos limites da API\n- Revender ou redistribuir o Servico sem autorizacao\n- Usar o Servico para assediar, difamar ou violar os direitos de terceiros"
+      },
+      {
+        "title": "Propriedade intelectual",
+        "content": "Todos os elementos da plataforma Snapeous (software, design, textos, marcas, logotipos) sao propriedade exclusiva da Snapeous SAS. Sua assinatura concede a voce um direito de uso pessoal, nao exclusivo e intransferivel do Servico durante a vigencia da sua assinatura."
+      },
+      {
+        "title": "Limitacao de responsabilidade",
+        "content": "O Snapeous fornece o Servico \"como esta\". Nao garantimos que o Servico estara livre de erros ou interrupcoes. Na medida permitida por lei, a responsabilidade total do Snapeous nao excedera os valores pagos pelo usuario nos 12 meses anteriores."
+      },
+      {
+        "title": "Modificacao dos termos",
+        "content": "O Snapeous reserva-se o direito de modificar estes Termos a qualquer momento. Os usuarios serao notificados sobre quaisquer alteracoes por e-mail ou notificacao na plataforma. O uso continuado do Servico apos a modificacao constitui aceitacao dos novos Termos."
+      },
+      {
+        "title": "Rescisao",
+        "content": "Voce pode encerrar sua conta a qualquer momento pelas configuracoes da sua conta. O Snapeous reserva-se o direito de suspender ou excluir sua conta em caso de violacao destes Termos, apos notificacao formal sem resposta por 15 dias."
+      },
+      {
+        "title": "Lei aplicavel e jurisdicao",
+        "content": "Estes Termos sao regidos pela lei francesa. Em caso de disputa, as partes buscarao uma solucao amigavel. Na impossibilidade, os tribunais competentes de Paris terao jurisdicao exclusiva."
+      }
+    ]
+  },
+
+  "gdpr": {
+    "title": "Conformidade com o GDPR",
+    "sections": [
+      {
+        "title": "Nosso compromisso com o GDPR",
+        "content": "O Snapeous se compromete a cumprir o Regulamento Geral de Protecao de Dados (GDPR - Regulamento UE 2016/679) em todas as suas atividades de tratamento de dados pessoais. Implementamos medidas tecnicas e organizacionais para garantir a conformidade de nossas praticas."
+      },
+      {
+        "title": "Controlador de dados",
+        "content": "O controlador dos dados pessoais e:\n\nSnapeous SAS\n[Endereco a preencher]\nE-mail: privacy@snapeous.io\n\nVoce pode contatar nosso Encarregado de Protecao de Dados (DPO) pelo e-mail: dpo@snapeous.io"
+      },
+      {
+        "title": "Registro de tratamentos",
+        "content": "Em conformidade com o Artigo 30 do GDPR, mantemos um registro de atividades de tratamento que inclui:\n\n- Gerenciamento de contas de usuarios\n- Servicos de analise de backlinks\n- Gerenciamento de assinaturas e cobranca\n- Comunicacoes de marketing (com consentimento)\n- Analise e melhoria dos servicos\n- Gerenciamento de suporte ao cliente\n- Seguranca e prevencao de fraudes"
+      },
+      {
+        "title": "Cookies e rastreadores",
+        "content": "Usamos diferentes tipos de cookies:\n\n- Cookies essenciais: necessarios para o funcionamento do site (autenticacao, preferencias de idioma). Nao requerem seu consentimento.\n- Cookies de analise: para analisar o uso do site e melhorar nossos servicos. Instalados apenas com seu consentimento.\n- Cookies de marketing: para personalizar anuncios. Instalados apenas com seu consentimento.\n\nVoce pode gerenciar suas preferencias de cookies a qualquer momento pelo banner de consentimento ou pelas configuracoes do seu navegador."
+      },
+      {
+        "title": "Transferencias de dados para fora da UE",
+        "content": "Alguns de nossos subcontratados podem tratar dados fora da Uniao Europeia. Nesses casos, garantimos que salvaguardas apropriadas estejam em vigor:\n\n- Clausulas contratuais padrao aprovadas pela Comissao Europeia\n- Certificacao do subcontratado (quando aplicavel)\n- Medidas de seguranca adicionais"
+      },
+      {
+        "title": "Avaliacao de impacto",
+        "content": "Em conformidade com o Artigo 35 do GDPR, realizamos Avaliacoes de Impacto sobre a Protecao de Dados (DPIAs) para atividades de tratamento que possam resultar em alto risco para os direitos e liberdades dos titulares dos dados."
+      },
+      {
+        "title": "Notificacao de violacoes",
+        "content": "Em caso de violacao de dados pessoais que possa representar risco para os direitos e liberdades dos individuos, nos comprometemos a:\n\n- Notificar a autoridade supervisora em ate 72 horas\n- Informar os individuos afetados se o risco for alto\n- Documentar a violacao e as medidas adotadas"
+      },
+      {
+        "title": "Exercicio dos seus direitos",
+        "content": "Para exercer seus direitos (acesso, retificacao, exclusao, restricao, portabilidade, oposicao), voce pode:\n\n- Enviar um e-mail para: privacy@snapeous.io\n- Usar as configuracoes da sua conta para modificar ou excluir seus dados\n- Escrever para o endereco postal da Snapeous SAS\n\nNos comprometemos a responder sua solicitacao em ate 30 dias.\n\nSe encontrar alguma dificuldade, voce pode registrar uma reclamacao junto a autoridade de protecao de dados do seu pais."
+      }
+    ]
+  }
+}

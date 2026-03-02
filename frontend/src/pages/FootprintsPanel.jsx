@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import {
   getFootprints,
   getFootprintCategories,
@@ -10,13 +11,12 @@ import {
 } from '@/lib/api';
 import {
   cn,
-  CATEGORY_LABELS,
   CATEGORY_COLORS,
-  DIFFICULTY_LABELS,
   DIFFICULTY_COLORS,
-  LINK_TYPE_LABELS,
 } from '@/lib/utils';
 import { Plus, Trash2, Search, Filter, Database, Loader2, X } from 'lucide-react';
+
+const LINK_TYPE_KEYS = ['dofollow', 'nofollow', 'ugc', 'sponsored', 'mix'];
 
 const INITIAL_FORM = {
   name: '',
@@ -30,6 +30,8 @@ const INITIAL_FORM = {
 };
 
 export default function FootprintsPanel() {
+  const { t } = useTranslation('app');
+  const tc = (key) => useTranslation('common').t(key);
   const queryClient = useQueryClient();
 
   const [categoryFilter, setCategoryFilter] = useState('');
@@ -70,10 +72,10 @@ export default function FootprintsPanel() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['footprints'] });
       queryClient.invalidateQueries({ queryKey: ['footprint-categories'] });
-      toast.success(`${data?.count ?? 'Les'} footprints initialises avec succes`);
+      toast.success(t('footprints.seedSuccess', { count: data?.count ?? '' }));
     },
     onError: () => {
-      toast.error("Erreur lors de l'initialisation des footprints");
+      toast.error(t('footprints.seedError'));
     },
   });
 
@@ -91,12 +93,12 @@ export default function FootprintsPanel() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['footprints'] });
       queryClient.invalidateQueries({ queryKey: ['footprint-categories'] });
-      toast.success('Footprint cree avec succes');
+      toast.success(t('footprints.createSuccess'));
       setShowModal(false);
       setForm(INITIAL_FORM);
     },
     onError: () => {
-      toast.error('Erreur lors de la creation du footprint');
+      toast.error(t('footprints.createError'));
     },
   });
 
@@ -105,10 +107,10 @@ export default function FootprintsPanel() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['footprints'] });
       queryClient.invalidateQueries({ queryKey: ['footprint-categories'] });
-      toast.success('Footprint supprime');
+      toast.success(t('footprints.deleteSuccess'));
     },
     onError: () => {
-      toast.error('Erreur lors de la suppression');
+      toast.error(t('footprints.deleteError'));
     },
   });
 
@@ -117,7 +119,7 @@ export default function FootprintsPanel() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.name || !form.category || !form.query_template) {
-      toast.error('Veuillez remplir les champs obligatoires');
+      toast.error(t('footprints.fieldsRequired'));
       return;
     }
     const payload = {
@@ -150,9 +152,9 @@ export default function FootprintsPanel() {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 text-emerald-500 animate-spin" />
+          <Loader2 className="h-8 w-8 text-brand-500 animate-spin" />
           <span className="text-sm text-gray-400">
-            {seedMutation.isPending ? 'Initialisation des footprints...' : 'Chargement...'}
+            {seedMutation.isPending ? t('footprints.seedingLoading') : tc('loading')}
           </span>
         </div>
       </div>
@@ -165,18 +167,18 @@ export default function FootprintsPanel() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Bibliotheque de Footprints</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('footprints.title')}</h1>
           <p className="mt-1.5 text-sm text-gray-400">
-            Gerez vos footprints pour la recherche de spots
+            {t('settings.tabs.footprints')}
           </p>
         </div>
         <div className="bg-white rounded-xl border border-gray-100 shadow-soft px-6 py-20 text-center">
           <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-xl bg-gray-50">
             <Database className="h-8 w-8 text-gray-300" />
           </div>
-          <h3 className="mt-5 text-sm font-semibold text-gray-900">Aucun footprint</h3>
+          <h3 className="mt-5 text-sm font-semibold text-gray-900">{t('footprints.emptyTitle')}</h3>
           <p className="mt-1.5 text-sm text-gray-400">
-            Initialisez la bibliotheque avec les footprints par defaut.
+            {t('footprints.emptyDesc')}
           </p>
           <button
             onClick={() => seedMutation.mutate()}
@@ -188,7 +190,7 @@ export default function FootprintsPanel() {
             ) : (
               <Database className="h-4 w-4" />
             )}
-            Initialiser les footprints
+            {t('footprints.seedBtn')}
           </button>
         </div>
       </div>
@@ -202,9 +204,9 @@ export default function FootprintsPanel() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Bibliotheque de Footprints</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('footprints.title')}</h1>
           <p className="mt-1.5 text-sm text-gray-400">
-            {totalCount} footprints disponibles dans {Object.keys(categoryCountMap).length} categories
+            {t('footprints.subtitle', { count: totalCount, categories: Object.keys(categoryCountMap).length })}
           </p>
         </div>
         <button
@@ -212,7 +214,7 @@ export default function FootprintsPanel() {
           className="btn-primary"
         >
           <Plus className="h-4 w-4" />
-          Ajouter un footprint
+          {t('footprints.addBtn')}
         </button>
       </div>
 
@@ -221,19 +223,19 @@ export default function FootprintsPanel() {
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-gray-300" />
-            <span className="text-sm font-medium text-gray-700">Filtres :</span>
+            <span className="text-sm font-medium text-gray-700">{t('footprints.filters')}</span>
           </div>
 
           {/* Category dropdown */}
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+            className="rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
           >
-            <option value="">Toutes les categories</option>
-            {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+            <option value="">{t('footprints.allCategories')}</option>
+            {Object.keys(CATEGORY_COLORS).map((key) => (
               <option key={key} value={key}>
-                {label}
+                {tc(`category.${key}`)}
               </option>
             ))}
           </select>
@@ -242,12 +244,12 @@ export default function FootprintsPanel() {
           <select
             value={difficultyFilter}
             onChange={(e) => setDifficultyFilter(e.target.value)}
-            className="rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-700 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+            className="rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
           >
-            <option value="">Toutes les difficultes</option>
-            {Object.entries(DIFFICULTY_LABELS).map(([key, label]) => (
+            <option value="">{t('footprints.allDifficulties')}</option>
+            {Object.keys(DIFFICULTY_COLORS).map((key) => (
               <option key={key} value={key}>
-                {label}
+                {tc(`difficulty.${key}`)}
               </option>
             ))}
           </select>
@@ -257,10 +259,10 @@ export default function FootprintsPanel() {
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300" />
             <input
               type="text"
-              placeholder="Rechercher un footprint..."
+              placeholder={t('footprints.searchPlaceholder')}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50/50 pl-10 pr-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50/50 pl-10 pr-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
             />
           </div>
         </div>
@@ -271,7 +273,7 @@ export default function FootprintsPanel() {
         <div className="hidden lg:block w-56 flex-shrink-0">
           <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-3 sticky top-4">
             <h3 className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
-              Categories
+              {t('footprints.categoriesTitle')}
             </h3>
             <nav className="space-y-0.5">
               <button
@@ -279,14 +281,14 @@ export default function FootprintsPanel() {
                 className={cn(
                   'flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm transition-all',
                   !categoryFilter
-                    ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                    ? 'bg-brand-50 text-brand-700 font-semibold'
                     : 'text-gray-500 hover:bg-gray-50'
                 )}
               >
-                <span>Toutes</span>
+                <span>{t('footprints.allBtn')}</span>
                 <span className="text-xs text-gray-400">{totalCount}</span>
               </button>
-              {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
+              {Object.keys(CATEGORY_COLORS).map((key) => {
                 const count = categoryCountMap[key] ?? 0;
                 if (count === 0) return null;
                 return (
@@ -296,11 +298,11 @@ export default function FootprintsPanel() {
                     className={cn(
                       'flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm transition-all',
                       categoryFilter === key
-                        ? 'bg-emerald-50 text-emerald-700 font-semibold'
+                        ? 'bg-brand-50 text-brand-700 font-semibold'
                         : 'text-gray-500 hover:bg-gray-50'
                     )}
                   >
-                    <span className="truncate">{label}</span>
+                    <span className="truncate">{tc(`category.${key}`)}</span>
                     <span className="ml-2 text-xs text-gray-400">{count}</span>
                   </button>
                 );
@@ -318,10 +320,10 @@ export default function FootprintsPanel() {
                   <Search className="h-7 w-7 text-gray-300" />
                 </div>
                 <h3 className="mt-4 text-sm font-semibold text-gray-900">
-                  Aucun resultat
+                  {t('footprints.noResults')}
                 </h3>
                 <p className="mt-1.5 text-sm text-gray-400">
-                  Aucun footprint ne correspond a vos filtres.
+                  {t('footprints.noResultsDesc')}
                 </p>
               </div>
             ) : (
@@ -329,13 +331,13 @@ export default function FootprintsPanel() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-gray-50 text-left">
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Nom</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Categorie</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Template</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Type de lien</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Difficulte</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Plateforme</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400 text-right">Utilisations</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">{t('footprints.tableHeader.name')}</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">{t('footprints.tableHeader.category')}</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">{t('footprints.tableHeader.template')}</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">{t('footprints.tableHeader.linkType')}</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">{t('footprints.tableHeader.difficulty')}</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">{t('footprints.tableHeader.platform')}</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400 text-right">{t('footprints.tableHeader.usages')}</th>
                       <th className="px-5 py-3.5 w-10"></th>
                     </tr>
                   </thead>
@@ -344,7 +346,7 @@ export default function FootprintsPanel() {
                       <tr
                         key={fp.id}
                         className={cn(
-                          'transition-colors duration-150 hover:bg-emerald-50/30',
+                          'transition-colors duration-150 hover:bg-brand-50/30',
                           idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'
                         )}
                       >
@@ -358,7 +360,7 @@ export default function FootprintsPanel() {
                               CATEGORY_COLORS[fp.category] ?? 'bg-gray-100 text-gray-800'
                             )}
                           >
-                            {CATEGORY_LABELS[fp.category] ?? fp.category}
+                            {tc(`category.${fp.category}`) !== `category.${fp.category}` ? tc(`category.${fp.category}`) : fp.category}
                           </span>
                         </td>
                         <td className="px-5 py-3 max-w-[260px]">
@@ -369,7 +371,7 @@ export default function FootprintsPanel() {
                         <td className="px-5 py-3">
                           {fp.expected_link_type && (
                             <span className="inline-flex items-center rounded-full bg-slate-50 text-slate-600 px-2.5 py-1 text-xs font-medium">
-                              {LINK_TYPE_LABELS[fp.expected_link_type] ?? fp.expected_link_type}
+                              {tc(`linkType.${fp.expected_link_type}`) !== `linkType.${fp.expected_link_type}` ? tc(`linkType.${fp.expected_link_type}`) : fp.expected_link_type}
                             </span>
                           )}
                         </td>
@@ -381,7 +383,7 @@ export default function FootprintsPanel() {
                                 DIFFICULTY_COLORS[fp.difficulty] ?? 'bg-gray-100 text-gray-800'
                               )}
                             >
-                              {DIFFICULTY_LABELS[fp.difficulty] ?? fp.difficulty}
+                              {tc(`difficulty.${fp.difficulty}`) !== `difficulty.${fp.difficulty}` ? tc(`difficulty.${fp.difficulty}`) : fp.difficulty}
                             </span>
                           )}
                         </td>
@@ -395,12 +397,12 @@ export default function FootprintsPanel() {
                           {fp.is_custom && (
                             <button
                               onClick={() => {
-                                if (window.confirm('Supprimer ce footprint personnalise ?')) {
+                                if (window.confirm(t('footprints.deleteConfirm'))) {
                                   deleteMutation.mutate(fp.id);
                                 }
                               }}
                               className="rounded-lg p-1.5 text-gray-300 hover:text-red-600 hover:bg-red-50 transition-all"
-                              title="Supprimer"
+                              title={tc('delete')}
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -416,7 +418,7 @@ export default function FootprintsPanel() {
         </div>
       </div>
 
-      {/* Modal: Ajouter un footprint */}
+      {/* Modal: Add footprint */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           {/* Backdrop */}
@@ -430,10 +432,10 @@ export default function FootprintsPanel() {
             <div className="px-7 py-5 border-b border-gray-50 flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">
-                  Ajouter un footprint personnalise
+                  {t('footprints.modal.title')}
                 </h2>
                 <p className="mt-0.5 text-sm text-gray-400">
-                  Creez un nouveau footprint pour vos recherches de spots.
+                  {t('footprints.modal.desc')}
                 </p>
               </div>
               <button
@@ -445,34 +447,34 @@ export default function FootprintsPanel() {
             </div>
 
             <form onSubmit={handleSubmit} className="px-7 py-5 space-y-5">
-              {/* Nom */}
+              {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Nom <span className="text-red-400">*</span>
+                  {t('footprints.modal.name')} <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => handleFormChange('name', e.target.value)}
-                  placeholder="Ex: Forums WordPress FR"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                  placeholder={t('footprints.modal.namePlaceholder')}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 />
               </div>
 
-              {/* Categorie */}
+              {/* Category */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Categorie <span className="text-red-400">*</span>
+                  {t('footprints.modal.category')} <span className="text-red-400">*</span>
                 </label>
                 <select
                   value={form.category}
                   onChange={(e) => handleFormChange('category', e.target.value)}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 >
-                  <option value="">Selectionner une categorie</option>
-                  {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+                  <option value="">{t('footprints.modal.categoryPlaceholder')}</option>
+                  {Object.keys(CATEGORY_COLORS).map((key) => (
                     <option key={key} value={key}>
-                      {label}
+                      {tc(`category.${key}`)}
                     </option>
                   ))}
                 </select>
@@ -481,94 +483,94 @@ export default function FootprintsPanel() {
               {/* Query template */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Template de requete <span className="text-red-400">*</span>
+                  {t('footprints.modal.queryTemplate')} <span className="text-red-400">*</span>
                 </label>
                 <textarea
                   value={form.query_template}
                   onChange={(e) => handleFormChange('query_template', e.target.value)}
                   rows={3}
-                  placeholder='Ex: inurl:forum "{keyword}" site:.fr'
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm font-mono focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none resize-vertical transition-all"
+                  placeholder={t('footprints.modal.queryPlaceholder')}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm font-mono focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none resize-vertical transition-all"
                 />
               </div>
 
-              {/* Type de lien + Difficulte */}
+              {/* Link type + Difficulty */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Type de lien attendu
+                    {t('footprints.modal.linkType')}
                   </label>
                   <select
                     value={form.expected_link_type}
                     onChange={(e) => handleFormChange('expected_link_type', e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                   >
-                    <option value="">Non specifie</option>
-                    {Object.entries(LINK_TYPE_LABELS).map(([key, label]) => (
+                    <option value="">{t('footprints.modal.notSpecified')}</option>
+                    {LINK_TYPE_KEYS.map((key) => (
                       <option key={key} value={key}>
-                        {label}
+                        {tc(`linkType.${key}`)}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Difficulte
+                    {t('footprints.modal.difficulty')}
                   </label>
                   <select
                     value={form.difficulty}
                     onChange={(e) => handleFormChange('difficulty', e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                   >
-                    <option value="">Non specifie</option>
-                    {Object.entries(DIFFICULTY_LABELS).map(([key, label]) => (
+                    <option value="">{t('footprints.modal.notSpecified')}</option>
+                    {Object.keys(DIFFICULTY_COLORS).map((key) => (
                       <option key={key} value={key}>
-                        {label}
+                        {tc(`difficulty.${key}`)}
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
 
-              {/* Plateforme */}
+              {/* Platform */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Plateforme cible
+                  {t('footprints.modal.platform')}
                 </label>
                 <input
                   type="text"
                   value={form.platform_target}
                   onChange={(e) => handleFormChange('platform_target', e.target.value)}
-                  placeholder="Ex: WordPress, phpBB, Discourse..."
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                  placeholder={t('footprints.modal.platformPlaceholder')}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 />
               </div>
 
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
+                  {t('footprints.modal.description')}
                 </label>
                 <textarea
                   value={form.description}
                   onChange={(e) => handleFormChange('description', e.target.value)}
                   rows={2}
-                  placeholder="Description optionnelle du footprint"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none resize-vertical transition-all"
+                  placeholder={t('footprints.modal.descPlaceholder')}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none resize-vertical transition-all"
                 />
               </div>
 
               {/* Tags */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Tags
+                  {t('footprints.modal.tags')}
                 </label>
                 <input
                   type="text"
                   value={form.tags}
                   onChange={(e) => handleFormChange('tags', e.target.value)}
-                  placeholder="Separes par des virgules : seo, forum, fr"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-emerald-300 focus:ring-1 focus:ring-emerald-200 outline-none transition-all"
+                  placeholder={t('footprints.modal.tagsPlaceholder')}
+                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 />
               </div>
 
@@ -579,7 +581,7 @@ export default function FootprintsPanel() {
                   onClick={() => setShowModal(false)}
                   className="btn-secondary"
                 >
-                  Annuler
+                  {t('footprints.modal.cancel')}
                 </button>
                 <button
                   type="submit"
@@ -589,7 +591,7 @@ export default function FootprintsPanel() {
                   {createMutation.isPending && (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   )}
-                  Creer le footprint
+                  {t('footprints.modal.create')}
                 </button>
               </div>
             </form>

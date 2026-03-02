@@ -1,0 +1,160 @@
+{
+  "backToHome": "Back to home",
+  "lastUpdated": "Last updated: {{date}}",
+
+  "legalNotice": {
+    "title": "Legal Notice",
+    "sections": [
+      {
+        "title": "Website Publisher",
+        "content": "The Snapeous website (hereinafter \"the Website\") is published by Snapeous SAS, with a share capital of 1,000 euros, registered in the Trade and Companies Register under number [RCS to be completed].\n\nRegistered office: [Address to be completed]\nIntra-community VAT number: [VAT to be completed]\nPublication director: [Name to be completed]\nContact email: contact@snapeous.io"
+      },
+      {
+        "title": "Hosting",
+        "content": "The Website is hosted by:\n[Host name]\n[Host address]\n[Host phone number]"
+      },
+      {
+        "title": "Intellectual Property",
+        "content": "All content on the Website (text, images, graphics, logos, icons, software, etc.) is protected by French and international intellectual property laws. Any reproduction, representation, modification, publication, or adaptation of any part of the Website elements, regardless of the means or process used, is prohibited without prior written authorization from Snapeous SAS."
+      },
+      {
+        "title": "Liability",
+        "content": "Snapeous SAS strives to ensure the accuracy and updating of the information published on the Website. However, Snapeous SAS cannot guarantee the accuracy, precision, or completeness of the information made available on the Website. Consequently, Snapeous SAS declines all liability for any inaccuracy, error, or omission relating to information available on the Website."
+      },
+      {
+        "title": "Hyperlinks",
+        "content": "The Website may contain hyperlinks to other websites. Snapeous SAS exercises no control over these websites and declines all liability regarding their content. The decision to follow these links is the full and entire responsibility of the user."
+      }
+    ]
+  },
+
+  "privacy": {
+    "title": "Privacy Policy",
+    "sections": [
+      {
+        "title": "Introduction",
+        "content": "Snapeous SAS (hereinafter \"Snapeous\", \"we\", \"our\") is committed to protecting the privacy of users of its platform. This privacy policy describes how we collect, use, store, and protect your personal data in accordance with the General Data Protection Regulation (GDPR) and applicable data protection laws."
+      },
+      {
+        "title": "Data Collected",
+        "content": "We collect the following categories of data:\n\n- Identification data: name, surname, email address, password (encrypted)\n- Billing data: billing address, payment information (processed by Stripe)\n- Usage data: pages visited, features used, projects created, backlinks analyzed\n- Technical data: IP address, browser type, operating system, cookies\n- Communication data: support conversation history"
+      },
+      {
+        "title": "Purposes of Processing",
+        "content": "Your data is processed for the following purposes:\n\n- Providing and managing your user account\n- Performing backlink analysis and monitoring services\n- Managing billing and subscriptions\n- Sending service-related notifications and alerts\n- Improving our services and user experience\n- Marketing communications (with your consent)\n- Compliance with our legal obligations"
+      },
+      {
+        "title": "Legal Basis for Processing",
+        "content": "Data processing is based on:\n\n- Contract performance: managing your account and providing services\n- Consent: marketing communications and non-essential cookies\n- Legitimate interest: improving our services, platform security\n- Legal obligation: retention of billing data"
+      },
+      {
+        "title": "Data Retention Period",
+        "content": "Your personal data is retained for the period necessary for the purposes for which it was collected:\n\n- Account data: for the duration of your registration, then 3 years after account deletion\n- Billing data: 10 years in accordance with accounting obligations\n- Browsing data: 13 months maximum\n- Cookies: according to their lifespan (see the GDPR section)"
+      },
+      {
+        "title": "Data Sharing",
+        "content": "Your data may be shared with:\n\n- Stripe: for payment processing\n- Our hosting provider: for platform hosting\n- Analytics services: for improving our services (anonymized data)\n\nWe never sell your personal data to third parties."
+      },
+      {
+        "title": "Security",
+        "content": "We implement appropriate technical and organizational security measures to protect your personal data against unauthorized access, modification, disclosure, or destruction. This includes encryption of data in transit (TLS/SSL), password encryption, and strict access controls."
+      },
+      {
+        "title": "Your Rights",
+        "content": "In accordance with the GDPR, you have the following rights:\n\n- Right of access: obtain a copy of your personal data\n- Right to rectification: correct inaccurate or incomplete data\n- Right to erasure: request deletion of your data\n- Right to restriction: restrict the processing of your data\n- Right to portability: receive your data in a structured format\n- Right to object: object to the processing of your data\n- Right to withdraw consent: withdraw your consent at any time\n\nTo exercise these rights, contact us at: privacy@snapeous.io"
+      },
+      {
+        "title": "Contact",
+        "content": "For any questions regarding this privacy policy or the protection of your personal data, you can contact us:\n\nEmail: privacy@snapeous.io\nAddress: [Address to be completed]\n\nYou may also file a complaint with your local data protection authority."
+      }
+    ]
+  },
+
+  "terms": {
+    "title": "Terms of Service",
+    "sections": [
+      {
+        "title": "Purpose",
+        "content": "These Terms of Service (hereinafter \"Terms\") define the conditions of access and use of the Snapeous platform, accessible at snapeous.io. By creating an account or using the Service, you accept these Terms without reservation."
+      },
+      {
+        "title": "Service Description",
+        "content": "Snapeous is a SaaS platform for monitoring and analyzing backlinks that offers:\n\n- Real-time tracking of backlinks pointing to your website\n- Domain metrics analysis (DA, DR, Trust Flow, etc.)\n- Link profile health score\n- Personalized recommendations to improve your profile\n- Alerts for link status changes\n- Data and report exports"
+      },
+      {
+        "title": "Registration and Account",
+        "content": "To use the Service, you must create an account by providing accurate and up-to-date information. You are responsible for the confidentiality of your login credentials and all activities performed under your account. You agree to notify us immediately of any unauthorized use of your account."
+      },
+      {
+        "title": "Subscriptions and Payment",
+        "content": "Snapeous offers several subscription plans (Free, Starter, Pro, Agency). Paid subscriptions are billed monthly or annually according to your choice. Payments are securely processed by Stripe. You may cancel your subscription at any time. Cancellation takes effect at the end of the current billing period."
+      },
+      {
+        "title": "Free Trial",
+        "content": "Paid plans come with a 7-day free trial period. During this period, you have access to all features of the chosen plan. At the end of the trial period, your credit card will be charged unless you cancel beforehand."
+      },
+      {
+        "title": "Acceptable Use",
+        "content": "You agree to use the Service lawfully and in compliance with these Terms. The following is specifically prohibited:\n\n- Using the Service for illegal or unauthorized purposes\n- Attempting to compromise the security or integrity of the Service\n- Scraping or automated data extraction beyond API limits\n- Reselling or redistributing the Service without authorization\n- Using the Service to harass, defame, or infringe the rights of third parties"
+      },
+      {
+        "title": "Intellectual Property",
+        "content": "All elements of the Snapeous platform (software, design, text, trademarks, logos) are the exclusive property of Snapeous SAS. Your subscription grants you a personal, non-exclusive, and non-transferable right to use the Service for the duration of your subscription."
+      },
+      {
+        "title": "Limitation of Liability",
+        "content": "Snapeous provides the Service \"as is.\" We do not guarantee that the Service will be free of errors or interruptions. To the extent permitted by law, Snapeous's total liability shall not exceed the amounts paid by the user during the preceding 12 months."
+      },
+      {
+        "title": "Modification of Terms",
+        "content": "Snapeous reserves the right to modify these Terms at any time. Users will be notified of any changes by email or platform notification. Continued use of the Service after modification constitutes acceptance of the new Terms."
+      },
+      {
+        "title": "Termination",
+        "content": "You may terminate your account at any time from your account settings. Snapeous reserves the right to suspend or delete your account in case of violation of these Terms, after formal notice remaining without effect for 15 days."
+      },
+      {
+        "title": "Governing Law and Jurisdiction",
+        "content": "These Terms are governed by French law. In case of dispute, the parties will endeavor to find an amicable solution. Failing that, the competent courts of Paris shall have sole jurisdiction."
+      }
+    ]
+  },
+
+  "gdpr": {
+    "title": "GDPR Compliance",
+    "sections": [
+      {
+        "title": "Our GDPR Commitment",
+        "content": "Snapeous is committed to complying with the General Data Protection Regulation (GDPR - EU Regulation 2016/679) in all its personal data processing activities. We have implemented technical and organizational measures to ensure our practices are compliant."
+      },
+      {
+        "title": "Data Controller",
+        "content": "The data controller for personal data is:\n\nSnapeous SAS\n[Address to be completed]\nEmail: privacy@snapeous.io\n\nYou can contact our Data Protection Officer (DPO) at: dpo@snapeous.io"
+      },
+      {
+        "title": "Processing Records",
+        "content": "In accordance with Article 30 of the GDPR, we maintain a record of processing activities including:\n\n- User account management\n- Backlink analysis services\n- Subscription and billing management\n- Marketing communications (with consent)\n- Service analysis and improvement\n- Customer support management\n- Security and fraud prevention"
+      },
+      {
+        "title": "Cookies and Trackers",
+        "content": "We use different types of cookies:\n\n- Essential cookies: necessary for the website to function (authentication, language preferences). They do not require your consent.\n- Analytics cookies: to analyze website usage and improve our services. Only placed with your consent.\n- Marketing cookies: to personalize advertisements. Only placed with your consent.\n\nYou can manage your cookie preferences at any time from the consent banner or your browser settings."
+      },
+      {
+        "title": "Data Transfers Outside the EU",
+        "content": "Some of our subcontractors may process data outside the European Union. In such cases, we ensure that appropriate safeguards are in place:\n\n- Standard contractual clauses approved by the European Commission\n- Subcontractor certification (where applicable)\n- Additional security measures"
+      },
+      {
+        "title": "Impact Assessment",
+        "content": "In accordance with Article 35 of the GDPR, we carry out Data Protection Impact Assessments (DPIAs) for processing activities likely to result in a high risk to the rights and freedoms of data subjects."
+      },
+      {
+        "title": "Breach Notification",
+        "content": "In the event of a personal data breach likely to pose a risk to the rights and freedoms of individuals, we commit to:\n\n- Notifying the supervisory authority within 72 hours\n- Informing affected individuals if the risk is high\n- Documenting the breach and measures taken"
+      },
+      {
+        "title": "Exercising Your Rights",
+        "content": "To exercise your rights (access, rectification, erasure, restriction, portability, objection), you can:\n\n- Send an email to: privacy@snapeous.io\n- Use your account settings to modify or delete your data\n- Write to us at the postal address of Snapeous SAS\n\nWe commit to responding to your request within 30 days.\n\nIf you encounter any difficulty, you may file a complaint with your local data protection authority."
+      }
+    ]
+  }
+}

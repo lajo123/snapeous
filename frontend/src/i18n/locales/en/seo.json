@@ -1,0 +1,23 @@
+{
+  "landing.title": "Snapeous - Find Backlink Spots and Boost Your SEO",
+  "landing.description": "Snapeous is the all-in-one SEO tool to find backlink spots, analyze competitors and track your inbound links.",
+  "login.title": "Sign In - Snapeous",
+  "login.description": "Sign in to your Snapeous account to manage your SEO projects.",
+  "register.title": "Sign Up - Snapeous",
+  "register.description": "Create your Snapeous account and start optimizing your backlink strategy.",
+  "dashboard.title": "Dashboard - Snapeous",
+  "dashboard.description": "Manage your SEO projects from the Snapeous dashboard.",
+  "analysis.title": "Analysis - Snapeous",
+  "analysis.description": "Analyze your site and get personalized SEO recommendations.",
+  "spots.title": "Spots - Snapeous",
+  "spots.description": "Find and manage the best spots for your backlinks.",
+  "backlinks.title": "Backlinks - Snapeous",
+  "backlinks.description": "Track and analyze your backlink profile.",
+  "search.title": "SERP Search - Snapeous",
+  "search.description": "Run Google searches to find backlink opportunities.",
+  "settings.title": "Settings - Snapeous",
+  "settings.description": "Configure your API keys and preferences.",
+  "keywords.title": "Keywords - Snapeous",
+  "keywords.description": "Track keyword positions and organic search performance.",
+  "og.siteName": "Snapeous"
+}

@@ -1,25 +1,27 @@
 import { Link2, Activity, Globe, Shield } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function BacklinkKPICards({ stats }) {
+  const { t } = useTranslation('backlinks');
   if (!stats) return null;
 
   const cards = [
     {
-      label: 'Volume Global',
+      label: t('kpi.globalVolume'),
       icon: Link2,
       iconBg: 'bg-blue-100',
       iconColor: 'text-blue-600',
       primary: stats.total_backlinks,
-      primaryLabel: 'liens',
-      secondary: `${stats.unique_domains} domaines uniques`,
+      primaryLabel: t('kpi.links'),
+      secondary: t('kpi.uniqueDomains', { count: stats.unique_domains }),
     },
     {
-      label: 'Sante des Liens',
+      label: t('kpi.linkHealth'),
       icon: Activity,
-      iconBg: 'bg-emerald-100',
-      iconColor: 'text-emerald-600',
+      iconBg: 'bg-brand-100',
+      iconColor: 'text-brand-600',
       primary: `${stats.active_percentage}%`,
-      primaryLabel: 'actifs',
+      primaryLabel: t('kpi.active'),
       healthBar: {
         ok: stats.http_200_count,
         redirect: stats.http_301_count,
@@ -28,21 +30,21 @@ export default function BacklinkKPICards({ stats }) {
       },
     },
     {
-      label: 'Indexation',
+      label: t('kpi.indexation'),
       icon: Globe,
       iconBg: 'bg-violet-100',
       iconColor: 'text-violet-600',
       primary: `${stats.indexed_percentage}%`,
-      primaryLabel: 'indexes',
-      secondary: `${stats.indexed_count} indexes / ${stats.not_checked_count} non verifies`,
+      primaryLabel: t('kpi.indexed'),
+      secondary: t('kpi.indexedCount', { indexed: stats.indexed_count, notChecked: stats.not_checked_count }),
     },
     {
-      label: "Profil d'Autorite",
+      label: t('kpi.authorityProfile'),
       icon: Shield,
       iconBg: 'bg-amber-100',
       iconColor: 'text-amber-600',
       primary: stats.avg_domain_rank != null ? Math.round(stats.avg_domain_rank) : '-',
-      primaryLabel: 'DA moyen',
+      primaryLabel: t('kpi.avgDA'),
       dofollowBar: {
         dofollow: stats.dofollow_percentage,
         nofollow: 100 - stats.dofollow_percentage,
@@ -73,7 +75,7 @@ export default function BacklinkKPICards({ stats }) {
             <div className="mt-2">
               <div className="flex h-2 rounded-full overflow-hidden bg-gray-100">
                 <div
-                  className="bg-emerald-500"
+                  className="bg-brand-500"
                   style={{ width: `${(card.healthBar.ok / card.healthBar.total) * 100}%` }}
                 />
                 <div
@@ -87,13 +89,13 @@ export default function BacklinkKPICards({ stats }) {
               </div>
               <div className="flex items-center gap-3 mt-1.5">
                 <span className="flex items-center gap-1 text-[10px] text-[#6b6560]">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />{card.healthBar.ok} OK
+                  <span className="w-2 h-2 rounded-full bg-brand-500" />{card.healthBar.ok} OK
                 </span>
                 <span className="flex items-center gap-1 text-[10px] text-[#6b6560]">
                   <span className="w-2 h-2 rounded-full bg-blue-500" />{card.healthBar.redirect} Redir.
                 </span>
                 <span className="flex items-center gap-1 text-[10px] text-[#6b6560]">
-                  <span className="w-2 h-2 rounded-full bg-red-500" />{card.healthBar.lost} Perdus
+                  <span className="w-2 h-2 rounded-full bg-red-500" />{card.healthBar.lost} {t('kpi.lost')}
                 </span>
               </div>
             </div>
@@ -102,12 +104,12 @@ export default function BacklinkKPICards({ stats }) {
           {card.dofollowBar && (
             <div className="mt-2">
               <div className="flex h-2 rounded-full overflow-hidden bg-gray-100">
-                <div className="bg-emerald-500" style={{ width: `${card.dofollowBar.dofollow}%` }} />
+                <div className="bg-brand-500" style={{ width: `${card.dofollowBar.dofollow}%` }} />
                 <div className="bg-gray-400" style={{ width: `${card.dofollowBar.nofollow}%` }} />
               </div>
               <div className="flex items-center gap-3 mt-1.5">
                 <span className="flex items-center gap-1 text-[10px] text-[#6b6560]">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />{Math.round(card.dofollowBar.dofollow)}% Dofollow
+                  <span className="w-2 h-2 rounded-full bg-brand-500" />{Math.round(card.dofollowBar.dofollow)}% Dofollow
                 </span>
                 <span className="flex items-center gap-1 text-[10px] text-[#6b6560]">
                   <span className="w-2 h-2 rounded-full bg-gray-400" />{Math.round(card.dofollowBar.nofollow)}% Nofollow

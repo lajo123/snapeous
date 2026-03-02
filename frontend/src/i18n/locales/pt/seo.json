@@ -1,0 +1,23 @@
+{
+  "landing.title": "Snapeous - Encontre Spots de Backlinks e Impulsione seu SEO",
+  "landing.description": "Snapeous e a ferramenta de SEO completa para encontrar spots de backlinks, analisar concorrentes e acompanhar seus links recebidos.",
+  "login.title": "Entrar - Snapeous",
+  "login.description": "Entre na sua conta Snapeous para gerenciar seus projetos de SEO.",
+  "register.title": "Cadastrar - Snapeous",
+  "register.description": "Crie sua conta Snapeous e comece a otimizar sua estrategia de backlinks.",
+  "dashboard.title": "Painel - Snapeous",
+  "dashboard.description": "Gerencie seus projetos de SEO pelo painel do Snapeous.",
+  "analysis.title": "Analise - Snapeous",
+  "analysis.description": "Analise seu site e obtenha recomendacoes personalizadas de SEO.",
+  "spots.title": "Spots - Snapeous",
+  "spots.description": "Encontre e gerencie os melhores spots para seus backlinks.",
+  "backlinks.title": "Backlinks - Snapeous",
+  "backlinks.description": "Acompanhe e analise seu perfil de backlinks.",
+  "search.title": "Busca SERP - Snapeous",
+  "search.description": "Execute buscas no Google para encontrar oportunidades de backlinks.",
+  "settings.title": "Configuracoes - Snapeous",
+  "settings.description": "Configure suas chaves de API e preferencias.",
+  "keywords.title": "Palavras-chave - Snapeous",
+  "keywords.description": "Acompanhe posicoes de palavras-chave e desempenho na busca organica.",
+  "og.siteName": "Snapeous"
+}

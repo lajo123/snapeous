@@ -1,0 +1,92 @@
+{
+  "category": {
+    "blog_comments": "Comentarios em Blogs",
+    "forums": "Forums",
+    "directories": "Diretorios",
+    "guestbooks": "Livros de Visitas",
+    "profiles": "Perfis",
+    "social": "Redes Sociais",
+    "authority": "Sites de Autoridade",
+    "serp_exploration": "Exploracao SERP",
+    "files": "Arquivos",
+    "guest_posts": "Guest Posts",
+    "wikis": "Wikis",
+    "ereputation": "E-reputacao",
+    "web20": "Web 2.0"
+  },
+  "difficulty": {
+    "easy": "Facil",
+    "medium": "Medio",
+    "hard": "Dificil"
+  },
+  "linkType": {
+    "dofollow": "Dofollow",
+    "nofollow": "Nofollow",
+    "ugc": "UGC",
+    "sponsored": "Patrocinado",
+    "mix": "Misto"
+  },
+  "spotStatus": {
+    "discovered": "Descoberto",
+    "qualified": "Qualificado",
+    "selected": "Selecionado",
+    "rejected": "Rejeitado",
+    "contacted": "Contatado",
+    "link_posted": "Link Publicado",
+    "failed": "Falhou"
+  },
+  "searchStatus": {
+    "pending": "Pendente",
+    "running": "Em andamento",
+    "completed": "Concluido",
+    "failed": "Falhou"
+  },
+  "backlinkStatus": {
+    "active": "Ativo",
+    "lost": "Perdido",
+    "pending": "Pendente"
+  },
+  "backlinkLinkType": {
+    "dofollow": "Dofollow",
+    "nofollow": "Nofollow"
+  },
+  "indexation": {
+    "indexed": "Indexado",
+    "notIndexed": "Nao indexado",
+    "notChecked": "Nao verificado"
+  },
+  "configured": "Configurado",
+  "notConfigured": "Nao configurado",
+  "cancel": "Cancelar",
+  "delete": "Excluir",
+  "confirm": "Confirmar",
+  "save": "Salvar",
+  "create": "Criar",
+  "edit": "Editar",
+  "close": "Fechar",
+  "loading": "Carregando...",
+  "noResults": "Nenhum resultado",
+  "error": "Erro",
+  "success": "Sucesso",
+  "viewAll": "Ver tudo",
+  "actions": "Acoes",
+  "status": "Status",
+  "type": "Tipo",
+  "name": "Nome",
+  "domain": "Dominio",
+  "date": "Data",
+  "url": "URL",
+  "search": "Buscar",
+  "export": "Exportar",
+  "filter": "Filtrar",
+  "all": "Todos",
+  "yes": "Sim",
+  "no": "Nao",
+  "back": "Voltar",
+  "next": "Proximo",
+  "previous": "Anterior",
+  "of": "de",
+  "perPage": "por pagina",
+  "total": "Total",
+  "noData": "Sem dados"
+}

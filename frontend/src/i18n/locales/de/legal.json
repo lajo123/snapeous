@@ -1,0 +1,160 @@
+{
+  "backToHome": "Zurueck zur Startseite",
+  "lastUpdated": "Letzte Aktualisierung: {{date}}",
+
+  "legalNotice": {
+    "title": "Impressum",
+    "sections": [
+      {
+        "title": "Herausgeber der Website",
+        "content": "Die Website Snapeous (nachfolgend \"die Website\") wird herausgegeben von Snapeous SAS, mit einem Stammkapital von 1.000 Euro, eingetragen im Handelsregister unter der Nummer [RCS zu vervollstaendigen].\n\nSitz: [Adresse zu vervollstaendigen]\nUmsatzsteuer-ID: [USt-ID zu vervollstaendigen]\nVerantwortlicher: [Name zu vervollstaendigen]\nKontakt-E-Mail: contact@snapeous.io"
+      },
+      {
+        "title": "Hosting",
+        "content": "Die Website wird gehostet von:\n[Name des Hosters]\n[Adresse des Hosters]\n[Telefon des Hosters]"
+      },
+      {
+        "title": "Geistiges Eigentum",
+        "content": "Alle Inhalte der Website (Texte, Bilder, Grafiken, Logos, Icons, Software usw.) sind durch franzoesische und internationale Gesetze zum Schutz geistigen Eigentums geschuetzt. Jede Vervielfaeltigung, Darstellung, Aenderung, Veroeffentlichung oder Anpassung von Teilen der Website-Elemente ist ohne vorherige schriftliche Genehmigung von Snapeous SAS untersagt, unabhaengig von den verwendeten Mitteln oder Verfahren."
+      },
+      {
+        "title": "Haftung",
+        "content": "Snapeous SAS bemueht sich, die Richtigkeit und Aktualitaet der auf der Website veroeffentlichten Informationen sicherzustellen. Snapeous SAS kann jedoch keine Garantie fuer die Richtigkeit, Genauigkeit oder Vollstaendigkeit der auf der Website bereitgestellten Informationen uebernehmen. Snapeous SAS lehnt daher jede Haftung fuer Ungenauigkeiten, Fehler oder Auslassungen in Bezug auf die auf der Website verfuegbaren Informationen ab."
+      },
+      {
+        "title": "Hyperlinks",
+        "content": "Die Website kann Hyperlinks zu anderen Websites enthalten. Snapeous SAS uebt keine Kontrolle ueber diese Websites aus und lehnt jede Haftung fuer deren Inhalte ab. Die Entscheidung, diesen Links zu folgen, liegt in der alleinigen Verantwortung des Nutzers."
+      }
+    ]
+  },
+
+  "privacy": {
+    "title": "Datenschutzerklaerung",
+    "sections": [
+      {
+        "title": "Einleitung",
+        "content": "Snapeous SAS (nachfolgend \"Snapeous\", \"wir\", \"unser\") verpflichtet sich zum Schutz der Privatsphaere der Nutzer seiner Plattform. Diese Datenschutzerklaerung beschreibt, wie wir Ihre personenbezogenen Daten gemaess der Datenschutz-Grundverordnung (DSGVO) und den geltenden Datenschutzgesetzen erheben, verwenden, speichern und schuetzen."
+      },
+      {
+        "title": "Erhobene Daten",
+        "content": "Wir erheben folgende Datenkategorien:\n\n- Identifikationsdaten: Name, Vorname, E-Mail-Adresse, Passwort (verschluesselt)\n- Rechnungsdaten: Rechnungsadresse, Zahlungsinformationen (verarbeitet durch Stripe)\n- Nutzungsdaten: besuchte Seiten, genutzte Funktionen, erstellte Projekte, analysierte Backlinks\n- Technische Daten: IP-Adresse, Browsertyp, Betriebssystem, Cookies\n- Kommunikationsdaten: Verlauf der Support-Kommunikation"
+      },
+      {
+        "title": "Zwecke der Verarbeitung",
+        "content": "Ihre Daten werden fuer folgende Zwecke verarbeitet:\n\n- Bereitstellung und Verwaltung Ihres Benutzerkontos\n- Durchfuehrung von Backlink-Analyse- und Ueberwachungsdiensten\n- Verwaltung von Rechnungsstellung und Abonnements\n- Versand von servicebezogenen Benachrichtigungen und Warnungen\n- Verbesserung unserer Dienste und der Nutzererfahrung\n- Marketingkommunikation (mit Ihrer Zustimmung)\n- Erfuellung unserer gesetzlichen Pflichten"
+      },
+      {
+        "title": "Rechtsgrundlage der Verarbeitung",
+        "content": "Die Datenverarbeitung basiert auf:\n\n- Vertragserfuellung: Verwaltung Ihres Kontos und Erbringung der Dienste\n- Einwilligung: Marketingkommunikation und nicht-essentielle Cookies\n- Berechtigtes Interesse: Verbesserung unserer Dienste, Plattformsicherheit\n- Gesetzliche Verpflichtung: Aufbewahrung von Rechnungsdaten"
+      },
+      {
+        "title": "Aufbewahrungsfrist",
+        "content": "Ihre personenbezogenen Daten werden fuer den zur Erfuellung der Zwecke erforderlichen Zeitraum aufbewahrt:\n\n- Kontodaten: waehrend der Dauer Ihrer Registrierung, dann 3 Jahre nach Kontoloeschung\n- Rechnungsdaten: 10 Jahre gemaess buchhalterischen Pflichten\n- Browsing-Daten: maximal 13 Monate\n- Cookies: gemaess ihrer Lebensdauer (siehe DSGVO-Abschnitt)"
+      },
+      {
+        "title": "Datenweitergabe",
+        "content": "Ihre Daten koennen weitergegeben werden an:\n\n- Stripe: fuer die Zahlungsabwicklung\n- Unseren Hosting-Anbieter: fuer das Hosting der Plattform\n- Analysedienste: zur Verbesserung unserer Dienste (anonymisierte Daten)\n\nWir verkaufen Ihre personenbezogenen Daten niemals an Dritte."
+      },
+      {
+        "title": "Sicherheit",
+        "content": "Wir setzen angemessene technische und organisatorische Sicherheitsmassnahmen ein, um Ihre personenbezogenen Daten vor unbefugtem Zugriff, Aenderung, Offenlegung oder Zerstoerung zu schuetzen. Dazu gehoeren die Verschluesselung von Daten bei der Uebertragung (TLS/SSL), Passwortverschluesselung und strenge Zugriffskontrollen."
+      },
+      {
+        "title": "Ihre Rechte",
+        "content": "Gemaess der DSGVO haben Sie folgende Rechte:\n\n- Auskunftsrecht: Erhalt einer Kopie Ihrer personenbezogenen Daten\n- Recht auf Berichtigung: Korrektur ungenauer oder unvollstaendiger Daten\n- Recht auf Loeschung: Antrag auf Loeschung Ihrer Daten\n- Recht auf Einschraenkung: Einschraenkung der Verarbeitung Ihrer Daten\n- Recht auf Datenuebertragbarkeit: Erhalt Ihrer Daten in einem strukturierten Format\n- Widerspruchsrecht: Widerspruch gegen die Verarbeitung Ihrer Daten\n- Recht auf Widerruf der Einwilligung: jederzeitiger Widerruf Ihrer Einwilligung\n\nUm diese Rechte auszuueben, kontaktieren Sie uns unter: privacy@snapeous.io"
+      },
+      {
+        "title": "Kontakt",
+        "content": "Bei Fragen zu dieser Datenschutzerklaerung oder zum Schutz Ihrer personenbezogenen Daten koennen Sie uns kontaktieren:\n\nE-Mail: privacy@snapeous.io\nAdresse: [Adresse zu vervollstaendigen]\n\nSie koennen auch eine Beschwerde bei Ihrer zustaendigen Datenschutzbehoerde einreichen."
+      }
+    ]
+  },
+
+  "terms": {
+    "title": "Allgemeine Nutzungsbedingungen",
+    "sections": [
+      {
+        "title": "Gegenstand",
+        "content": "Diese Allgemeinen Nutzungsbedingungen (nachfolgend \"AGB\") legen die Bedingungen fuer den Zugang und die Nutzung der Snapeous-Plattform fest, erreichbar unter snapeous.io. Mit der Erstellung eines Kontos oder der Nutzung des Dienstes akzeptieren Sie diese AGB vorbehaltlos."
+      },
+      {
+        "title": "Dienstbeschreibung",
+        "content": "Snapeous ist eine SaaS-Plattform zur Ueberwachung und Analyse von Backlinks, die Folgendes bietet:\n\n- Echtzeit-Tracking von Backlinks, die auf Ihre Website verweisen\n- Analyse von Domain-Metriken (DA, DR, Trust Flow usw.)\n- Gesundheitsbewertung des Linkprofils\n- Personalisierte Empfehlungen zur Verbesserung Ihres Profils\n- Warnungen bei Aenderungen des Linkstatus\n- Daten- und Berichtsexporte"
+      },
+      {
+        "title": "Registrierung und Konto",
+        "content": "Um den Dienst zu nutzen, muessen Sie ein Konto erstellen und dabei genaue und aktuelle Informationen angeben. Sie sind fuer die Vertraulichkeit Ihrer Zugangsdaten und alle unter Ihrem Konto durchgefuehrten Aktivitaeten verantwortlich. Sie verpflichten sich, uns jede unbefugte Nutzung Ihres Kontos unverzueglich zu melden."
+      },
+      {
+        "title": "Abonnements und Zahlung",
+        "content": "Snapeous bietet verschiedene Abonnementplaene an (Free, Starter, Pro, Agency). Kostenpflichtige Abonnements werden monatlich oder jaehrlich nach Ihrer Wahl abgerechnet. Zahlungen werden sicher ueber Stripe abgewickelt. Sie koennen Ihr Abonnement jederzeit kuendigen. Die Kuendigung wird zum Ende des aktuellen Abrechnungszeitraums wirksam."
+      },
+      {
+        "title": "Kostenlose Testphase",
+        "content": "Kostenpflichtige Plaene beinhalten eine 7-taegige kostenlose Testphase. Waehrend dieser Zeit haben Sie Zugang zu allen Funktionen des gewaehlten Plans. Am Ende der Testphase wird Ihre Kreditkarte belastet, sofern Sie nicht vorher kuendigen."
+      },
+      {
+        "title": "Zulassige Nutzung",
+        "content": "Sie verpflichten sich, den Dienst rechtmaessig und in Uebereinstimmung mit diesen AGB zu nutzen. Insbesondere ist Folgendes untersagt:\n\n- Nutzung des Dienstes fuer illegale oder nicht autorisierte Zwecke\n- Versuch, die Sicherheit oder Integritaet des Dienstes zu beeintraechtigen\n- Scraping oder automatisierte Datenextraktion ueber die API-Grenzen hinaus\n- Weiterverkauf oder Weiterverteilung des Dienstes ohne Genehmigung\n- Nutzung des Dienstes zur Belaestigung, Verleumdung oder Verletzung der Rechte Dritter"
+      },
+      {
+        "title": "Geistiges Eigentum",
+        "content": "Alle Elemente der Snapeous-Plattform (Software, Design, Texte, Marken, Logos) sind ausschliessliches Eigentum von Snapeous SAS. Ihr Abonnement gewaehrt Ihnen ein persoenliches, nicht-exklusives und nicht-uebertragbares Nutzungsrecht am Dienst fuer die Dauer Ihres Abonnements."
+      },
+      {
+        "title": "Haftungsbeschraenkung",
+        "content": "Snapeous stellt den Dienst \"wie besehen\" bereit. Wir garantieren nicht, dass der Dienst fehlerfrei oder unterbrechungsfrei ist. Im gesetzlich zulaessigen Rahmen uebersteigt die Gesamthaftung von Snapeous nicht die vom Nutzer in den vorangegangenen 12 Monaten gezahlten Betraege."
+      },
+      {
+        "title": "Aenderung der AGB",
+        "content": "Snapeous behaelt sich das Recht vor, diese AGB jederzeit zu aendern. Nutzer werden ueber Aenderungen per E-Mail oder Plattformbenachrichtigung informiert. Die fortgesetzte Nutzung des Dienstes nach einer Aenderung gilt als Annahme der neuen AGB."
+      },
+      {
+        "title": "Kuendigung",
+        "content": "Sie koennen Ihr Konto jederzeit ueber Ihre Kontoeinstellungen kuendigen. Snapeous behaelt sich das Recht vor, Ihr Konto bei Verstoss gegen diese AGB zu sperren oder zu loeschen, nachdem eine Abmahnung 15 Tage lang ohne Wirkung geblieben ist."
+      },
+      {
+        "title": "Anwendbares Recht und Gerichtsstand",
+        "content": "Diese AGB unterliegen franzoesischem Recht. Im Streitfall werden die Parteien eine guetliche Loesung anstreben. Andernfalls sind ausschliesslich die zustaendigen Gerichte in Paris zustaendig."
+      }
+    ]
+  },
+
+  "gdpr": {
+    "title": "DSGVO-Konformitaet",
+    "sections": [
+      {
+        "title": "Unser DSGVO-Engagement",
+        "content": "Snapeous verpflichtet sich zur Einhaltung der Datenschutz-Grundverordnung (DSGVO - EU-Verordnung 2016/679) bei allen Verarbeitungen personenbezogener Daten. Wir haben technische und organisatorische Massnahmen ergriffen, um die Konformitaet unserer Praktiken zu gewaehrleisten."
+      },
+      {
+        "title": "Verantwortlicher",
+        "content": "Der Verantwortliche fuer die Verarbeitung personenbezogener Daten ist:\n\nSnapeous SAS\n[Adresse zu vervollstaendigen]\nE-Mail: privacy@snapeous.io\n\nSie koennen unseren Datenschutzbeauftragten (DSB) kontaktieren unter: dpo@snapeous.io"
+      },
+      {
+        "title": "Verarbeitungsverzeichnis",
+        "content": "Gemaess Artikel 30 der DSGVO fuehren wir ein Verzeichnis der Verarbeitungstaetigkeiten, das umfasst:\n\n- Verwaltung von Benutzerkonten\n- Backlink-Analysedienste\n- Abonnement- und Rechnungsverwaltung\n- Marketingkommunikation (mit Einwilligung)\n- Service-Analyse und -Verbesserung\n- Kundensupport-Management\n- Sicherheit und Betrugspraevention"
+      },
+      {
+        "title": "Cookies und Tracker",
+        "content": "Wir verwenden verschiedene Arten von Cookies:\n\n- Essentielle Cookies: fuer den Betrieb der Website erforderlich (Authentifizierung, Spracheinstellungen). Sie benoetigen keine Einwilligung.\n- Analyse-Cookies: zur Analyse der Website-Nutzung und Verbesserung unserer Dienste. Nur mit Ihrer Einwilligung gesetzt.\n- Marketing-Cookies: zur Personalisierung von Werbung. Nur mit Ihrer Einwilligung gesetzt.\n\nSie koennen Ihre Cookie-Praeferenzen jederzeit ueber das Einwilligungsbanner oder Ihre Browsereinstellungen verwalten."
+      },
+      {
+        "title": "Datenuebermittlung ausserhalb der EU",
+        "content": "Einige unserer Auftragsverarbeiter koennen Daten ausserhalb der Europaeischen Union verarbeiten. In solchen Faellen stellen wir sicher, dass geeignete Garantien vorhanden sind:\n\n- Von der Europaeischen Kommission genehmigte Standardvertragsklauseln\n- Zertifizierung des Auftragsverarbeiters (falls zutreffend)\n- Zusaetzliche Sicherheitsmassnahmen"
+      },
+      {
+        "title": "Folgenabschaetzung",
+        "content": "Gemaess Artikel 35 der DSGVO fuehren wir Datenschutz-Folgenabschaetzungen (DSFA) fuer Verarbeitungen durch, die voraussichtlich ein hohes Risiko fuer die Rechte und Freiheiten der betroffenen Personen mit sich bringen."
+      },
+      {
+        "title": "Meldung von Verletzungen",
+        "content": "Im Falle einer Verletzung des Schutzes personenbezogener Daten, die ein Risiko fuer die Rechte und Freiheiten von Personen darstellt, verpflichten wir uns:\n\n- Die Aufsichtsbehoerde innerhalb von 72 Stunden zu benachrichtigen\n- Betroffene Personen zu informieren, wenn das Risiko hoch ist\n- Die Verletzung und die ergriffenen Massnahmen zu dokumentieren"
+      },
+      {
+        "title": "Ausuebung Ihrer Rechte",
+        "content": "Um Ihre Rechte (Auskunft, Berichtigung, Loeschung, Einschraenkung, Datenuebertragbarkeit, Widerspruch) auszuueben, koennen Sie:\n\n- Eine E-Mail senden an: privacy@snapeous.io\n- Ihre Kontoeinstellungen nutzen, um Ihre Daten zu aendern oder zu loeschen\n- Uns postalisch an die Adresse von Snapeous SAS schreiben\n\nWir verpflichten uns, Ihre Anfrage innerhalb von 30 Tagen zu beantworten.\n\nBei Schwierigkeiten koennen Sie eine Beschwerde bei Ihrer zustaendigen Datenschutzbehoerde einreichen."
+      }
+    ]
+  }
+}

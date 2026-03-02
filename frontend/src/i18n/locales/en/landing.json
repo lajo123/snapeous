@@ -1,0 +1,211 @@
+{
+  "nav": {
+    "features": "Features",
+    "howItWorks": "How it works",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "login": "Log in",
+    "freeTrial": "Free trial",
+    "dashboard": "Dashboard"
+  },
+  "hero": {
+    "badge": "Smart backlink monitoring",
+    "titleLine1": "Track your",
+    "titleHighlight": "backlinks",
+    "titleLine2": ", intelligently.",
+    "description": "Real-time monitoring, DA/DR analysis, link profile health score and personalized recommendations to boost your SEO.",
+    "cta": "Analyze my site for free",
+    "demo": "Watch the demo"
+  },
+  "mockup": {
+    "activeBacklinks": "Active backlinks",
+    "healthScore": "Health score",
+    "avgDA": "Avg DA",
+    "avgDR": "Avg DR",
+    "recentBacklinks": "Recent backlinks",
+    "lost": "Lost",
+    "thisWeek": "+86 this week",
+    "viewAll": "View all",
+    "dofollowNofollow": "78% dofollow · 22% nofollow"
+  },
+  "socialProof": {
+    "title": "Used by demanding SEO teams"
+  },
+  "features": {
+    "sectionLabel": "Features",
+    "title": "Your link profile, under total control",
+    "subtitle": "Monitoring, analysis, recommendations: everything you need for a healthy and high-performing backlink profile.",
+    "items": [
+      {
+        "title": "Real-time monitoring",
+        "desc": "Monitor every backlink 24/7. Instantly detect lost links, status changes (nofollow, redirect, 404) and anchor modifications."
+      },
+      {
+        "title": "DA / DR analysis",
+        "desc": "Get the key metrics of each domain: Domain Authority, Domain Rating, Trust Flow, Citation Flow, spam score and authority history."
+      },
+      {
+        "title": "Profile health score",
+        "desc": "A global score evaluates the quality of your link profile: dofollow/nofollow ratio, anchor diversity, TLD distribution and acquisition velocity."
+      },
+      {
+        "title": "Smart recommendations",
+        "desc": "Our engine analyzes your profile and your competitors' to recommend which types of backlinks to prioritize: guest posts, directories, broken links, PBN."
+      },
+      {
+        "title": "Advanced analytics",
+        "desc": "Visualize the evolution of your backlinks, anchor distribution, referring domains, C-class IPs and the impact on your rankings."
+      },
+      {
+        "title": "Alerts & reports",
+        "desc": "Receive email notifications when a link drops or a new backlink is detected. Export PDF reports for your clients."
+      }
+    ]
+  },
+  "howItWorks": {
+    "sectionLabel": "How it works",
+    "title": "Up and running in 3 minutes",
+    "subtitle": "Add your domain. Snapeous analyzes, monitors and guides you.",
+    "steps": [
+      {
+        "title": "Add your domain",
+        "desc": "Enter your site's URL. Snapeous automatically launches a full crawl and retrieves all your existing backlinks."
+      },
+      {
+        "title": "Automatic analysis",
+        "desc": "Our engine evaluates each link: HTTP status, rel attribute, anchor, source domain DA/DR, topical relevance and SEO potential."
+      },
+      {
+        "title": "Track & optimize",
+        "desc": "Check your dashboard, receive real-time alerts and follow recommendations to strengthen your link profile."
+      }
+    ]
+  },
+  "metrics": {
+    "backlinkMonitored": "Backlinks monitored",
+    "uptimeMonitoring": "Uptime monitoring",
+    "daDrAnalysis": "DA/DR analysis",
+    "activeProjects": "Active projects"
+  },
+  "testimonials": {
+    "sectionLabel": "Testimonials",
+    "title": "What our users say",
+    "items": [
+      {
+        "name": "Marie Laurent",
+        "role": "SEO Consultant, DigiVox",
+        "text": "Thanks to real-time monitoring, we detected and recovered 12 lost backlinks in one month. The ROI is immediate."
+      },
+      {
+        "name": "Thomas Durand",
+        "role": "Head of SEO, NetRank",
+        "text": "The integrated DA/DR analysis saves us from juggling between 3 tools. We see the quality of each incoming link at a glance."
+      },
+      {
+        "name": "Sophie Chen",
+        "role": "Founder, LinkForge Agency",
+        "text": "The smart recommendations changed our strategy. We know exactly which type of backlinks to acquire first."
+      }
+    ]
+  },
+  "pricing": {
+    "sectionLabel": "Pricing",
+    "title": "Simple, transparent, no surprises",
+    "subtitle": "Start for free. Try 7 days free on paid plans. No commitment.",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "annualDiscount": "-20%",
+    "recommended": "Recommended",
+    "free": "Free",
+    "perMonth": "/mo",
+    "billedAnnually": "Billed {{amount}}€/year",
+    "trialBadge": "7-day free trial",
+    "plans": [
+      {
+        "name": "Free",
+        "sub": "To discover Snapeous",
+        "items": ["1 project", "50 monitored backlinks", "Basic dashboard", "Basic email alerts"],
+        "cta": "Get started for free"
+      },
+      {
+        "name": "Starter",
+        "sub": "For freelancers",
+        "items": ["3 projects", "500 monitored backlinks", "Full analysis", "Toxic link detection", "CSV export", "Full email alerts"],
+        "cta": "Start free trial"
+      },
+      {
+        "name": "Pro",
+        "sub": "For freelancers & teams",
+        "items": ["10 projects", "5,000 monitored backlinks", "Everything in Starter", "AI recommendations", "3 competitors", "PDF reports", "GSC integration", "API access"],
+        "cta": "Start free trial"
+      },
+      {
+        "name": "Agency",
+        "sub": "For SEO agencies",
+        "items": ["Unlimited projects", "25,000 monitored backlinks", "Everything in Pro", "Unlimited competitors", "Sub-accounts", "Scheduled reports", "Priority support", "Advanced API"],
+        "cta": "Start free trial"
+      }
+    ]
+  },
+  "faq": {
+    "sectionLabel": "FAQ",
+    "title": "Frequently asked questions",
+    "items": [
+      {
+        "q": "How does backlink monitoring work?",
+        "a": "Snapeous regularly crawls pages pointing to your site to check each link's status (200, 301, 404, etc.), rel attribute (dofollow/nofollow), anchor and effective link presence. Any change triggers an alert."
+      },
+      {
+        "q": "What domain metrics are available?",
+        "a": "Snapeous displays Domain Authority (DA), Domain Rating (DR), Trust Flow, Citation Flow, Spam Score, IP address, backlink count, referring domains and indexation status for each analyzed domain."
+      },
+      {
+        "q": "How are recommendations generated?",
+        "a": "Our algorithm analyzes the composition of your profile (link types, anchors, TLDs, topics) and compares it to the profiles of top-ranking sites in your niche. It identifies gaps and recommends actions to prioritize."
+      },
+      {
+        "q": "What's the difference with Ahrefs or Moz?",
+        "a": "Snapeous focuses on active monitoring and actionable recommendations. Rather than a passive analysis tool, it's a copilot that alerts you in real-time and guides you to improve your link profile."
+      },
+      {
+        "q": "Can I export my data?",
+        "a": "Yes, all plans allow CSV export of backlinks and metrics. Pro and Agency plans also offer customized PDF reports with your branding, perfect for client presentations."
+      },
+      {
+        "q": "Is there a commitment?",
+        "a": "No, all plans are commitment-free. You can cancel at any time. The Starter plan is free forever and paid plans include a 14-day trial."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Take back control of your backlinks",
+    "description": "Real-time monitoring, DA/DR analysis, personalized recommendations. Everything you need for a high-performing link profile.",
+    "button": "Analyze my site for free",
+    "note": "Free forever. No credit card required."
+  },
+  "footer": {
+    "description": "The smart platform to track, analyze and optimize your backlink profile.",
+    "product": "Product",
+    "productLinks": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "faq": "FAQ",
+      "changelog": "Changelog"
+    },
+    "resources": "Resources",
+    "resourceLinks": {
+      "blog": "Blog",
+      "netlinkingGuide": "Link building guide",
+      "apiDocs": "API documentation",
+      "support": "Support"
+    },
+    "legal": "Legal",
+    "legalLinks": {
+      "legalNotice": "Legal notice",
+      "privacy": "Privacy policy",
+      "terms": "Terms of service",
+      "gdpr": "GDPR"
+    },
+    "copyright": "© {{year}} Snapeous. All rights reserved."
+  }
+}

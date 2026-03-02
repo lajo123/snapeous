@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { Search, Download, RefreshCw, Trash2, Globe, BarChart3, FileText, ExternalLink, CheckCircle, XCircle, MinusCircle, Plus, Upload, Filter, ChevronDown, ChevronUp } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -7,7 +8,7 @@ import {
   updateBacklink, deleteBacklink, deleteAllBacklinks, exportBacklinks,
   checkBacklink, checkAllBacklinks, checkBacklinkIndexation, fetchBacklinkMetrics,
 } from '@/lib/api';
-import { cn, BACKLINK_STATUS_LABELS, BACKLINK_STATUS_COLORS, BACKLINK_LINK_TYPE_LABELS, BACKLINK_LINK_TYPE_COLORS, getHttpStatusColor, formatDate, truncateUrl } from '@/lib/utils';
+import { cn, BACKLINK_STATUS_COLORS, BACKLINK_LINK_TYPE_COLORS, getHttpStatusColor, formatDate, truncateUrl } from '@/lib/utils';
 import AddBacklinkModal from './AddBacklinkModal';
 import ImportBacklinksModal from './ImportBacklinksModal';
 import EditBacklinkModal from './EditBacklinkModal';
@@ -18,12 +19,13 @@ function getHttpLabel(code) {
   if (!code) return '?';
   if (code >= 200 && code < 300) return `${code} OK`;
   if (code === 301 || code === 302) return `${code} Redir.`;
-  if (code === 404) return `${code} Perdu`;
+  if (code === 404) return `${code} Lost`;
   if (code >= 400) return `${code} Err.`;
   return String(code);
 }
 
 export default function LinksTab({ projectId }) {
+  const { t, i18n } = useTranslation(['backlinks', 'common']);
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({ status: '', link_type: '', search: '', is_indexed: '' });
@@ -63,75 +65,76 @@ export default function LinksTab({ projectId }) {
   const createMutation = useMutation({
     mutationFn: (data) => createBacklink(projectId, data),
     onSuccess: () => {
-      toast.success('Backlink cree avec succes');
-      toast.info('Analyse en cours (metriques + indexation)...', { duration: 4000 });
+      toast.success(t('backlinks:toast.created'));
+      toast.info(t('backlinks:toast.analyzingMetrics'), { duration: 4000 });
       setShowAddModal(false);
       invalidateAll();
     },
     onError: (error) => {
       if (error.response?.status === 409) {
-        toast.error('Ce backlink existe deja dans le projet');
+        toast.error(t('backlinks:toast.alreadyExists'));
       } else {
-        toast.error('Erreur lors de la creation');
+        toast.error(t('backlinks:toast.createError'));
       }
     },
   });
   const importMutation = useMutation({
     mutationFn: (items) => createBacklinksBulk(projectId, items),
     onSuccess: (data) => {
-      toast.success(`${data.created} backlinks importes`);
+      toast.success(t('backlinks:toast.imported', { count: data.created }));
       if (data.skipped > 0) {
-        toast.info(`${data.skipped} doublons ignores`);
+        toast.info(t('backlinks:toast.skipped', { count: data.skipped }));
       }
       if (data.created > 0) {
-        toast.info('Analyse en cours (metriques + indexation)...', { duration: 4000 });
+        toast.info(t('backlinks:toast.analyzingMetrics'), { duration: 4000 });
       }
       if (data.errors?.length > 0) {
-        toast.warning(`${data.errors.length} erreurs lors de l'import`);
+        toast.warning(t('backlinks:toast.importErrors', { count: data.errors.length }));
       }
       setShowImportModal(false);
       invalidateAll();
     },
-    onError: () => toast.error("Erreur lors de l'import"),
+    onError: () => toast.error(t('backlinks:toast.importError')),
   });
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => updateBacklink(projectId, id, data),
-    onSuccess: () => { toast.success('Backlink mis a jour'); setEditingBacklink(null); invalidateAll(); },
+    onSuccess: () => { toast.success(t('backlinks:toast.updated')); setEditingBacklink(null); invalidateAll(); },
   });
   const deleteMutation = useMutation({
     mutationFn: (id) => deleteBacklink(projectId, id),
-    onSuccess: () => { toast.success('Backlink supprime'); invalidateAll(); },
+    onSuccess: () => { toast.success(t('backlinks:toast.deleted')); invalidateAll(); },
   });
   const deleteAllMutation = useMutation({
     mutationFn: () => deleteAllBacklinks(projectId, { status: filters.status || undefined }),
-    onSuccess: () => { toast.success('Backlinks supprimes'); invalidateAll(); },
+    onSuccess: () => { toast.success(t('backlinks:toast.allDeleted')); invalidateAll(); },
   });
   const checkMutation = useMutation({
     mutationFn: (id) => checkBacklink(projectId, id),
-    onSuccess: () => { toast.success('Verification terminee'); invalidateAll(); },
+    onSuccess: () => { toast.success(t('backlinks:toast.checkDone')); invalidateAll(); },
   });
   const checkAllMutation = useMutation({
     mutationFn: () => checkAllBacklinks(projectId, { status: filters.status || undefined }),
-    onSuccess: () => { toast.success('Verification lancee en arriere-plan'); invalidateAll(); },
+    onSuccess: () => { toast.success(t('backlinks:toast.checkAllLaunched')); invalidateAll(); },
   });
   const indexCheckMutation = useMutation({
     mutationFn: (id) => checkBacklinkIndexation(projectId, id),
-    onSuccess: (data) => { toast.success(data.is_indexed ? 'URL indexee par Google' : 'URL non indexee'); invalidateAll(); },
-    onError: () => toast.error('SpeedyIndex API non configuree'),
+    onSuccess: (data) => { toast.success(data.is_indexed ? t('backlinks:toast.indexedYes') : t('backlinks:toast.indexedNo')); invalidateAll(); },
+    onError: () => toast.error(t('backlinks:toast.speedyIndexError')),
   });
   const metricsMutation = useMutation({
     mutationFn: (id) => fetchBacklinkMetrics(projectId, id),
-    onSuccess: () => { toast.success('Metriques recuperees'); invalidateAll(); },
-    onError: () => toast.error('DomDetailer API non configuree'),
+    onSuccess: () => { toast.success(t('backlinks:toast.metricsDone')); invalidateAll(); },
+    onError: () => toast.error(t('backlinks:toast.metricsError')),
   });
 
   const handleExport = () => {
     exportBacklinks(projectId, { status: filters.status || undefined, link_type: filters.link_type || undefined });
-    toast.success('Export CSV lance');
+    toast.success(t('backlinks:toast.exportLaunched'));
   };
 
   const handleDeleteAll = () => {
-    if (confirm(`Supprimer tous les backlinks${filters.status ? ` avec statut "${filters.status}"` : ''} ?`)) {
+    const filterLabel = filters.status ? t('backlinks:links.withStatus', { status: t(`common:backlinkStatus.${filters.status}`) }) : '';
+    if (confirm(t('backlinks:links.deleteAllConfirm', { filter: filterLabel }))) {
       deleteAllMutation.mutate();
     }
   };
@@ -147,20 +150,20 @@ export default function LinksTab({ projectId }) {
       {/* Action bar */}
       <div className="flex items-center gap-3">
         <button onClick={() => setShowImportModal(true)} className="btn-secondary">
-          <Upload className="h-4 w-4" /> Importer CSV
+          <Upload className="h-4 w-4" /> {t('backlinks:links.importCsv')}
         </button>
         <button onClick={() => setShowAddModal(true)} className="btn-primary">
-          <Plus className="h-4 w-4" /> Ajouter
+          <Plus className="h-4 w-4" /> {t('backlinks:links.add')}
         </button>
         <div className="flex-1" />
         <button onClick={handleExport} className="btn-secondary">
-          <Download className="h-4 w-4" /> Exporter
+          <Download className="h-4 w-4" /> {t('backlinks:links.export')}
         </button>
         <button onClick={() => checkAllMutation.mutate()} disabled={checkAllMutation.isPending} className="btn-secondary">
-          <RefreshCw className={cn("h-4 w-4", checkAllMutation.isPending && "animate-spin")} /> Verifier tout
+          <RefreshCw className={cn("h-4 w-4", checkAllMutation.isPending && "animate-spin")} /> {t('backlinks:links.verifyAll')}
         </button>
         <button onClick={handleDeleteAll} disabled={deleteAllMutation.isPending} className="btn-secondary text-red-600 hover:text-red-700 hover:bg-red-50">
-          <Trash2 className="h-4 w-4" /> Tout supprimer
+          <Trash2 className="h-4 w-4" /> {t('backlinks:links.deleteAll')}
         </button>
       </div>
 
@@ -171,24 +174,24 @@ export default function LinksTab({ projectId }) {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Rechercher par URL ou texte d'ancre..."
+              placeholder={t('backlinks:links.searchPlaceholder')}
               value={filters.search}
               onChange={(e) => { setFilters(f => ({ ...f, search: e.target.value })); setPage(1); }}
-              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
           <select value={filters.status} onChange={(e) => { setFilters(f => ({ ...f, status: e.target.value })); setPage(1); }}
-            className="px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
-            <option value="">Tous les statuts</option>
-            {Object.entries(BACKLINK_STATUS_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+            className="px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+            <option value="">{t('backlinks:links.allStatuses')}</option>
+            {Object.keys(BACKLINK_STATUS_COLORS).map(k => <option key={k} value={k}>{t(`common:backlinkStatus.${k}`)}</option>)}
           </select>
           <select value={filters.link_type} onChange={(e) => { setFilters(f => ({ ...f, link_type: e.target.value })); setPage(1); }}
-            className="px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
-            <option value="">Tous les types</option>
-            {Object.entries(BACKLINK_LINK_TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+            className="px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+            <option value="">{t('backlinks:links.allTypes')}</option>
+            {Object.keys(BACKLINK_LINK_TYPE_COLORS).map(k => <option key={k} value={k}>{t(`common:backlinkLinkType.${k}`)}</option>)}
           </select>
           <button onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            className={cn("btn-secondary", showAdvancedFilters && "bg-emerald-50 text-emerald-700")}>
+            className={cn("btn-secondary", showAdvancedFilters && "bg-brand-50 text-brand-700")}>
             <Filter className="h-4 w-4" />
             {showAdvancedFilters ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
           </button>
@@ -197,11 +200,11 @@ export default function LinksTab({ projectId }) {
         {showAdvancedFilters && (
           <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
             <select value={filters.is_indexed} onChange={(e) => setFilters(f => ({ ...f, is_indexed: e.target.value }))}
-              className="px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20">
-              <option value="">Indexation</option>
-              <option value="true">Indexe</option>
-              <option value="false">Non indexe</option>
-              <option value="null">Non verifie</option>
+              className="px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+              <option value="">{t('backlinks:links.indexation')}</option>
+              <option value="true">{t('backlinks:links.indexedFilter')}</option>
+              <option value="false">{t('backlinks:links.notIndexed')}</option>
+              <option value="null">{t('backlinks:links.notChecked')}</option>
             </select>
           </div>
         )}
@@ -211,28 +214,28 @@ export default function LinksTab({ projectId }) {
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead style={{ backgroundColor: '#FAF7F2' }} className="border-b border-[#EDE4D3]">
+            <thead style={{ backgroundColor: '#FAF7F2' }} className="border-b border-[#E8DCCB]">
               <tr>
-                <th className="table-header px-4 py-3">URL Source</th>
-                <th className="table-header px-4 py-3">URL Cible</th>
-                <th className="table-header px-4 py-3">Ancre</th>
-                <th className="table-header px-4 py-3">HTTP</th>
-                <th className="table-header px-4 py-3">Type</th>
-                <th className="table-header px-4 py-3">Statut</th>
-                <th className="table-header px-4 py-3">Indexe</th>
-                <th className="table-header px-4 py-3">DR / UR</th>
-                <th className="table-header px-4 py-3">Check</th>
-                <th className="table-header px-4 py-3">Actions</th>
+                <th className="table-header px-4 py-3">{t('backlinks:links.sourceUrl')}</th>
+                <th className="table-header px-4 py-3">{t('backlinks:links.targetUrl')}</th>
+                <th className="table-header px-4 py-3">{t('backlinks:links.anchor')}</th>
+                <th className="table-header px-4 py-3">{t('backlinks:links.http')}</th>
+                <th className="table-header px-4 py-3">{t('backlinks:links.type')}</th>
+                <th className="table-header px-4 py-3">{t('backlinks:links.status')}</th>
+                <th className="table-header px-4 py-3">{t('backlinks:links.isIndexed')}</th>
+                <th className="table-header px-4 py-3">{t('backlinks:links.drUr')}</th>
+                <th className="table-header px-4 py-3">{t('backlinks:links.check')}</th>
+                <th className="table-header px-4 py-3">{t('backlinks:links.actions')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#EDE4D3]">
+            <tbody className="divide-y divide-[#E8DCCB]">
               {isLoading ? (
-                <tr><td colSpan="10" className="px-6 py-12 text-center text-gray-400">Chargement...</td></tr>
+                <tr><td colSpan="10" className="px-6 py-12 text-center text-gray-400">{t('backlinks:links.loading')}</td></tr>
               ) : displayBacklinks.length === 0 ? (
-                <tr><td colSpan="10" className="px-6 py-12 text-center text-gray-400">Aucun backlink trouve</td></tr>
+                <tr><td colSpan="10" className="px-6 py-12 text-center text-gray-400">{t('backlinks:links.noBacklinks')}</td></tr>
               ) : (
                 displayBacklinks.map((bl) => (
-                  <tr key={bl.id} className="hover:bg-emerald-50/40">
+                  <tr key={bl.id} className="hover:bg-brand-50/40">
                     {/* Source URL with favicon */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
@@ -267,18 +270,18 @@ export default function LinksTab({ projectId }) {
                     {/* Type */}
                     <td className="px-4 py-3">
                       <span className={cn("badge text-xs", BACKLINK_LINK_TYPE_COLORS[bl.link_type] || 'bg-gray-100 text-gray-800')}>
-                        {BACKLINK_LINK_TYPE_LABELS[bl.link_type] || '?'}
+                        {t(`common:backlinkLinkType.${bl.link_type}`, bl.link_type)}
                       </span>
                     </td>
                     {/* Status */}
                     <td className="px-4 py-3">
                       <span className={cn("badge text-xs", BACKLINK_STATUS_COLORS[bl.status])}>
-                        {BACKLINK_STATUS_LABELS[bl.status]}
+                        {t(`common:backlinkStatus.${bl.status}`, bl.status)}
                       </span>
                     </td>
                     {/* Indexation icon */}
                     <td className="px-4 py-3">
-                      {bl.is_indexed === true && <CheckCircle className="h-4 w-4 text-emerald-500" />}
+                      {bl.is_indexed === true && <CheckCircle className="h-4 w-4 text-brand-500" />}
                       {bl.is_indexed === false && <XCircle className="h-4 w-4 text-red-500" />}
                       {bl.is_indexed == null && <MinusCircle className="h-4 w-4 text-gray-300" />}
                     </td>
@@ -289,7 +292,7 @@ export default function LinksTab({ projectId }) {
                           <span className="text-sm font-semibold text-gray-900 w-6">{bl.domain_rank ?? '-'}</span>
                           {bl.domain_rank != null && (
                             <div className="flex-1 h-1.5 rounded-full bg-gray-100 max-w-[60px]">
-                              <div className="h-full rounded-full bg-emerald-500" style={{ width: `${Math.min(bl.domain_rank, 100)}%` }} />
+                              <div className="h-full rounded-full bg-brand-500" style={{ width: `${Math.min(bl.domain_rank, 100)}%` }} />
                             </div>
                           )}
                         </div>
@@ -302,10 +305,10 @@ export default function LinksTab({ projectId }) {
                     <td className="px-4 py-3">
                       <div className="space-y-0.5">
                         {bl.first_check_at && (
-                          <p className="text-[10px] text-[#6b6560]">1er: {formatDate(bl.first_check_at)}</p>
+                          <p className="text-[10px] text-[#6b6560]">{t('backlinks:links.firstCheck')}: {formatDate(bl.first_check_at, i18n.language)}</p>
                         )}
                         {bl.last_check_at && (
-                          <p className="text-[10px] text-emerald-600 font-medium">Der: {formatDate(bl.last_check_at)}</p>
+                          <p className="text-[10px] text-brand-600 font-medium">{t('backlinks:links.lastCheck')}: {formatDate(bl.last_check_at, i18n.language)}</p>
                         )}
                         {!bl.first_check_at && !bl.last_check_at && (
                           <span className="text-[10px] text-gray-300">-</span>
@@ -315,19 +318,19 @@ export default function LinksTab({ projectId }) {
                     {/* Actions */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
-                        <button onClick={() => checkMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title="Verifier HTTP">
+                        <button onClick={() => checkMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title={t('backlinks:links.verifyHttp')}>
                           <RefreshCw className={cn("h-3.5 w-3.5", checkMutation.isPending && "animate-spin")} />
                         </button>
-                        <button onClick={() => indexCheckMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title="Verifier indexation">
+                        <button onClick={() => indexCheckMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title={t('backlinks:links.verifyIndexation')}>
                           <Globe className="h-3.5 w-3.5" />
                         </button>
-                        <button onClick={() => metricsMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title="Metriques domaine">
+                        <button onClick={() => metricsMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title={t('backlinks:links.domainMetrics')}>
                           <BarChart3 className="h-3.5 w-3.5" />
                         </button>
-                        <button onClick={() => setEditingBacklink(bl)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title="Modifier">
+                        <button onClick={() => setEditingBacklink(bl)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title={t('backlinks:links.edit')}>
                           <FileText className="h-3.5 w-3.5" />
                         </button>
-                        <button onClick={() => deleteMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-600" title="Supprimer">
+                        <button onClick={() => deleteMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-600" title={t('common:delete')}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </button>
                       </div>
@@ -342,12 +345,12 @@ export default function LinksTab({ projectId }) {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100">
-            <p className="text-sm text-[#6b6560]">Page {page} sur {totalPages} ({counts?.total || 0} liens)</p>
+            <p className="text-sm text-[#6b6560]">{t('backlinks:links.pageOf', { current: page, total: totalPages, count: counts?.total || 0 })}</p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-50 hover:bg-gray-50">Precedent</button>
+                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-50 hover:bg-gray-50">{t('backlinks:links.previous')}</button>
               <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-50 hover:bg-gray-50">Suivant</button>
+                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-50 hover:bg-gray-50">{t('backlinks:links.next')}</button>
             </div>
           </div>
         )}

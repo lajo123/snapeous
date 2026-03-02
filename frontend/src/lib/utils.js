@@ -5,21 +5,7 @@ export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-export const CATEGORY_LABELS = {
-  blog_comments: 'Commentaires de blogs',
-  forums: 'Forums',
-  directories: 'Annuaires',
-  guestbooks: "Livres d'or",
-  profiles: 'Profils',
-  social: 'Réseaux sociaux',
-  authority: 'Sites autorité',
-  serp_exploration: 'Exploration SERP',
-  files: 'Fichiers',
-  guest_posts: 'Articles invités',
-  wikis: 'Wikis',
-  ereputation: 'E-réputation',
-  web20: 'Web 2.0',
-};
+// ── Color maps (no translation needed) ──────────────────────────────
 
 export const CATEGORY_COLORS = {
   blog_comments: 'bg-blue-100 text-blue-800',
@@ -34,13 +20,7 @@ export const CATEGORY_COLORS = {
   guest_posts: 'bg-teal-100 text-teal-800',
   wikis: 'bg-cyan-100 text-cyan-800',
   ereputation: 'bg-amber-100 text-amber-800',
-  web20: 'bg-emerald-100 text-emerald-800',
-};
-
-export const DIFFICULTY_LABELS = {
-  easy: 'Facile',
-  medium: 'Moyen',
-  hard: 'Difficile',
+  web20: 'bg-brand-100 text-brand-800',
 };
 
 export const DIFFICULTY_COLORS = {
@@ -49,39 +29,14 @@ export const DIFFICULTY_COLORS = {
   hard: 'bg-red-100 text-red-800',
 };
 
-export const LINK_TYPE_LABELS = {
-  dofollow: 'Dofollow',
-  nofollow: 'Nofollow',
-  ugc: 'UGC',
-  sponsored: 'Sponsored',
-  mix: 'Mix',
-};
-
-export const SPOT_STATUS_LABELS = {
-  discovered: 'Découvert',
-  qualified: 'Qualifié',
-  selected: 'Sélectionné',
-  rejected: 'Rejeté',
-  contacted: 'Contacté',
-  link_posted: 'Lien posé',
-  failed: 'Échoué',
-};
-
 export const SPOT_STATUS_COLORS = {
   discovered: 'bg-gray-100 text-gray-800',
   qualified: 'bg-blue-100 text-blue-800',
   selected: 'bg-green-100 text-green-800',
   rejected: 'bg-red-100 text-red-800',
   contacted: 'bg-yellow-100 text-yellow-800',
-  link_posted: 'bg-emerald-100 text-emerald-800',
+  link_posted: 'bg-brand-100 text-brand-800',
   failed: 'bg-red-100 text-red-800',
-};
-
-export const SEARCH_STATUS_LABELS = {
-  pending: 'En attente',
-  running: 'En cours',
-  completed: 'Terminée',
-  failed: 'Échouée',
 };
 
 export const SEARCH_STATUS_COLORS = {
@@ -97,10 +52,10 @@ export function truncateUrl(url, maxLength = 50) {
   return clean.length > maxLength ? clean.substring(0, maxLength) + '...' : clean;
 }
 
-export function formatDate(dateStr) {
+export function formatDate(dateStr, locale = 'en-US') {
   if (!dateStr) return '';
   const d = new Date(dateStr);
-  return d.toLocaleDateString('fr-FR', {
+  return d.toLocaleDateString(locale, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -111,21 +66,10 @@ export function formatDate(dateStr) {
 
 // ── Backlinks ─────────────────────────────────────────────────────────
 
-export const BACKLINK_STATUS_LABELS = {
-  active: 'Actif',
-  lost: 'Perdu',
-  pending: 'En attente',
-};
-
 export const BACKLINK_STATUS_COLORS = {
-  active: 'bg-emerald-100 text-emerald-800',
+  active: 'bg-brand-100 text-brand-800',
   lost: 'bg-red-100 text-red-800',
   pending: 'bg-amber-100 text-amber-800',
-};
-
-export const BACKLINK_LINK_TYPE_LABELS = {
-  dofollow: 'Dofollow',
-  nofollow: 'Nofollow',
 };
 
 export const BACKLINK_LINK_TYPE_COLORS = {
@@ -135,7 +79,7 @@ export const BACKLINK_LINK_TYPE_COLORS = {
 
 export function getHttpStatusColor(code) {
   if (!code) return 'bg-gray-100 text-gray-800';
-  if (code >= 200 && code < 300) return 'bg-emerald-100 text-emerald-800';
+  if (code >= 200 && code < 300) return 'bg-brand-100 text-brand-800';
   if (code >= 300 && code < 400) return 'bg-blue-100 text-blue-800';
   if (code === 404) return 'bg-red-100 text-red-800';
   if (code >= 400) return 'bg-orange-100 text-orange-800';
@@ -143,13 +87,7 @@ export function getHttpStatusColor(code) {
 }
 
 export function getIndexationStatusColor(isIndexed) {
-  if (isIndexed === true) return 'bg-emerald-100 text-emerald-800';
+  if (isIndexed === true) return 'bg-brand-100 text-brand-800';
   if (isIndexed === false) return 'bg-red-100 text-red-800';
   return 'bg-gray-100 text-gray-800';
-}
-
-export function getIndexationStatusLabel(isIndexed) {
-  if (isIndexed === true) return 'Indexé';
-  if (isIndexed === false) return 'Non indexé';
-  return 'Non vérifié';
 }
