@@ -40,7 +40,7 @@ export default function ProjectNew() {
     <div className="min-h-[calc(100vh-80px)] flex items-start justify-center pt-8">
       <div className="w-full max-w-lg">
         <Link
-          to="/"
+          to="/dashboard"
           className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 mb-8 transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />

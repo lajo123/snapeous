@@ -64,7 +64,7 @@ export default function Layout() {
       toast.success('Projet supprimé');
       // If we deleted the active project, navigate to root (will redirect to next project)
       if (deletedId === activeProjectId) {
-        navigate('/');
+        navigate('/dashboard');
       }
     },
     onError: () => toast.error('Erreur lors de la suppression'),

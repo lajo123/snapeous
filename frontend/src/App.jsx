@@ -24,7 +24,7 @@ function App() {
         }
       >
         {/* Root redirects to first project */}
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
         {/* Project pages */}
         <Route path="/projects/:id" element={<ProjectDetail />} />
