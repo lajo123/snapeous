@@ -292,6 +292,35 @@ async def auth_debug(user_id: str = Depends(get_current_user)):
     return {"status": "ok", "user_id": user_id}
 
 
+@app.get("/api/test/subscribe-dry")
+async def test_subscribe_dry(db: AsyncSession = Depends(get_db)):
+    """Temporary: test subscription creation without auth."""
+    import traceback
+    try:
+        test_user_id = "dry-run-test-user"
+        result = await db.execute(
+            select(Subscription).where(Subscription.user_id == test_user_id)
+        )
+        sub = result.scalar_one_or_none()
+        if not sub:
+            sub = Subscription(
+                user_id=test_user_id,
+                plan=SubscriptionPlan.free,
+                status=SubscriptionStatus.active,
+            )
+            db.add(sub)
+            await db.commit()
+            await db.refresh(sub)
+            # Clean up
+            await db.delete(sub)
+            await db.commit()
+            return {"status": "ok", "message": "Subscription created and cleaned up successfully", "id": str(sub.id)}
+        else:
+            return {"status": "ok", "message": "Sub already exists", "id": str(sub.id)}
+    except Exception as e:
+        return {"status": "error", "error": f"{type(e).__name__}: {e}", "traceback": traceback.format_exc()}
+
+
 # ── Turnstile Verification ───────────────────────────────────────────
 
 
