@@ -341,15 +341,18 @@ class Subscription(Base):
         String(255), nullable=False, unique=True, index=True
     )
 
-    # Plan info
+    # Plan info — use schema_name to match existing PostgreSQL enum types
     plan: Mapped[str] = mapped_column(
-        Enum(SubscriptionPlan), default=SubscriptionPlan.free
+        Enum(SubscriptionPlan, name="subscription_plan", create_type=False),
+        default=SubscriptionPlan.free,
     )
     status: Mapped[str] = mapped_column(
-        Enum(SubscriptionStatus), default=SubscriptionStatus.active
+        Enum(SubscriptionStatus, name="subscription_status", create_type=False),
+        default=SubscriptionStatus.active,
     )
     billing_interval: Mapped[str | None] = mapped_column(
-        Enum(BillingInterval), nullable=True
+        Enum(BillingInterval, name="billing_interval", create_type=False),
+        nullable=True,
     )
 
     # Stripe references
