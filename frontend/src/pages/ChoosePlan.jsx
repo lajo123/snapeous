@@ -13,23 +13,23 @@ import { cn } from '@/lib/utils';
 const PLANS = [
   {
     id: 'free', label: 'Free', monthlyPrice: 0, annualPrice: 0,
-    desc: 'Pour découvrir Snapeous',
-    features: ['1 projet', '50 backlinks monitorés', 'Dashboard basique', 'Alertes email basiques'],
+    desc: 'Pour découvrir',
+    features: ['1 projet', '50 backlinks', 'Dashboard basique', 'Alertes basiques'],
   },
   {
     id: 'starter', label: 'Starter', monthlyPrice: 19, annualPrice: 15,
-    desc: 'Pour les indépendants',
-    features: ['3 projets', '500 backlinks monitorés', 'Analyse complète', 'Détection liens toxiques', 'Export CSV', 'Alertes email complètes'],
+    desc: 'Indépendants',
+    features: ['3 projets', '500 backlinks', 'Analyse complète', 'Liens toxiques', 'Export CSV', 'Alertes complètes'],
   },
   {
     id: 'pro', label: 'Pro', monthlyPrice: 49, annualPrice: 39, recommended: true,
-    desc: 'Pour les freelances & équipes',
-    features: ['10 projets', '5 000 backlinks monitorés', 'Tout du Starter', 'Recommandations IA', '3 concurrents', 'Rapports PDF', 'Intégration GSC', 'Accès API'],
+    desc: 'Freelances & équipes',
+    features: ['10 projets', '5 000 backlinks', 'Tout Starter +', 'Recommandations IA', '3 concurrents', 'Rapports PDF', 'Intégration GSC', 'Accès API'],
   },
   {
     id: 'agency', label: 'Agency', monthlyPrice: 99, annualPrice: 79,
-    desc: 'Pour les agences SEO',
-    features: ['Projets illimités', '25 000 backlinks monitorés', 'Tout du Pro', 'Concurrents illimités', 'Sous-comptes', 'Rapports planifiés', 'Support prioritaire', 'API avancée'],
+    desc: 'Agences SEO',
+    features: ['Projets illimités', '25 000 backlinks', 'Tout Pro +', 'Concurrents illimités', 'Sous-comptes', 'Rapports planifiés', 'Support prioritaire', 'API avancée'],
   },
 ];
 
@@ -45,6 +45,8 @@ const CARD_STYLE = {
   },
 };
 
+/* ── Checkout Modal ────────────────────────────────────────── */
+
 function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -59,10 +61,7 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
     setError(null);
 
     try {
-      // 1. Create SetupIntent
       const { client_secret } = await createSetupIntent();
-
-      // 2. Confirm card setup
       const { setupIntent, error: stripeError } = await stripe.confirmCardSetup(client_secret, {
         payment_method: { card: elements.getElement(CardElement) },
       });
@@ -73,7 +72,6 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
         return;
       }
 
-      // 3. Create subscription
       await subscribe({
         plan: selectedPlan,
         interval,
@@ -103,7 +101,7 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
               <CreditCard className="h-4 w-4 text-brand-600" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-gray-900">S'abonner au plan {plan.label}</h2>
+              <h2 className="text-base font-bold text-gray-900">Plan {plan.label}</h2>
               <p className="text-xs text-gray-400 mt-0.5">{price}€/{interval === 'annual' ? 'mois (facturé annuellement)' : 'mois'}</p>
             </div>
           </div>
@@ -137,10 +135,7 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
             className="w-full btn-primary py-3 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
-              <>
-                <Loader className="h-4 w-4 animate-spin" />
-                Traitement...
-              </>
+              <><Loader className="h-4 w-4 animate-spin" />Traitement...</>
             ) : (
               <>Démarrer l'essai gratuit</>
             )}
@@ -156,6 +151,8 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
   );
 }
 
+/* ── Main Page ─────────────────────────────────────────────── */
+
 export default function ChoosePlan() {
   const navigate = useNavigate();
   const { refetchSubscription } = useSubscription();
@@ -169,15 +166,12 @@ export default function ChoosePlan() {
       toast.success('Plan Free activé !');
       navigate('/dashboard');
     },
-    onError: () => toast.error('Erreur lors de l\'activation'),
+    onError: (err) => toast.error(err.response?.data?.detail || 'Erreur lors de l\'activation'),
   });
 
   const handleSelectPlan = (planId) => {
-    if (planId === 'free') {
-      freeMutation.mutate();
-    } else {
-      setCheckoutPlan(planId);
-    }
+    if (planId === 'free') freeMutation.mutate();
+    else setCheckoutPlan(planId);
   };
 
   const handleCheckoutSuccess = () => {
@@ -187,29 +181,34 @@ export default function ChoosePlan() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#F0E6D8' }}>
-      {/* Header */}
-      <div className="py-8 px-6 text-center">
-        <div className="flex items-center justify-center gap-2.5 mb-6">
-          <img src="/snapeous-logo.svg" alt="Snapeous" className="h-7 w-7" />
-          <span className="text-lg font-bold tracking-tight text-[#2A2A2A]">Snapeous</span>
+    <div className="h-[100dvh] flex flex-col overflow-hidden grain-bg">
+      {/* Ambient glows */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[500px] h-[250px] bg-brand-200/25 blur-[100px] rounded-full pointer-events-none" />
+      <div className="fixed bottom-0 right-0 w-[350px] h-[350px] bg-cream-200/40 blur-[120px] rounded-full pointer-events-none" />
+
+      {/* ── Header ───────────────────────────────────────────── */}
+      <header className="shrink-0 relative z-10 pt-5 sm:pt-6 pb-3 sm:pb-4 px-4 text-center">
+        <div className="flex items-center justify-center gap-2 mb-2.5">
+          <img src="/snapeous-logo.svg" alt="Snapeous" className="h-6 w-6" />
+          <span className="text-base font-bold tracking-tight text-[#2A2A2A]">Snapeous</span>
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 mb-2">
+
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#2A2A2A] mb-1">
           Choisissez votre plan
         </h1>
-        <p className="text-sm text-gray-500 font-medium max-w-lg mx-auto">
-          Commencez gratuitement ou démarrez un essai de 7 jours sur nos plans payants. Aucun engagement.
+        <p className="text-xs text-[#6b6560] mb-3.5">
+          7 jours d'essai gratuit sur les plans payants &middot; Sans engagement
         </p>
 
-        {/* Toggle mensuel/annuel */}
-        <div className="flex items-center justify-center gap-3 mt-6">
+        {/* Toggle mensuel / annuel */}
+        <div className="inline-flex items-center bg-white/60 backdrop-blur-sm rounded-full p-1 border border-[#D6CEC2]/50 shadow-soft">
           <button
             onClick={() => setInterval('monthly')}
             className={cn(
-              'px-4 py-2 rounded-full text-sm font-medium transition-all',
+              'px-4 py-1.5 rounded-full text-xs font-semibold transition-all',
               interval === 'monthly'
-                ? 'bg-white shadow-sm text-gray-900'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white shadow-sm text-[#2A2A2A]'
+                : 'text-[#6b6560] hover:text-[#2A2A2A]'
             )}
           >
             Mensuel
@@ -217,21 +216,32 @@ export default function ChoosePlan() {
           <button
             onClick={() => setInterval('annual')}
             className={cn(
-              'px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5',
+              'px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5',
               interval === 'annual'
-                ? 'bg-white shadow-sm text-gray-900'
-                : 'text-gray-500 hover:text-gray-700'
+                ? 'bg-white shadow-sm text-[#2A2A2A]'
+                : 'text-[#6b6560] hover:text-[#2A2A2A]'
             )}
           >
             Annuel
-            <span className="text-[10px] font-bold text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded-full">-20%</span>
+            <span className="text-[10px] font-bold text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded-full leading-none">
+              -20%
+            </span>
           </button>
         </div>
-      </div>
+      </header>
 
-      {/* Plans grid */}
-      <div className="flex-1 px-6 pb-12">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-5">
+      {/* ── Plans Grid ───────────────────────────────────────── */}
+      <div className="flex-1 min-h-0 flex items-start md:items-center justify-center px-3 md:px-4 pb-4 relative z-10">
+        <div
+          className={cn(
+            /* Mobile: horizontal scroll */
+            'flex gap-3 overflow-x-auto snap-x snap-mandatory',
+            'pb-2 -mx-1 px-1 scrollbar-hide',
+            /* Tablet + Desktop: 4 cols single row */
+            'md:grid md:grid-cols-4 md:overflow-visible md:snap-none md:mx-0 md:px-0 md:pb-0',
+            'max-w-[1080px] w-full',
+          )}
+        >
           {PLANS.map((plan) => {
             const price = interval === 'annual' ? plan.annualPrice : plan.monthlyPrice;
             const isFree = plan.id === 'free';
@@ -240,66 +250,78 @@ export default function ChoosePlan() {
               <div
                 key={plan.id}
                 className={cn(
-                  'relative bg-white rounded-2xl border p-6 flex flex-col transition-all',
+                  /* Mobile: fixed width for scroll */
+                  'snap-center shrink-0 w-[72vw] md:w-auto md:shrink',
+                  /* Card base */
+                  'relative bg-white/95 backdrop-blur-sm rounded-2xl border flex flex-col',
+                  'p-4 md:p-3.5 lg:p-5 transition-all duration-200',
                   plan.recommended
                     ? 'border-brand-300 shadow-lg shadow-brand-100/50 ring-1 ring-brand-200'
-                    : 'border-gray-100 shadow-soft hover:shadow-md'
+                    : 'border-[rgba(0,0,0,0.07)] shadow-soft hover:shadow-md hover:border-[rgba(0,0,0,0.12)]'
                 )}
               >
+                {/* Recommended badge */}
                 {plan.recommended && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-500 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1">
-                    <Sparkles className="h-3 w-3" />
+                  <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-brand-500 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap">
+                    <Sparkles className="h-2.5 w-2.5" />
                     Recommandé
                   </div>
                 )}
 
-                <div className="mb-4">
-                  <h3 className="text-lg font-bold text-gray-900">{plan.label}</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">{plan.desc}</p>
+                {/* Plan name + desc */}
+                <div className="mb-3">
+                  <h3 className="text-base font-bold text-[#2A2A2A]">{plan.label}</h3>
+                  <p className="text-[11px] text-[#9a9080] mt-0.5">{plan.desc}</p>
                 </div>
 
-                <div className="mb-5">
-                  <span className="text-3xl font-bold text-gray-900">
-                    {isFree ? 'Gratuit' : `${price}€`}
-                  </span>
-                  {!isFree && (
-                    <span className="text-sm text-gray-400 font-medium">/mois</span>
-                  )}
+                {/* Price */}
+                <div className="mb-3">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl sm:text-[28px] font-bold text-[#2A2A2A] leading-none">
+                      {isFree ? 'Gratuit' : `${price}€`}
+                    </span>
+                    {!isFree && (
+                      <span className="text-xs text-[#9a9080] font-medium">/mois</span>
+                    )}
+                  </div>
                   {!isFree && interval === 'annual' && (
-                    <p className="text-[11px] text-brand-600 font-medium mt-1">
+                    <p className="text-[10px] text-brand-600 font-medium mt-1">
                       Facturé {price * 12}€/an
                     </p>
                   )}
                 </div>
 
+                {/* Trial badge - paid plans only */}
                 {!isFree && (
-                  <div className="rounded-lg bg-brand-50/80 border border-brand-100 px-3 py-2 mb-5">
-                    <p className="text-[11px] text-brand-700 font-semibold flex items-center gap-1.5">
-                      <Shield className="h-3 w-3" />
+                  <div className="rounded-lg bg-brand-50/80 border border-brand-100 px-2.5 py-1.5 mb-3">
+                    <p className="text-[10px] text-brand-700 font-semibold flex items-center gap-1">
+                      <Shield className="h-3 w-3 shrink-0" />
                       7 jours d'essai gratuit
                     </p>
                   </div>
                 )}
 
-                <ul className="space-y-2.5 mb-6 flex-1">
+                {/* Features */}
+                <ul className="space-y-1.5 mb-4 flex-1">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-gray-600">
-                      <Check className="h-4 w-4 text-brand-500 shrink-0 mt-0.5" strokeWidth={2.5} />
-                      {f}
+                    <li key={f} className="flex items-start gap-1.5 text-xs text-[#4a4a4a]">
+                      <Check className="h-3.5 w-3.5 text-brand-500 shrink-0 mt-px" strokeWidth={2.5} />
+                      <span>{f}</span>
                     </li>
                   ))}
                 </ul>
 
+                {/* CTA button */}
                 <button
                   onClick={() => handleSelectPlan(plan.id)}
                   disabled={freeMutation.isPending}
                   className={cn(
-                    'w-full py-2.5 rounded-xl text-sm font-semibold transition-all',
+                    'w-full py-2 rounded-xl text-xs font-semibold transition-all duration-150',
                     plan.recommended
-                      ? 'bg-brand-600 text-white hover:bg-brand-700 shadow-md shadow-brand-200/50'
+                      ? 'bg-brand-500 text-white hover:bg-brand-600 shadow-md shadow-brand-200/40 hover:shadow-glow'
                       : isFree
-                        ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                        : 'bg-gray-900 text-white hover:bg-gray-800'
+                        ? 'bg-[#F5F2ED] text-[#4a4a4a] hover:bg-[#EBE7E0]'
+                        : 'bg-[#2A2A2A] text-white hover:bg-[#1a1a1a]'
                   )}
                 >
                   {isFree

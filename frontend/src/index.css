@@ -216,6 +216,11 @@
 
 /* ── Selection ──────────────────────────────────────────────── */
 
+/* ── Scrollbar hide (for horizontal plan scroll) ──────────── */
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
 ::selection { background: #fbe8e0; color: #66392d; }
 
 /* ── Focus ring global ──────────────────────────────────────── */
