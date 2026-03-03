@@ -10,7 +10,7 @@ export default function DofollowNofollowChart({ dofollow = 0, nofollow = 0 }) {
     { name: 'Nofollow', value: nofollow },
   ].filter(d => d.value > 0);
 
-  if (data.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-gray-400">{t('charts.noData')}</div>;
+  if (data.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-ink-300">{t('charts.noData')}</div>;
 
   return (
     <ResponsiveContainer width="100%" height={260}>
@@ -30,13 +30,13 @@ export default function DofollowNofollowChart({ dofollow = 0, nofollow = 0 }) {
         </Pie>
         <Tooltip
           formatter={(value, name) => [`${value} ${t('charts.links')}`, name]}
-          contentStyle={{ borderRadius: '0.75rem', border: '1px solid #E8DCCB', fontSize: '0.875rem' }}
+          contentStyle={{ borderRadius: '0.75rem', border: '1px solid var(--color-cream-200)', fontSize: '0.875rem' }}
         />
         <Legend
           verticalAlign="bottom"
           iconType="circle"
           iconSize={8}
-          formatter={(value) => <span className="text-xs text-[#6b6560]">{value}</span>}
+          formatter={(value) => <span className="text-xs text-ink-400">{value}</span>}
         />
       </PieChart>
     </ResponsiveContainer>

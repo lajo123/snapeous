@@ -1,16 +1,19 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Eye, EyeOff, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTurnstile } from '@/hooks/useTurnstile';
 import useLocalizedPath from '@/hooks/useLocalizedPath';
 import SEOHead from '@/components/SEOHead';
+import { DEFAULT_LANG } from '@/i18n';
 
 export default function Register() {
   const { signUp } = useAuth();
   const { t } = useTranslation('auth');
   const lp = useLocalizedPath();
+  const { lang } = useParams();
+  const currentLang = lang || DEFAULT_LANG;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,7 +35,7 @@ export default function Register() {
 
     setLoading(true);
 
-    const { error: authError } = await signUp(email, password, token);
+    const { error: authError } = await signUp(email, password, token, currentLang);
 
     if (authError) {
       const msg = authError.message === 'User already registered' ? t('register.alreadyRegistered') : authError.message;
@@ -52,9 +55,9 @@ export default function Register() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2.5 mb-3">
             <img src="/snapeous-logo.svg" alt="Snapeous" className="h-8 w-8" />
-            <h1 className="text-2xl font-bold tracking-tight text-[#2A2A2A]">Snapeous</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-ink">Snapeous</h1>
           </div>
-          <p className="text-sm text-[#6b6560]">{t('register.subtitle')}</p>
+          <p className="text-sm text-ink-400">{t('register.subtitle')}</p>
         </div>
 
         <div className="card p-6">
@@ -73,7 +76,7 @@ export default function Register() {
                 <label htmlFor="register-password" className="section-label block mb-1.5">{t('register.password')}</label>
                 <div className="relative">
                   <input id="register-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="input pr-10" placeholder={t('register.passwordPlaceholder')} required />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9a9080] transition-colors">
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-300 transition-colors">
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -91,9 +94,9 @@ export default function Register() {
           )}
         </div>
 
-        <p className="text-center mt-4 text-sm text-[#6b6560]">
+        <p className="text-center mt-4 text-sm text-ink-400">
           {t('register.hasAccount')}{' '}
-          <Link to={lp('/login')} className="font-medium text-[#2A2A2A] hover:underline">{t('register.loginLink')}</Link>
+          <Link to={lp('/login')} className="font-medium text-ink hover:underline">{t('register.loginLink')}</Link>
         </p>
       </div>
     </div>

@@ -1,0 +1,47 @@
+{
+  "title": "Choose your plan",
+  "subtitle": "7-day free trial on paid plans \u00b7 No commitment",
+  "monthly": "Monthly",
+  "annual": "Annual",
+  "discount": "-20%",
+  "recommended": "Recommended",
+  "free": "Free",
+  "perMonth": "/mo",
+  "billedAnnually": "Billed {{amount}}\u20ac/year",
+  "trialBadge": "7-day free trial",
+  "ctaFree": "Get started free",
+  "ctaFreePending": "Activating...",
+  "ctaTrial": "Start free trial",
+  "plans": {
+    "free": {
+      "desc": "To discover",
+      "features": ["1 project", "50 backlinks", "Basic dashboard", "Basic alerts"]
+    },
+    "starter": {
+      "desc": "For independents",
+      "features": ["3 projects", "500 backlinks", "Full analysis", "Toxic links", "CSV export", "Full alerts"]
+    },
+    "pro": {
+      "desc": "Freelancers & teams",
+      "features": ["10 projects", "5,000 backlinks", "Everything in Starter +", "AI recommendations", "3 competitors", "PDF reports", "GSC integration", "API access"]
+    },
+    "agency": {
+      "desc": "SEO agencies",
+      "features": ["Unlimited projects", "25,000 backlinks", "Everything in Pro +", "Unlimited competitors", "Sub-accounts", "Scheduled reports", "Priority support", "Advanced API"]
+    }
+  },
+  "checkout": {
+    "planTitle": "Plan {{plan}}",
+    "priceMonthly": "{{price}}\u20ac/month",
+    "priceAnnual": "{{price}}\u20ac/mo (billed annually)",
+    "trialNotice": "7-day free trial. Cancel anytime.",
+    "cardLabel": "Credit card",
+    "processing": "Processing...",
+    "submit": "Start free trial",
+    "terms": "By subscribing, you agree to our terms of service. You will not be charged during the 7-day trial.",
+    "successTrial": "Subscription activated! 7-day free trial.",
+    "successFree": "Free plan activated!",
+    "error": "An error occurred.",
+    "activateError": "Error during activation"
+  }
+}

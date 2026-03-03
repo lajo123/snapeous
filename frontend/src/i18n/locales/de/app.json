@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "analysis": "Analyse",
+    "analysis": "Empfehlung",
     "backlinks": "Backlinks",
     "spots": "Spots"
   },
@@ -17,7 +17,33 @@
     "selectProject": "Projekt auswaehlen",
     "noActiveProject": "Kein aktives Projekt",
     "trial": "Testphase",
-    "deleteTitle": "Loeschen"
+    "deleteTitle": "Loeschen",
+    "skipToContent": "Zum Inhalt springen",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schliessen",
+    "navigation": "Hauptnavigation"
+  },
+  "upgrade": {
+    "title": "Limit erreicht",
+    "planLimitedTo": "Ihr {{plan}}-Plan ist auf {{limit}} {{type}} begrenzt.",
+    "currentUsage": "Sie nutzen derzeit {{current}}.",
+    "upgradeTo": "Auf {{plan}} upgraden",
+    "later": "Später",
+    "limitTypes": {
+      "domains": "Projekte",
+      "backlinks": "Backlinks"
+    }
+  },
+  "error": {
+    "title": "Ein Fehler ist aufgetreten",
+    "description": "Die Anwendung hat einen unerwarteten Fehler festgestellt. Weitere Details finden Sie in der Konsole.",
+    "retry": "Erneut versuchen"
+  },
+  "projectNew": {
+    "backToDashboard": "Zurück zum Dashboard",
+    "title": "Neues Projekt erstellen",
+    "subtitle": "Geben Sie Ihre Projektinformationen ein",
+    "domainLabel": "Website-Domain"
   },
   "projectModal": {
     "title": "Neues Projekt",

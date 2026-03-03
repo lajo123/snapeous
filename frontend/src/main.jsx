@@ -11,6 +11,15 @@ import { SubscriptionProvider } from './contexts/SubscriptionContext.jsx';
 import './i18n';
 import './index.css';
 
+// Load Rybbit analytics only in production
+if (import.meta.env.PROD) {
+  const s = document.createElement('script');
+  s.src = 'https://app.rybbit.io/api/script.js';
+  s.dataset.siteId = '6342567a15b4';
+  s.defer = true;
+  document.head.appendChild(s);
+}
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -30,7 +39,14 @@ createRoot(document.getElementById('root')).render(
             <QueryClientProvider client={queryClient}>
               <SubscriptionProvider>
                 <App />
-                <Toaster position="top-right" richColors />
+                <Toaster
+                  position="top-right"
+                  richColors
+                  toastOptions={{
+                    className: 'font-sans',
+                    style: { borderRadius: '0.75rem' },
+                  }}
+                />
               </SubscriptionProvider>
             </QueryClientProvider>
           </AuthProvider>

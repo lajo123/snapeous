@@ -1,0 +1,22 @@
+{
+  "badge": "Blog",
+  "title": "Dicas e Guias de SEO",
+  "subtitle": "Dicas de especialistas, estratégias e tutoriais para melhorar o seu posicionamento nos motores de busca e o seu perfil de backlinks.",
+  "minRead": "min de leitura",
+  "comingSoon": "Mais artigos em breve. Fique atento!",
+  "backHome": "Voltar ao início",
+  "posts": {
+    "backlinks": {
+      "title": "O Que São Backlinks e Porque São Importantes?",
+      "excerpt": "Aprenda os fundamentos dos backlinks, como os motores de busca os utilizam para classificar páginas e porque continuam a ser um dos fatores de ranking mais importantes."
+    },
+    "linkBuilding": {
+      "title": "10 Estratégias de Link Building Que Funcionam em 2026",
+      "excerpt": "Descubra técnicas comprovadas de link building, desde guest posting até relações públicas digitais, que o ajudarão a obter backlinks de alta qualidade e a melhorar a sua autoridade de domínio."
+    },
+    "domainAuthority": {
+      "title": "Autoridade de Domínio: O Que É e Como Melhorá-la",
+      "excerpt": "Entenda as métricas de autoridade de domínio, o que influencia a sua pontuação e passos práticos para aumentá-la ao longo do tempo."
+    }
+  }
+}

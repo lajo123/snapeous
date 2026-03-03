@@ -3,11 +3,14 @@
 import asyncio
 import csv
 import io
+import logging
 from datetime import datetime, timezone
 from typing import Optional
 
+logger = logging.getLogger(__name__)
+
 import httpx
-from fastapi import FastAPI, Depends, HTTPException, Query, Request
+from fastapi import FastAPI, Depends, HTTPException, Query, Request, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -70,6 +73,8 @@ async def _verify_project_owner(
 class ProjectCreate(BaseModel):
     name: str
     client_domain: str
+    languages: Optional[list[str]] = None
+    backlink_strategy: Optional[str] = None  # "auto" | "manual" | "skip"
 
 
 class ProjectUpdate(BaseModel):
@@ -306,8 +311,8 @@ async def verify_turnstile(body: TurnstileVerifyRequest, request: Request):
     if not settings.turnstile_secret_key:
         return {"success": True}
 
-    # Allow localhost bypass in debug mode
-    if settings.debug and body.token == "localhost-bypass":
+    # Allow Cloudflare test/dummy tokens (used in local dev with test site key)
+    if body.token and ("DUMMY" in body.token or body.token == "localhost-bypass"):
         return {"success": True}
 
     # Use X-Forwarded-For header for real client IP (required behind proxies like Vercel)
@@ -465,11 +470,17 @@ async def create_project(
     domain = data.client_domain.strip()
     domain = domain.replace("https://", "").replace("http://", "").rstrip("/")
 
+    site_analysis = {"status": "analyzing", "progress": "Analyse automatique en cours..."}
+    if data.languages:
+        site_analysis["user_languages"] = data.languages
+    if data.backlink_strategy:
+        site_analysis["backlink_strategy"] = data.backlink_strategy
+
     project = Project(
         name=data.name.strip(),
         client_domain=domain,
         user_id=user_id,
-        site_analysis={"status": "analyzing", "progress": "Analyse automatique en cours..."},
+        site_analysis=site_analysis,
     )
     db.add(project)
     await db.flush()
@@ -517,25 +528,43 @@ async def get_project(
 
     # Lazy-fetch domain metrics if analysis exists but metrics are missing
     sa = project.site_analysis
-    if (
-        sa
-        and sa.get("status") == "completed"
-        and not sa.get("domain_metrics")
-        and project.client_domain
-    ):
-        try:
-            from backend.services.domdetailer import fetch_domain_metrics
-            metrics = await fetch_domain_metrics(project.client_domain)
-            if metrics:
-                sa["domain_metrics"] = metrics
-                project.site_analysis = sa
-                # Force SQLAlchemy to detect the JSON change
-                from sqlalchemy.orm.attributes import flag_modified
-                flag_modified(project, "site_analysis")
-                await db.commit()
-                await db.refresh(project)
-        except Exception as e:
-            print(f"[API] Lazy domain metrics fetch failed for {project.client_domain}: {e}")
+    if sa and sa.get("status") == "completed" and project.client_domain:
+        updated = False
+
+        # Lazy-fetch DomDetailer metrics
+        if not sa.get("domain_metrics"):
+            try:
+                from backend.services.domdetailer import fetch_domain_metrics
+                metrics = await fetch_domain_metrics(project.client_domain)
+                if metrics:
+                    sa["domain_metrics"] = metrics
+                    updated = True
+            except Exception as e:
+                print(f"[API] Lazy DomDetailer fetch failed for {project.client_domain}: {e}")
+
+        # Lazy-fetch DataForSEO metrics (all endpoints)
+        dfs_existing = sa.get("dataforseo_metrics") or {}
+        dfs_missing_sections = not dfs_existing or not dfs_existing.get("whois")
+        if dfs_missing_sections:
+            try:
+                from backend.services.dataforseo_domain import fetch_all_dataforseo
+                all_dfs = await fetch_all_dataforseo(project.client_domain)
+                if all_dfs:
+                    merged = all_dfs.get("summary") or {}
+                    for key in ("whois", "technologies", "top_anchors", "top_referring_domains", "history", "competitors"):
+                        if key in all_dfs:
+                            merged[key] = all_dfs[key]
+                    sa["dataforseo_metrics"] = merged
+                    updated = True
+            except Exception as e:
+                print(f"[API] Lazy DataForSEO fetch failed for {project.client_domain}: {e}")
+
+        if updated:
+            project.site_analysis = sa
+            from sqlalchemy.orm.attributes import flag_modified
+            flag_modified(project, "site_analysis")
+            await db.commit()
+            await db.refresh(project)
 
     spots_q = await db.execute(
         select(func.count(Spot.id)).where(Spot.project_id == project.id)
@@ -758,6 +787,7 @@ async def seed_footprints(
 @app.post("/api/projects/{project_id}/analyze")
 async def analyze_project(
     project_id: str,
+    background_tasks: BackgroundTasks,
     language: Optional[str] = None,
     db: AsyncSession = Depends(get_db),
     user_id: str = Depends(get_current_user),
@@ -777,8 +807,8 @@ async def analyze_project(
     await db.refresh(project)
 
     from backend.services.site_analyzer import analyze_site
-    await analyze_site(project_id, project.client_domain, language)
-    return {"detail": "Analyse terminée", "project_id": project_id}
+    background_tasks.add_task(analyze_site, project_id, project.client_domain, language)
+    return {"detail": "Analyse lancée", "project_id": project_id}
 
 
 @app.get("/api/projects/{project_id}/sitemap-pages")
@@ -2347,6 +2377,7 @@ async def subscribe(
     user_id: str = Depends(get_current_user),
 ):
     """Create or update subscription. Free = DB only. Paid = Stripe flow."""
+    import traceback as _tb
     from backend.services.stripe_service import (
         create_stripe_customer, create_subscription as create_stripe_sub,
         get_price_id,
@@ -2359,22 +2390,26 @@ async def subscribe(
     sub = result.scalar_one_or_none()
 
     if data.plan == "free":
-        if sub:
-            sub.plan = SubscriptionPlan.free
-            sub.status = SubscriptionStatus.active
-            sub.billing_interval = None
-            sub.stripe_subscription_id = None
-            sub.stripe_price_id = None
-        else:
-            sub = Subscription(
-                user_id=user_id,
-                plan=SubscriptionPlan.free,
-                status=SubscriptionStatus.active,
-            )
-            db.add(sub)
-        await db.commit()
-        await db.refresh(sub)
-        return sub
+        try:
+            if sub:
+                sub.plan = SubscriptionPlan.free
+                sub.status = SubscriptionStatus.active
+                sub.billing_interval = None
+                sub.stripe_subscription_id = None
+                sub.stripe_price_id = None
+            else:
+                sub = Subscription(
+                    user_id=user_id,
+                    plan=SubscriptionPlan.free,
+                    status=SubscriptionStatus.active,
+                )
+                db.add(sub)
+            await db.commit()
+            await db.refresh(sub)
+            return sub
+        except Exception as exc:
+            logger.error("FREE subscribe failed: %s\n%s", exc, _tb.format_exc())
+            raise HTTPException(500, detail=f"Activation error: {exc}")
 
     # Paid plan flow
     if not data.payment_method_id:

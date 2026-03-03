@@ -14,7 +14,7 @@ export default function DADistributionChart({ distribution = {} }) {
   ];
 
   const hasData = data.some(d => d.count > 0);
-  if (!hasData) return <div className="h-64 flex items-center justify-center text-sm text-gray-400">{t('charts.noData')}</div>;
+  if (!hasData) return <div className="h-64 flex items-center justify-center text-sm text-ink-300">{t('charts.noData')}</div>;
 
   return (
     <ResponsiveContainer width="100%" height={260}>

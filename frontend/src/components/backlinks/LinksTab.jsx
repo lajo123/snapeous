@@ -171,22 +171,22 @@ export default function LinksTab({ projectId }) {
       <div className="card p-4">
         <div className="flex items-center gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-300" />
             <input
               type="text"
               placeholder={t('backlinks:links.searchPlaceholder')}
               value={filters.search}
               onChange={(e) => { setFilters(f => ({ ...f, search: e.target.value })); setPage(1); }}
-              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+              className="w-full pl-10 pr-4 py-2 rounded-xl border border-ink-100 bg-cream-50/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
           <select value={filters.status} onChange={(e) => { setFilters(f => ({ ...f, status: e.target.value })); setPage(1); }}
-            className="px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+            className="px-4 py-2 rounded-xl border border-ink-100 bg-cream-50/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
             <option value="">{t('backlinks:links.allStatuses')}</option>
             {Object.keys(BACKLINK_STATUS_COLORS).map(k => <option key={k} value={k}>{t(`common:backlinkStatus.${k}`)}</option>)}
           </select>
           <select value={filters.link_type} onChange={(e) => { setFilters(f => ({ ...f, link_type: e.target.value })); setPage(1); }}
-            className="px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+            className="px-4 py-2 rounded-xl border border-ink-100 bg-cream-50/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
             <option value="">{t('backlinks:links.allTypes')}</option>
             {Object.keys(BACKLINK_LINK_TYPE_COLORS).map(k => <option key={k} value={k}>{t(`common:backlinkLinkType.${k}`)}</option>)}
           </select>
@@ -198,9 +198,9 @@ export default function LinksTab({ projectId }) {
         </div>
 
         {showAdvancedFilters && (
-          <div className="flex items-center gap-4 mt-3 pt-3 border-t border-gray-100">
+          <div className="flex items-center gap-4 mt-3 pt-3 border-t border-ink-50">
             <select value={filters.is_indexed} onChange={(e) => setFilters(f => ({ ...f, is_indexed: e.target.value }))}
-              className="px-4 py-2 rounded-xl border border-gray-200 bg-[#FAF7F2]/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
+              className="px-4 py-2 rounded-xl border border-ink-100 bg-cream-50/50 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20">
               <option value="">{t('backlinks:links.indexation')}</option>
               <option value="true">{t('backlinks:links.indexedFilter')}</option>
               <option value="false">{t('backlinks:links.notIndexed')}</option>
@@ -214,7 +214,7 @@ export default function LinksTab({ projectId }) {
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead style={{ backgroundColor: '#FAF7F2' }} className="border-b border-[#E8DCCB]">
+            <thead className="bg-cream-50 border-b border-cream-200">
               <tr>
                 <th className="table-header px-4 py-3">{t('backlinks:links.sourceUrl')}</th>
                 <th className="table-header px-4 py-3">{t('backlinks:links.targetUrl')}</th>
@@ -228,11 +228,11 @@ export default function LinksTab({ projectId }) {
                 <th className="table-header px-4 py-3">{t('backlinks:links.actions')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E8DCCB]">
+            <tbody className="divide-y divide-cream-200">
               {isLoading ? (
-                <tr><td colSpan="10" className="px-6 py-12 text-center text-gray-400">{t('backlinks:links.loading')}</td></tr>
+                <tr><td colSpan="10" className="px-6 py-12 text-center text-ink-300">{t('backlinks:links.loading')}</td></tr>
               ) : displayBacklinks.length === 0 ? (
-                <tr><td colSpan="10" className="px-6 py-12 text-center text-gray-400">{t('backlinks:links.noBacklinks')}</td></tr>
+                <tr><td colSpan="10" className="px-6 py-12 text-center text-ink-300">{t('backlinks:links.noBacklinks')}</td></tr>
               ) : (
                 displayBacklinks.map((bl) => (
                   <tr key={bl.id} className="hover:bg-brand-50/40">
@@ -255,11 +255,11 @@ export default function LinksTab({ projectId }) {
                     </td>
                     {/* Target URL */}
                     <td className="px-4 py-3">
-                      <span className="text-sm text-gray-600">{bl.target_url ? truncateUrl(bl.target_url, 30) : '-'}</span>
+                      <span className="text-sm text-ink-500">{bl.target_url ? truncateUrl(bl.target_url, 30) : '-'}</span>
                     </td>
                     {/* Anchor */}
                     <td className="px-4 py-3">
-                      <span className="text-sm text-gray-900">{bl.anchor_text || '-'}</span>
+                      <span className="text-sm text-ink">{bl.anchor_text || '-'}</span>
                     </td>
                     {/* HTTP with label */}
                     <td className="px-4 py-3">
@@ -269,7 +269,7 @@ export default function LinksTab({ projectId }) {
                     </td>
                     {/* Type */}
                     <td className="px-4 py-3">
-                      <span className={cn("badge text-xs", BACKLINK_LINK_TYPE_COLORS[bl.link_type] || 'bg-gray-100 text-gray-800')}>
+                      <span className={cn("badge text-xs", BACKLINK_LINK_TYPE_COLORS[bl.link_type] || 'bg-cream-50 text-ink')}>
                         {t(`common:backlinkLinkType.${bl.link_type}`, bl.link_type)}
                       </span>
                     </td>
@@ -283,21 +283,21 @@ export default function LinksTab({ projectId }) {
                     <td className="px-4 py-3">
                       {bl.is_indexed === true && <CheckCircle className="h-4 w-4 text-brand-500" />}
                       {bl.is_indexed === false && <XCircle className="h-4 w-4 text-red-500" />}
-                      {bl.is_indexed == null && <MinusCircle className="h-4 w-4 text-gray-300" />}
+                      {bl.is_indexed == null && <MinusCircle className="h-4 w-4 text-ink-200" />}
                     </td>
                     {/* DR / UR with mini bar */}
                     <td className="px-4 py-3">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-gray-900 w-6">{bl.domain_rank ?? '-'}</span>
+                          <span className="text-sm font-semibold text-ink w-6">{bl.domain_rank ?? '-'}</span>
                           {bl.domain_rank != null && (
-                            <div className="flex-1 h-1.5 rounded-full bg-gray-100 max-w-[60px]">
+                            <div className="flex-1 h-1.5 rounded-full bg-cream-50 max-w-[60px]">
                               <div className="h-full rounded-full bg-brand-500" style={{ width: `${Math.min(bl.domain_rank, 100)}%` }} />
                             </div>
                           )}
                         </div>
                         {bl.url_rank != null && (
-                          <span className="text-[10px] text-[#6b6560]">UR: {bl.url_rank}</span>
+                          <span className="text-[10px] text-ink-400">UR: {bl.url_rank}</span>
                         )}
                       </div>
                     </td>
@@ -305,29 +305,29 @@ export default function LinksTab({ projectId }) {
                     <td className="px-4 py-3">
                       <div className="space-y-0.5">
                         {bl.first_check_at && (
-                          <p className="text-[10px] text-[#6b6560]">{t('backlinks:links.firstCheck')}: {formatDate(bl.first_check_at, i18n.language)}</p>
+                          <p className="text-[10px] text-ink-400">{t('backlinks:links.firstCheck')}: {formatDate(bl.first_check_at, i18n.language)}</p>
                         )}
                         {bl.last_check_at && (
                           <p className="text-[10px] text-brand-600 font-medium">{t('backlinks:links.lastCheck')}: {formatDate(bl.last_check_at, i18n.language)}</p>
                         )}
                         {!bl.first_check_at && !bl.last_check_at && (
-                          <span className="text-[10px] text-gray-300">-</span>
+                          <span className="text-[10px] text-ink-200">-</span>
                         )}
                       </div>
                     </td>
                     {/* Actions */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
-                        <button onClick={() => checkMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title={t('backlinks:links.verifyHttp')}>
+                        <button onClick={() => checkMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-cream-50 text-ink-500" title={t('backlinks:links.verifyHttp')}>
                           <RefreshCw className={cn("h-3.5 w-3.5", checkMutation.isPending && "animate-spin")} />
                         </button>
-                        <button onClick={() => indexCheckMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title={t('backlinks:links.verifyIndexation')}>
+                        <button onClick={() => indexCheckMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-cream-50 text-ink-500" title={t('backlinks:links.verifyIndexation')}>
                           <Globe className="h-3.5 w-3.5" />
                         </button>
-                        <button onClick={() => metricsMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title={t('backlinks:links.domainMetrics')}>
+                        <button onClick={() => metricsMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-cream-50 text-ink-500" title={t('backlinks:links.domainMetrics')}>
                           <BarChart3 className="h-3.5 w-3.5" />
                         </button>
-                        <button onClick={() => setEditingBacklink(bl)} className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600" title={t('backlinks:links.edit')}>
+                        <button onClick={() => setEditingBacklink(bl)} className="p-1.5 rounded-lg hover:bg-cream-50 text-ink-500" title={t('backlinks:links.edit')}>
                           <FileText className="h-3.5 w-3.5" />
                         </button>
                         <button onClick={() => deleteMutation.mutate(bl.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-red-600" title={t('common:delete')}>
@@ -344,13 +344,13 @@ export default function LinksTab({ projectId }) {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100">
-            <p className="text-sm text-[#6b6560]">{t('backlinks:links.pageOf', { current: page, total: totalPages, count: counts?.total || 0 })}</p>
+          <div className="flex items-center justify-between px-6 py-4 border-t border-ink-50">
+            <p className="text-sm text-ink-400">{t('backlinks:links.pageOf', { current: page, total: totalPages, count: counts?.total || 0 })}</p>
             <div className="flex items-center gap-2">
               <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
-                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-50 hover:bg-gray-50">{t('backlinks:links.previous')}</button>
+                className="px-4 py-2 rounded-lg border border-ink-100 text-sm font-medium disabled:opacity-50 hover:bg-surface-muted">{t('backlinks:links.previous')}</button>
               <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
-                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-50 hover:bg-gray-50">{t('backlinks:links.next')}</button>
+                className="px-4 py-2 rounded-lg border border-ink-100 text-sm font-medium disabled:opacity-50 hover:bg-surface-muted">{t('backlinks:links.next')}</button>
             </div>
           </div>
         )}

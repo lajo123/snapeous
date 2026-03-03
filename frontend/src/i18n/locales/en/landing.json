@@ -29,7 +29,11 @@
     "dofollowNofollow": "78% dofollow · 22% nofollow"
   },
   "socialProof": {
-    "title": "Used by demanding SEO teams"
+    "title": "Used by demanding SEO teams",
+    "stat1": "Active projects",
+    "stat2": "Avg. score improvement",
+    "stat3": "Backlinks monitored",
+    "stat4": "Uptime monitoring"
   },
   "features": {
     "sectionLabel": "Features",

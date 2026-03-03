@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import i18next from 'i18next';
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -16,22 +17,24 @@ export default class ErrorBoundary extends Component {
 
   render() {
     if (this.state.hasError) {
+      const t = (key, fallback) => i18next.t(`app:${key}`, fallback);
+
       return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-          <div className="max-w-lg w-full bg-white rounded-2xl border border-red-100 shadow-soft p-8 text-center">
+        <div className="min-h-screen flex items-center justify-center bg-cream px-4">
+          <div className="max-w-lg w-full bg-surface rounded-2xl border border-red-100 shadow-soft p-8 text-center">
             <div className="flex h-14 w-14 mx-auto items-center justify-center rounded-2xl bg-red-50 mb-5">
-              <svg className="h-7 w-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-7 w-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
               </svg>
             </div>
-            <h2 className="text-lg font-semibold text-gray-900 mb-2">
-              Une erreur est survenue
+            <h2 className="text-lg font-semibold text-ink mb-2">
+              {t('error.title', 'An error occurred')}
             </h2>
-            <p className="text-sm text-gray-400 mb-6">
-              L'application a rencontré une erreur inattendue. Consultez la console pour plus de détails.
+            <p className="text-sm text-ink-400 mb-6">
+              {t('error.description', 'The application encountered an unexpected error. Check the console for details.')}
             </p>
             {this.state.error && (
-              <pre className="text-left text-xs bg-gray-50 border border-gray-100 rounded-xl p-4 text-red-600 overflow-auto mb-6 max-h-40">
+              <pre className="text-left text-xs bg-cream border border-cream-200 rounded-xl p-4 text-red-600 overflow-auto mb-6 max-h-40">
                 {this.state.error.toString()}
               </pre>
             )}
@@ -39,7 +42,7 @@ export default class ErrorBoundary extends Component {
               onClick={() => this.setState({ hasError: false, error: null })}
               className="btn-primary"
             >
-              Réessayer
+              {t('error.retry', 'Retry')}
             </button>
           </div>
         </div>

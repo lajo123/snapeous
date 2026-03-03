@@ -1,0 +1,47 @@
+{
+  "title": "Elige tu plan",
+  "subtitle": "7 d\u00edas de prueba gratis en planes de pago \u00b7 Sin compromiso",
+  "monthly": "Mensual",
+  "annual": "Anual",
+  "discount": "-20%",
+  "recommended": "Recomendado",
+  "free": "Gratis",
+  "perMonth": "/mes",
+  "billedAnnually": "Facturado {{amount}}\u20ac/a\u00f1o",
+  "trialBadge": "7 d\u00edas de prueba gratis",
+  "ctaFree": "Empezar gratis",
+  "ctaFreePending": "Activando...",
+  "ctaTrial": "Iniciar prueba gratuita",
+  "plans": {
+    "free": {
+      "desc": "Para descubrir",
+      "features": ["1 proyecto", "50 backlinks", "Dashboard b\u00e1sico", "Alertas b\u00e1sicas"]
+    },
+    "starter": {
+      "desc": "Independientes",
+      "features": ["3 proyectos", "500 backlinks", "An\u00e1lisis completo", "Enlaces t\u00f3xicos", "Exportar CSV", "Alertas completas"]
+    },
+    "pro": {
+      "desc": "Freelancers y equipos",
+      "features": ["10 proyectos", "5.000 backlinks", "Todo Starter +", "Recomendaciones IA", "3 competidores", "Informes PDF", "Integraci\u00f3n GSC", "Acceso API"]
+    },
+    "agency": {
+      "desc": "Agencias SEO",
+      "features": ["Proyectos ilimitados", "25.000 backlinks", "Todo Pro +", "Competidores ilimitados", "Subcuentas", "Informes programados", "Soporte prioritario", "API avanzada"]
+    }
+  },
+  "checkout": {
+    "planTitle": "Plan {{plan}}",
+    "priceMonthly": "{{price}}\u20ac/mes",
+    "priceAnnual": "{{price}}\u20ac/mes (facturado anualmente)",
+    "trialNotice": "7 d\u00edas de prueba gratis. Cancela en cualquier momento.",
+    "cardLabel": "Tarjeta de cr\u00e9dito",
+    "processing": "Procesando...",
+    "submit": "Iniciar prueba gratuita",
+    "terms": "Al suscribirte, aceptas nuestras condiciones de uso. No se te cobrar\u00e1 durante los 7 d\u00edas de prueba.",
+    "successTrial": "\u00a1Suscripci\u00f3n activada! 7 d\u00edas de prueba gratis.",
+    "successFree": "\u00a1Plan Free activado!",
+    "error": "Ha ocurrido un error.",
+    "activateError": "Error durante la activaci\u00f3n"
+  }
+}

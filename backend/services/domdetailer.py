@@ -10,7 +10,7 @@ from backend.config import settings
 from backend.db.database import async_session
 
 
-DOMDETAILER_BASE_URL = "https://domdetailer.com/api"
+DOMDETAILER_BASE_URL = "https://domdetailer.com/api2"
 
 
 def _safe_int(val) -> Optional[int]:
@@ -23,22 +23,37 @@ def _safe_int(val) -> Optional[int]:
         return None
 
 
-async def fetch_domain_metrics(domain: str) -> Optional[Dict[str, Any]]:
-    """Fetch domain metrics from DomDetailer API (checkDomain v2).
+def _safe_float(val) -> Optional[float]:
+    """Safely convert a value to float."""
+    if val is None:
+        return None
+    try:
+        return round(float(val), 2)
+    except (ValueError, TypeError):
+        return None
 
-    Returns 12 metrics mapped from Moz / Majestic / Pretty stats:
-    - Domain Rank (mozDA)
-    - URL Rank (mozPA)
-    - Backlinks count (majesticLinks)
-    - Referring domains (majesticRefDomains)
-    - Dofollow backlinks (prettyLinksDofollow)
-    - Nofollow backlinks (computed)
-    - Gov backlinks (prettyLinksGov)
-    - Edu backlinks (prettyLinksEdu)
-    - Dofollow referring (N/A)
-    - Nofollow referring (N/A)
-    - Gov referring (majesticRefGov)
-    - Edu referring (majesticRefEdu)
+
+async def fetch_domain_metrics(domain: str) -> Optional[Dict[str, Any]]:
+    """Fetch domain metrics from DomDetailer API v2 (checkDomain).
+
+    Returns comprehensive metrics from Moz / Majestic / Pretty stats:
+
+    Moz metrics:
+    - Domain Authority (DA), Page Authority (PA)
+    - Moz Rank, Moz Trust, Spam Score
+    - Moz Links count
+
+    Majestic metrics:
+    - Citation Flow (CF), Trust Flow (TF)
+    - Total backlinks (links), Referring domains
+    - Referring IPs, Referring Subnets
+    - Edu/Gov referring domains
+    - Top 3 topic categories
+
+    Pretty Links metrics:
+    - Page count, Inbound/Outbound links
+    - Dofollow/Nofollow backlinks
+    - Edu/Gov links
     """
     if not settings.has_domdetailer or not domain:
         return None
@@ -54,7 +69,7 @@ async def fetch_domain_metrics(domain: str) -> Optional[Dict[str, Any]]:
                 }
             )
 
-            print(f"[DomDetailer] checkDomain for {domain}: status={response.status_code}")
+            print(f"[DomDetailer] checkDomain v2 for {domain}: status={response.status_code}")
 
             if response.status_code == 200:
                 data = response.json()
@@ -66,20 +81,49 @@ async def fetch_domain_metrics(domain: str) -> Optional[Dict[str, Any]]:
                 if total_backlinks is not None and dofollow is not None:
                     nofollow = max(0, total_backlinks - dofollow)
 
-                # Map DomDetailer Moz/Majestic/Pretty response to our model
+                # Extract Majestic topic categories
+                topics = []
+                for i in range(1, 4):
+                    topic_name = data.get(f"majesticTopicName{i}")
+                    topic_value = _safe_int(data.get(f"majesticTopicValue{i}"))
+                    if topic_name:
+                        topics.append({
+                            "name": topic_name,
+                            "value": topic_value,
+                        })
+
                 return {
+                    # Moz metrics
                     "domain_rank": _safe_int(data.get("mozDA")),
                     "url_rank": _safe_int(data.get("mozPA")),
+                    "moz_rank": _safe_float(data.get("mozRank")),
+                    "moz_trust": _safe_float(data.get("mozTrust")),
+                    "moz_spam_score": _safe_int(data.get("mozSpamScore")),
+                    "moz_links": _safe_int(data.get("mozLinks")),
+
+                    # Majestic metrics
+                    "citation_flow": _safe_int(data.get("majesticCF")),
+                    "trust_flow": _safe_int(data.get("majesticTF")),
                     "backlinks_count": total_backlinks,
                     "referring_domains": _safe_int(data.get("majesticRefDomains")),
+                    "referring_ips": _safe_int(data.get("majesticRefIPs")),
+                    "referring_subnets": _safe_int(data.get("majesticRefSubnets")),
+                    "edu_referring": _safe_int(data.get("majesticRefEdu")),
+                    "gov_referring": _safe_int(data.get("majesticRefGov")),
+                    "topic_categories": topics,
+
+                    # Pretty Links metrics
                     "dofollow_backlinks": dofollow,
                     "nofollow_backlinks": nofollow,
                     "gov_backlinks": _safe_int(data.get("prettyLinksGov")),
                     "edu_backlinks": _safe_int(data.get("prettyLinksEdu")),
-                    "dofollow_referring": None,  # Not available from API
-                    "nofollow_referring": None,  # Not available from API
-                    "gov_referring": _safe_int(data.get("majesticRefGov")),
-                    "edu_referring": _safe_int(data.get("majesticRefEdu")),
+                    "page_count": _safe_int(data.get("prettyLinksPageCount")),
+                    "inbound_links": _safe_int(data.get("prettyLinksIn")),
+                    "outbound_links": _safe_int(data.get("prettyLinksOut")),
+
+                    # Legacy fields for backward compatibility
+                    "dofollow_referring": None,
+                    "nofollow_referring": None,
                 }
             else:
                 print(f"[DomDetailer] Error response: {response.text[:200]}")
@@ -159,7 +203,7 @@ async def fetch_backlinks(domain: str) -> Optional[Dict[str, Any]]:
     try:
         async with httpx.AsyncClient(timeout=120.0) as client:
             response = await client.get(
-                "https://domdetailer.com/api2/getBacklinks.php",
+                f"{DOMDETAILER_BASE_URL}/getBacklinks.php",
                 params={
                     "apikey": settings.domdetailer_api_key,
                     "app": "Snapeous",

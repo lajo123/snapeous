@@ -46,11 +46,17 @@ export default function SEOHead({ pageKey, titleOverride, descriptionOverride })
       <meta property="og:type" content="website" />
       <meta property="og:url" content={canonical} />
       <meta property="og:locale" content={lang} />
+      <meta property="og:image" content={`${BASE_URL}/og-image.png`} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
 
       {/* Twitter */}
-      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       {description && <meta name="twitter:description" content={description} />}
+      <meta name="twitter:image" content={`${BASE_URL}/og-image.png`} />
+
+      {/* Structured Data is in index.html (Helmet does not render ld+json properly) */}
     </Helmet>
   );
 }

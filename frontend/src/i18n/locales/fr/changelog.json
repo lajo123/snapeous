@@ -1,0 +1,22 @@
+{
+  "title": "Journal des modifications",
+  "subtitle": "Nouvelles fonctionnalités, améliorations et corrections à chaque version.",
+  "backHome": "Retour à l'accueil",
+  "types": {
+    "feature": "Fonctionnalité",
+    "improvement": "Amélioration",
+    "fix": "Correction"
+  },
+  "entries": {
+    "v120.domainMetrics": "Tableau de bord complet des métriques de domaine avec scores de confiance, profil de backlinks et données de trafic organique.",
+    "v120.backlinkHistory": "Suivi de l'historique des backlinks pour surveiller les liens gagnés et perdus au fil du temps.",
+    "v120.fasterAnalysis": "Vitesse d'analyse améliorée — les audits de site sont désormais jusqu'à 2x plus rapides.",
+    "v120.loginFix": "Correction d'un problème où les sessions de connexion expiraient prématurément.",
+    "v110.multiLanguage": "Support multilingue : l'application est désormais disponible en 6 langues.",
+    "v110.footprints": "Moteur de découverte de footprints pour trouver des opportunités de link building.",
+    "v110.dashboardRedesign": "Tableau de bord repensé avec statistiques en un coup d'œil et actions rapides.",
+    "v100.launch": "Lancement initial de Snapeous — votre plateforme SEO de backlinks.",
+    "v100.spotDiscovery": "Découverte de spots : trouvez des sites web où construire vos backlinks.",
+    "v100.seoAnalysis": "Analyse SEO on-page avec des recommandations concrètes."
+  }
+}

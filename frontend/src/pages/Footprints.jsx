@@ -151,7 +151,7 @@ export default function Footprints() {
       <div className="flex items-center justify-center h-64">
         <div className="flex flex-col items-center gap-3">
           <Loader2 className="h-8 w-8 text-brand-500 animate-spin" />
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-ink-300">
             {seedMutation.isPending ? 'Initialisation des footprints...' : 'Chargement...'}
           </span>
         </div>
@@ -165,17 +165,17 @@ export default function Footprints() {
     return (
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Bibliotheque de Footprints</h1>
-          <p className="mt-1.5 text-sm text-gray-400">
+          <h1 className="text-2xl font-bold text-ink">Bibliotheque de Footprints</h1>
+          <p className="mt-1.5 text-sm text-ink-300">
             Gerez vos footprints pour la recherche de spots
           </p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-100 shadow-soft px-6 py-20 text-center">
-          <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-xl bg-gray-50">
-            <Database className="h-8 w-8 text-gray-300" />
+        <div className="bg-white rounded-xl border border-ink-50 shadow-soft px-6 py-20 text-center">
+          <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-xl bg-surface-muted">
+            <Database className="h-8 w-8 text-ink-200" />
           </div>
-          <h3 className="mt-5 text-sm font-semibold text-gray-900">Aucun footprint</h3>
-          <p className="mt-1.5 text-sm text-gray-400">
+          <h3 className="mt-5 text-sm font-semibold text-ink">Aucun footprint</h3>
+          <p className="mt-1.5 text-sm text-ink-300">
             Initialisez la bibliotheque avec les footprints par defaut.
           </p>
           <button
@@ -202,8 +202,8 @@ export default function Footprints() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Bibliotheque de Footprints</h1>
-          <p className="mt-1.5 text-sm text-gray-400">
+          <h1 className="text-2xl font-bold text-ink">Bibliotheque de Footprints</h1>
+          <p className="mt-1.5 text-sm text-ink-300">
             {totalCount} footprints disponibles dans {Object.keys(categoryCountMap).length} categories
           </p>
         </div>
@@ -217,18 +217,18 @@ export default function Footprints() {
       </div>
 
       {/* Filter bar */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-5">
+      <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-5">
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-gray-300" />
-            <span className="text-sm font-medium text-gray-700">Filtres :</span>
+            <Filter className="h-4 w-4 text-ink-200" />
+            <span className="text-sm font-medium text-ink-600">Filtres :</span>
           </div>
 
           {/* Category dropdown */}
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
+            className="rounded-xl border border-ink-100 bg-surface-muted px-3 py-2 text-sm text-ink-600 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
           >
             <option value="">Toutes les categories</option>
             {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
@@ -242,7 +242,7 @@ export default function Footprints() {
           <select
             value={difficultyFilter}
             onChange={(e) => setDifficultyFilter(e.target.value)}
-            className="rounded-xl border border-gray-200 bg-gray-50/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
+            className="rounded-xl border border-ink-100 bg-surface-muted px-3 py-2 text-sm text-ink-600 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
           >
             <option value="">Toutes les difficultes</option>
             {Object.entries(DIFFICULTY_LABELS).map(([key, label]) => (
@@ -254,13 +254,13 @@ export default function Footprints() {
 
           {/* Search */}
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-200" />
             <input
               type="text"
               placeholder="Rechercher un footprint..."
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50/50 pl-10 pr-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
+              className="w-full rounded-xl border border-ink-100 bg-surface-muted pl-10 pr-3 py-2 text-sm text-ink-600 placeholder:text-ink-200 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
             />
           </div>
         </div>
@@ -269,8 +269,8 @@ export default function Footprints() {
       <div className="flex gap-6">
         {/* Category sidebar */}
         <div className="hidden lg:block w-56 flex-shrink-0">
-          <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-3 sticky top-4">
-            <h3 className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+          <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-3 sticky top-4">
+            <h3 className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-ink-300">
               Categories
             </h3>
             <nav className="space-y-0.5">
@@ -280,11 +280,11 @@ export default function Footprints() {
                   'flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm transition-all',
                   !categoryFilter
                     ? 'bg-brand-50 text-brand-700 font-semibold'
-                    : 'text-gray-500 hover:bg-gray-50'
+                    : 'text-ink-400 hover:bg-surface-muted'
                 )}
               >
                 <span>Toutes</span>
-                <span className="text-xs text-gray-400">{totalCount}</span>
+                <span className="text-xs text-ink-300">{totalCount}</span>
               </button>
               {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
                 const count = categoryCountMap[key] ?? 0;
@@ -297,11 +297,11 @@ export default function Footprints() {
                       'flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm transition-all',
                       categoryFilter === key
                         ? 'bg-brand-50 text-brand-700 font-semibold'
-                        : 'text-gray-500 hover:bg-gray-50'
+                        : 'text-ink-400 hover:bg-surface-muted'
                     )}
                   >
                     <span className="truncate">{label}</span>
-                    <span className="ml-2 text-xs text-gray-400">{count}</span>
+                    <span className="ml-2 text-xs text-ink-300">{count}</span>
                   </button>
                 );
               })}
@@ -311,16 +311,16 @@ export default function Footprints() {
 
         {/* Table */}
         <div className="flex-1 min-w-0">
-          <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
+          <div className="bg-white rounded-xl border border-ink-50 shadow-soft overflow-hidden">
             {footprints.length === 0 ? (
               <div className="px-6 py-20 text-center">
-                <div className="flex h-14 w-14 mx-auto items-center justify-center rounded-xl bg-gray-50">
-                  <Search className="h-7 w-7 text-gray-300" />
+                <div className="flex h-14 w-14 mx-auto items-center justify-center rounded-xl bg-surface-muted">
+                  <Search className="h-7 w-7 text-ink-200" />
                 </div>
-                <h3 className="mt-4 text-sm font-semibold text-gray-900">
+                <h3 className="mt-4 text-sm font-semibold text-ink">
                   Aucun resultat
                 </h3>
-                <p className="mt-1.5 text-sm text-gray-400">
+                <p className="mt-1.5 text-sm text-ink-300">
                   Aucun footprint ne correspond a vos filtres.
                 </p>
               </div>
@@ -328,14 +328,14 @@ export default function Footprints() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-50 text-left">
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Nom</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Categorie</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Template</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Type de lien</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Difficulte</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Plateforme</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-gray-400 text-right">Utilisations</th>
+                    <tr className="border-b border-ink-50/50 text-left">
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Nom</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Categorie</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Template</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Type de lien</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Difficulte</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Plateforme</th>
+                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300 text-right">Utilisations</th>
                       <th className="px-5 py-3.5 w-10"></th>
                     </tr>
                   </thead>
@@ -345,24 +345,24 @@ export default function Footprints() {
                         key={fp.id}
                         className={cn(
                           'transition-colors duration-150 hover:bg-brand-50/30',
-                          idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'
+                          idx % 2 === 0 ? 'bg-white' : 'bg-surface-muted'
                         )}
                       >
                         <td className="px-5 py-3">
-                          <span className="font-medium text-gray-900">{fp.name}</span>
+                          <span className="font-medium text-ink">{fp.name}</span>
                         </td>
                         <td className="px-5 py-3">
                           <span
                             className={cn(
                               'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
-                              CATEGORY_COLORS[fp.category] ?? 'bg-gray-100 text-gray-800'
+                              CATEGORY_COLORS[fp.category] ?? 'bg-cream-50 text-ink'
                             )}
                           >
                             {CATEGORY_LABELS[fp.category] ?? fp.category}
                           </span>
                         </td>
                         <td className="px-5 py-3 max-w-[260px]">
-                          <code className="block truncate text-xs bg-gray-50 text-gray-600 rounded-lg px-2 py-1 font-mono">
+                          <code className="block truncate text-xs bg-surface-muted text-ink-500 rounded-lg px-2 py-1 font-mono">
                             {fp.query_template}
                           </code>
                         </td>
@@ -378,17 +378,17 @@ export default function Footprints() {
                             <span
                               className={cn(
                                 'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
-                                DIFFICULTY_COLORS[fp.difficulty] ?? 'bg-gray-100 text-gray-800'
+                                DIFFICULTY_COLORS[fp.difficulty] ?? 'bg-cream-50 text-ink'
                               )}
                             >
                               {DIFFICULTY_LABELS[fp.difficulty] ?? fp.difficulty}
                             </span>
                           )}
                         </td>
-                        <td className="px-5 py-3 text-gray-400 text-xs">
+                        <td className="px-5 py-3 text-ink-300 text-xs">
                           {fp.platform_target || '--'}
                         </td>
-                        <td className="px-5 py-3 text-right text-gray-500 tabular-nums font-medium">
+                        <td className="px-5 py-3 text-right text-ink-400 tabular-nums font-medium">
                           {fp.usage_count ?? 0}
                         </td>
                         <td className="px-5 py-3">
@@ -399,7 +399,7 @@ export default function Footprints() {
                                   deleteMutation.mutate(fp.id);
                                 }
                               }}
-                              className="rounded-lg p-1.5 text-gray-300 hover:text-red-600 hover:bg-red-50 transition-all"
+                              className="rounded-lg p-1.5 text-ink-200 hover:text-red-600 hover:bg-red-50 transition-all"
                               title="Supprimer"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -426,19 +426,19 @@ export default function Footprints() {
           />
 
           {/* Panel */}
-          <div className="relative bg-white rounded-xl shadow-soft-lg border border-gray-100 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="px-7 py-5 border-b border-gray-50 flex items-center justify-between">
+          <div className="relative bg-white rounded-xl shadow-soft-lg border border-ink-50 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="px-7 py-5 border-b border-ink-50/50 flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-ink">
                   Ajouter un footprint personnalise
                 </h2>
-                <p className="mt-0.5 text-sm text-gray-400">
+                <p className="mt-0.5 text-sm text-ink-300">
                   Creez un nouveau footprint pour vos recherches de spots.
                 </p>
               </div>
               <button
                 onClick={() => setShowModal(false)}
-                className="rounded-lg p-1.5 text-gray-300 hover:text-gray-600 hover:bg-gray-100 transition-all"
+                className="rounded-lg p-1.5 text-ink-200 hover:text-ink-500 hover:bg-cream-50 transition-all"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -447,7 +447,7 @@ export default function Footprints() {
             <form onSubmit={handleSubmit} className="px-7 py-5 space-y-5">
               {/* Nom */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-ink-600 mb-2">
                   Nom <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -455,19 +455,19 @@ export default function Footprints() {
                   value={form.name}
                   onChange={(e) => handleFormChange('name', e.target.value)}
                   placeholder="Ex: Forums WordPress FR"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
+                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 />
               </div>
 
               {/* Categorie */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-ink-600 mb-2">
                   Categorie <span className="text-red-400">*</span>
                 </label>
                 <select
                   value={form.category}
                   onChange={(e) => handleFormChange('category', e.target.value)}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
+                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 >
                   <option value="">Selectionner une categorie</option>
                   {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
@@ -480,7 +480,7 @@ export default function Footprints() {
 
               {/* Query template */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-ink-600 mb-2">
                   Template de requete <span className="text-red-400">*</span>
                 </label>
                 <textarea
@@ -488,20 +488,20 @@ export default function Footprints() {
                   onChange={(e) => handleFormChange('query_template', e.target.value)}
                   rows={3}
                   placeholder='Ex: inurl:forum "{keyword}" site:.fr'
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm font-mono focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none resize-vertical transition-all"
+                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm font-mono focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none resize-vertical transition-all"
                 />
               </div>
 
               {/* Type de lien + Difficulte */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-ink-600 mb-2">
                     Type de lien attendu
                   </label>
                   <select
                     value={form.expected_link_type}
                     onChange={(e) => handleFormChange('expected_link_type', e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
+                    className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                   >
                     <option value="">Non specifie</option>
                     {Object.entries(LINK_TYPE_LABELS).map(([key, label]) => (
@@ -512,13 +512,13 @@ export default function Footprints() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-ink-600 mb-2">
                     Difficulte
                   </label>
                   <select
                     value={form.difficulty}
                     onChange={(e) => handleFormChange('difficulty', e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
+                    className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                   >
                     <option value="">Non specifie</option>
                     {Object.entries(DIFFICULTY_LABELS).map(([key, label]) => (
@@ -532,7 +532,7 @@ export default function Footprints() {
 
               {/* Plateforme */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-ink-600 mb-2">
                   Plateforme cible
                 </label>
                 <input
@@ -540,13 +540,13 @@ export default function Footprints() {
                   value={form.platform_target}
                   onChange={(e) => handleFormChange('platform_target', e.target.value)}
                   placeholder="Ex: WordPress, phpBB, Discourse..."
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
+                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-ink-600 mb-2">
                   Description
                 </label>
                 <textarea
@@ -554,13 +554,13 @@ export default function Footprints() {
                   onChange={(e) => handleFormChange('description', e.target.value)}
                   rows={2}
                   placeholder="Description optionnelle du footprint"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none resize-vertical transition-all"
+                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none resize-vertical transition-all"
                 />
               </div>
 
               {/* Tags */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-ink-600 mb-2">
                   Tags
                 </label>
                 <input
@@ -568,12 +568,12 @@ export default function Footprints() {
                   value={form.tags}
                   onChange={(e) => handleFormChange('tags', e.target.value)}
                   placeholder="Separes par des virgules : seo, forum, fr"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
+                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
                 />
               </div>
 
               {/* Actions */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-50">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-ink-50/50">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}

@@ -69,7 +69,7 @@ export default function HistoryTab({ projectId }) {
             onClick={() => setPeriod(p)}
             className={cn(
               "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-              period === p ? "bg-brand-100 text-brand-700" : "bg-[#FAF7F2] text-[#5a5550] hover:bg-white"
+              period === p ? "bg-brand-100 text-brand-700" : "bg-cream-50 text-ink-500 hover:bg-white"
             )}
           >
             {t(PERIOD_KEYS[p])}
@@ -79,21 +79,21 @@ export default function HistoryTab({ projectId }) {
 
       {/* Chart */}
       <div className="card p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('history.gainedLostTitle')}</h3>
+        <h3 className="text-sm font-semibold text-ink mb-4">{t('history.gainedLostTitle')}</h3>
         <GainedLostChart timeline={timeline} />
       </div>
 
       {/* Timeline */}
       <div className="card p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('history.timelineTitle')}</h3>
+        <h3 className="text-sm font-semibold text-ink mb-4">{t('history.timelineTitle')}</h3>
 
         {isLoading ? (
-          <p className="text-center py-8 text-gray-400">{t('links.loading')}</p>
+          <p className="text-center py-8 text-ink-300">{t('links.loading')}</p>
         ) : events.length === 0 ? (
           <div className="text-center py-8">
-            <Clock className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-            <p className="text-sm text-gray-400">{t('history.emptyTitle')}</p>
-            <p className="text-xs text-gray-300 mt-1">{t('history.emptyDesc')}</p>
+            <Clock className="h-8 w-8 text-ink-200 mx-auto mb-2" />
+            <p className="text-sm text-ink-300">{t('history.emptyTitle')}</p>
+            <p className="text-xs text-ink-200 mt-1">{t('history.emptyDesc')}</p>
           </div>
         ) : (
           <div className="space-y-0">
@@ -104,7 +104,7 @@ export default function HistoryTab({ projectId }) {
                 <div key={event.id} className="flex gap-4 relative">
                   {/* Timeline line */}
                   {i < events.length - 1 && (
-                    <div className="absolute left-[17px] top-10 bottom-0 w-px bg-gray-200" />
+                    <div className="absolute left-[17px] top-10 bottom-0 w-px bg-ink-100" />
                   )}
                   {/* Icon */}
                   <div className={cn("w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 z-10", config.bg)}>
@@ -113,14 +113,14 @@ export default function HistoryTab({ projectId }) {
                   {/* Content */}
                   <div className="flex-1 pb-6">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-ink">
                         {t(EVENT_LABEL_KEYS[event.event_type] || 'history.eventCreated')}
                       </span>
-                      <span className="text-xs text-[#6b6560]">
+                      <span className="text-xs text-ink-400">
                         {event.changed_at ? formatDate(event.changed_at, i18n.language) : ''}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 mt-0.5">
+                    <p className="text-sm text-ink-500 mt-0.5">
                       {event.source_url && truncateUrl(event.source_url, 50)}
                     </p>
                     {event.event_type === 'status_changed' && (
@@ -130,7 +130,7 @@ export default function HistoryTab({ projectId }) {
                             {t(STATUS_LABEL_KEYS[event.old_status] || 'history.statusPending')}
                           </span>
                         )}
-                        <span className="text-xs text-gray-400">→</span>
+                        <span className="text-xs text-ink-300">→</span>
                         {event.new_status && (
                           <span className={cn("badge text-xs", STATUS_BADGES[event.new_status])}>
                             {t(STATUS_LABEL_KEYS[event.new_status] || 'history.statusPending')}
@@ -139,12 +139,12 @@ export default function HistoryTab({ projectId }) {
                       </div>
                     )}
                     {event.event_type === 'http_changed' && (
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-ink-400 mt-1">
                         HTTP {event.old_http_code || '?'} → {event.new_http_code || '?'}
                       </p>
                     )}
                     {event.domain_rank_snapshot && (
-                      <span className="text-[10px] text-[#6b6560] mt-1 inline-block">DR: {event.domain_rank_snapshot}</span>
+                      <span className="text-[10px] text-ink-400 mt-1 inline-block">DR: {event.domain_rank_snapshot}</span>
                     )}
                   </div>
                 </div>

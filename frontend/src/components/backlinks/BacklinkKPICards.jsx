@@ -57,23 +57,23 @@ export default function BacklinkKPICards({ stats }) {
       {cards.map((card) => (
         <div key={card.label} className="card p-4">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-medium text-[#6b6560] uppercase tracking-wide">{card.label}</span>
+            <span className="text-xs font-medium text-ink-400 uppercase tracking-wide">{card.label}</span>
             <div className={`h-8 w-8 rounded-lg ${card.iconBg} flex items-center justify-center`}>
               <card.icon className={`h-4 w-4 ${card.iconColor}`} />
             </div>
           </div>
           <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-3xl font-bold tracking-tight text-gray-900">{card.primary}</span>
-            <span className="text-sm text-[#6b6560]">{card.primaryLabel}</span>
+            <span className="text-3xl font-bold tracking-tight text-ink">{card.primary}</span>
+            <span className="text-sm text-ink-400">{card.primaryLabel}</span>
           </div>
 
           {card.secondary && (
-            <p className="text-xs text-[#6b6560] mt-1">{card.secondary}</p>
+            <p className="text-xs text-ink-400 mt-1">{card.secondary}</p>
           )}
 
           {card.healthBar && card.healthBar.total > 0 && (
             <div className="mt-2">
-              <div className="flex h-2 rounded-full overflow-hidden bg-gray-100">
+              <div className="flex h-2 rounded-full overflow-hidden bg-cream-50">
                 <div
                   className="bg-brand-500"
                   style={{ width: `${(card.healthBar.ok / card.healthBar.total) * 100}%` }}
@@ -88,13 +88,13 @@ export default function BacklinkKPICards({ stats }) {
                 />
               </div>
               <div className="flex items-center gap-3 mt-1.5">
-                <span className="flex items-center gap-1 text-[10px] text-[#6b6560]">
+                <span className="flex items-center gap-1 text-[10px] text-ink-400">
                   <span className="w-2 h-2 rounded-full bg-brand-500" />{card.healthBar.ok} OK
                 </span>
-                <span className="flex items-center gap-1 text-[10px] text-[#6b6560]">
+                <span className="flex items-center gap-1 text-[10px] text-ink-400">
                   <span className="w-2 h-2 rounded-full bg-blue-500" />{card.healthBar.redirect} Redir.
                 </span>
-                <span className="flex items-center gap-1 text-[10px] text-[#6b6560]">
+                <span className="flex items-center gap-1 text-[10px] text-ink-400">
                   <span className="w-2 h-2 rounded-full bg-red-500" />{card.healthBar.lost} {t('kpi.lost')}
                 </span>
               </div>
@@ -103,16 +103,16 @@ export default function BacklinkKPICards({ stats }) {
 
           {card.dofollowBar && (
             <div className="mt-2">
-              <div className="flex h-2 rounded-full overflow-hidden bg-gray-100">
+              <div className="flex h-2 rounded-full overflow-hidden bg-cream-50">
                 <div className="bg-brand-500" style={{ width: `${card.dofollowBar.dofollow}%` }} />
-                <div className="bg-gray-400" style={{ width: `${card.dofollowBar.nofollow}%` }} />
+                <div className="bg-ink-300" style={{ width: `${card.dofollowBar.nofollow}%` }} />
               </div>
               <div className="flex items-center gap-3 mt-1.5">
-                <span className="flex items-center gap-1 text-[10px] text-[#6b6560]">
+                <span className="flex items-center gap-1 text-[10px] text-ink-400">
                   <span className="w-2 h-2 rounded-full bg-brand-500" />{Math.round(card.dofollowBar.dofollow)}% Dofollow
                 </span>
-                <span className="flex items-center gap-1 text-[10px] text-[#6b6560]">
-                  <span className="w-2 h-2 rounded-full bg-gray-400" />{Math.round(card.dofollowBar.nofollow)}% Nofollow
+                <span className="flex items-center gap-1 text-[10px] text-ink-400">
+                  <span className="w-2 h-2 rounded-full bg-ink-300" />{Math.round(card.dofollowBar.nofollow)}% Nofollow
                 </span>
               </div>
             </div>

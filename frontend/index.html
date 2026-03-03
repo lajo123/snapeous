@@ -2,20 +2,46 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/snapeous-logo.svg" />
+    <link rel="icon" type="image/svg+xml" href="/snapeous-logo.svg?v=2" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#C27B5C" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <title>Snapeous</title>
+
+    <!-- Structured Data — Organization (Google logo in search results) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Snapeous",
+      "url": "https://snapeous.com",
+      "logo": "https://snapeous.com/logo-512.png",
+      "image": "https://snapeous.com/og-image.png",
+      "sameAs": []
+    }
+    </script>
+
+    <!-- Structured Data — WebSite (Google sitelinks search box) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Snapeous",
+      "url": "https://snapeous.com"
+    }
+    </script>
+
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-    <!-- Rybbit Analytics -->
-    <script
-      src="https://app.rybbit.io/api/script.js"
-      data-site-id="6342567a15b4"
-      defer
-    ></script>
+    <!-- Rybbit Analytics (loaded in production only via main.jsx) -->
   </head>
   <body>
     <div id="root"></div>

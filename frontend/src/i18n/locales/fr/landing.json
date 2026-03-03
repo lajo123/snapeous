@@ -29,7 +29,11 @@
     "dofollowNofollow": "78% dofollow · 22% nofollow"
   },
   "socialProof": {
-    "title": "Utilisé par des équipes SEO exigeantes"
+    "title": "Utilisé par des équipes SEO exigeantes",
+    "stat1": "Projets actifs",
+    "stat2": "Amélioration moy. du score",
+    "stat3": "Backlinks surveillés",
+    "stat4": "Disponibilité monitoring"
   },
   "features": {
     "sectionLabel": "Fonctionnalités",

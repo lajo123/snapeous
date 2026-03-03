@@ -16,11 +16,13 @@ import {
   X,
   Trash2,
   LogOut,
+  Menu,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getProject, getProjects, createProject, deleteProject, analyzeProject } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
+import Modal from './ui/Modal';
 import UpgradeModal from './UpgradeModal';
 import LanguageSwitcher from './LanguageSwitcher';
 import useLocalizedNavigate from '@/hooks/useLocalizedNavigate';
@@ -48,6 +50,17 @@ export default function Layout() {
   const [faviconError, setFaviconError] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDomain, setNewDomain] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Auto-collapse sidebar on tablet-sized screens (768–1024px)
+  useEffect(() => {
+    const mql = window.matchMedia('(min-width: 768px) and (max-width: 1024px)');
+    const handler = (e) => setSidebarCollapsed(e.matches);
+    handler(mql);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, []);
 
   const { data: projects = [] } = useQuery({
     queryKey: ['projects'],
@@ -58,6 +71,9 @@ export default function Layout() {
 
   // Reset favicon error when project changes
   useEffect(() => { setFaviconError(false); }, [activeProjectId]);
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => { setSidebarOpen(false); }, [location.pathname]);
 
   const { data: activeProject } = useQuery({
     queryKey: ['project', activeProjectId],
@@ -119,25 +135,24 @@ export default function Layout() {
     setProjectMenuOpen(false);
   };
 
-  return (
-    <div className="grain-overlay flex h-screen overflow-hidden" style={{ backgroundColor: '#F0E6D8' }}>
+  const collapsed = sidebarCollapsed && !sidebarOpen; // never collapse the mobile drawer
 
-      {/* ── Sidebar ───────────────────────────────────────────── */}
-      <aside className="w-[220px] shrink-0 bg-[#FEFEFE] flex flex-col border-r border-[#E8DCCB]">
-
-        {/* Logo + Plan badge */}
-        <div className="px-5 pt-6 pb-5">
-          <div className="flex items-center gap-2">
-            <img src="/snapeous-logo.svg" alt="Snapeous" className="h-6 w-6 shrink-0" />
-            <span className="text-sm font-bold tracking-tight text-[#2A2A2A]">Snapeous</span>
-          </div>
+  const sidebarContent = (
+    <>
+      {/* Logo + Plan badge */}
+      <div className={cn('pt-6 pb-5', collapsed ? 'px-2' : 'px-5')}>
+        <div className={cn('flex items-center', collapsed ? 'justify-center' : 'gap-2')}>
+          <img src="/snapeous-logo.svg" alt="Snapeous" className="h-6 w-6 shrink-0" />
+          {!collapsed && <span className="text-sm font-bold tracking-tight text-ink">Snapeous</span>}
+        </div>
+        {!collapsed && (
           <div className="mt-2 flex items-center gap-1.5">
             <span className={cn(
               'text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full',
               plan === 'agency' ? 'bg-violet-100 text-violet-700'
                 : plan === 'pro' ? 'bg-brand-100 text-brand-700'
                 : plan === 'starter' ? 'bg-blue-100 text-blue-700'
-                : 'bg-gray-100 text-gray-500'
+                : 'bg-cream-50 text-ink-400'
             )}>
               {plan}
             </span>
@@ -147,209 +162,283 @@ export default function Layout() {
               </span>
             )}
           </div>
-        </div>
+        )}
+      </div>
 
-        {/* Nav */}
-        <nav className="flex-1 overflow-y-auto px-3 pb-2 space-y-0.5">
+      {/* Nav */}
+      <nav className={cn('flex-1 overflow-y-auto pb-2 space-y-0.5', collapsed ? 'px-1.5' : 'px-3')}>
+        {activeProjectId && PROJECT_NAV.map(({ key, path, icon: Icon }) => {
+          const to = path === ''
+            ? lp(`/projects/${activeProjectId}`)
+            : lp(`/projects/${activeProjectId}${path}`);
 
-          {activeProjectId && PROJECT_NAV.map(({ key, path, icon: Icon }) => {
-            const to = path === ''
-              ? lp(`/projects/${activeProjectId}`)
-              : lp(`/projects/${activeProjectId}${path}`);
+          const isActive = path === ''
+            ? location.pathname.endsWith(`/projects/${activeProjectId}`)
+            : location.pathname.includes(`/projects/${activeProjectId}${path}`);
 
-            const isActive = path === ''
-              ? location.pathname.endsWith(`/projects/${activeProjectId}`)
-              : location.pathname.includes(`/projects/${activeProjectId}${path}`);
+          return (
+            <NavLink
+              key={key}
+              to={to}
+              title={collapsed ? t(`nav.${key}`) : undefined}
+              aria-label={collapsed ? t(`nav.${key}`) : undefined}
+              className={cn(
+                'flex items-center rounded-lg text-sm font-medium transition-colors',
+                collapsed ? 'justify-center p-2.5' : 'gap-2.5 px-3 py-2',
+                isActive
+                  ? 'bg-brand-50 text-brand-700'
+                  : 'text-ink-500 hover:bg-cream hover:text-ink'
+              )}
+            >
+              <Icon className="h-4 w-4 shrink-0" />
+              {!collapsed && t(`nav.${key}`)}
+            </NavLink>
+          );
+        })}
 
-            return (
-              <NavLink
-                key={key}
-                to={to}
-                className={cn(
-                  'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-brand-50 text-brand-700'
-                    : 'text-[#5a5550] hover:bg-[#F0E6D8] hover:text-[#2A2A2A]'
-                )}
-              >
-                <Icon className="h-4 w-4 shrink-0" />
-                {t(`nav.${key}`)}
-              </NavLink>
-            );
-          })}
-
-          {!activeProjectId && (
-            <div className="px-3 py-8 text-center">
-              <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-xl bg-[#F0E6D8]">
-                <FolderOpen className="h-6 w-6 text-[#9a9080]" />
-              </div>
-              <p className="mt-3 text-xs font-medium text-[#6b6560]">{t('sidebar.noProject')}</p>
-              <p className="mt-1 text-[11px] text-[#9a9080]">{t('sidebar.createToStart')}</p>
-              <button
-                onClick={() => setShowNewModal(true)}
-                className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
-              >
-                <Plus className="h-3 w-3" />
-                {t('sidebar.newProject')}
-              </button>
+        {!activeProjectId && !collapsed && (
+          <div className="px-3 py-8 text-center">
+            <div className="flex h-12 w-12 mx-auto items-center justify-center rounded-xl bg-cream">
+              <FolderOpen className="h-6 w-6 text-ink-300" />
             </div>
-          )}
+            <p className="mt-3 text-xs font-medium text-ink-400">{t('sidebar.noProject')}</p>
+            <p className="mt-1 text-[11px] text-ink-300">{t('sidebar.createToStart')}</p>
+            <button
+              onClick={() => setShowNewModal(true)}
+              className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
+            >
+              <Plus className="h-3 w-3" />
+              {t('sidebar.newProject')}
+            </button>
+          </div>
+        )}
 
+        {!activeProjectId && collapsed && (
+          <button
+            onClick={() => setShowNewModal(true)}
+            title={t('sidebar.newProject')}
+            aria-label={t('sidebar.newProject')}
+            className="w-full flex justify-center p-2.5 rounded-lg text-ink-500 hover:bg-cream hover:text-ink transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+        )}
+
+        {!collapsed && (
           <div className="pt-5 pb-1.5 px-3">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-[#b0a898]">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-ink-200">
               {t('sidebar.configuration')}
             </span>
           </div>
+        )}
 
-          <NavLink
-            to={lp('/settings')}
-            className={({ isActive }) => cn(
-              'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
-              isActive
-                ? 'bg-brand-50 text-brand-700'
-                : 'text-[#5a5550] hover:bg-[#F0E6D8] hover:text-[#2A2A2A]'
-            )}
-          >
-            <Settings className="h-4 w-4 shrink-0" />
-            {t('sidebar.settings')}
-          </NavLink>
-        </nav>
+        {collapsed && <div className="pt-3" />}
 
-        {/* ── Language + Project selector at bottom ─────────────── */}
-        <div className="relative px-3 pb-4 pt-2 border-t border-[#E8DCCB]">
+        <NavLink
+          to={lp('/settings')}
+          title={collapsed ? t('sidebar.settings') : undefined}
+          aria-label={collapsed ? t('sidebar.settings') : undefined}
+          className={({ isActive }) => cn(
+            'flex items-center rounded-lg text-sm font-medium transition-colors',
+            collapsed ? 'justify-center p-2.5' : 'gap-2.5 px-3 py-2',
+            isActive
+              ? 'bg-brand-50 text-brand-700'
+              : 'text-ink-500 hover:bg-cream hover:text-ink'
+          )}
+        >
+          <Settings className="h-4 w-4 shrink-0" />
+          {!collapsed && t('sidebar.settings')}
+        </NavLink>
+      </nav>
+
+      {/* ── Language + Project selector at bottom ─────────────── */}
+      <div className={cn('relative pb-4 pt-2 border-t border-cream-200', collapsed ? 'px-1.5' : 'px-3')}>
+        {!collapsed && (
           <div className="mb-2">
             <LanguageSwitcher variant="compact" />
           </div>
-          <button
-            onClick={async () => { await signOut(); navigate('/login'); }}
-            className="w-full flex items-center gap-2.5 px-3 py-2 mb-2 rounded-lg text-sm font-medium text-[#5a5550] hover:bg-red-50 hover:text-red-600 transition-colors"
-          >
-            <LogOut className="h-4 w-4 shrink-0" />
-            {t('sidebar.logout')}
-          </button>
-          <button
-            onClick={() => setProjectMenuOpen(!projectMenuOpen)}
-            className={cn(
-              'w-full flex items-center gap-2.5 rounded-xl px-3 py-2.5 transition-colors text-left',
-              projectMenuOpen ? 'bg-brand-50' : 'bg-[#F0E6D8] hover:bg-[#E8DCCB]'
-            )}
-          >
-            {activeProject?.site_analysis?.favicon_url && !faviconError ? (
-              <img
-                src={activeProject.site_analysis.favicon_url}
-                alt=""
-                className="h-7 w-7 shrink-0 rounded-lg object-contain"
-                onError={() => setFaviconError(true)}
-              />
-            ) : (
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand-100 text-brand-700 font-bold text-[11px] uppercase">
-                {activeProject?.name?.slice(0, 2) ?? 'SP'}
-              </div>
-            )}
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-[#2A2A2A] truncate leading-tight">
-                {activeProject?.name ?? t('sidebar.selectProject')}
-              </p>
-              <p className="text-[11px] text-[#9a9080] truncate leading-tight mt-0.5">
-                {activeProject?.client_domain || t('sidebar.noActiveProject')}
-              </p>
+        )}
+        <button
+          onClick={async () => { await signOut(); navigate('/login'); }}
+          title={collapsed ? t('sidebar.logout') : undefined}
+          aria-label={collapsed ? t('sidebar.logout') : undefined}
+          className={cn(
+            'w-full flex items-center rounded-lg text-sm font-medium text-ink-500 hover:bg-red-50 hover:text-red-600 transition-colors',
+            collapsed ? 'justify-center p-2.5 mb-2' : 'gap-2.5 px-3 py-2 mb-2'
+          )}
+        >
+          <LogOut className="h-4 w-4 shrink-0" />
+          {!collapsed && t('sidebar.logout')}
+        </button>
+        <button
+          onClick={() => setProjectMenuOpen(!projectMenuOpen)}
+          className={cn(
+            'w-full flex items-center rounded-xl transition-colors text-left',
+            collapsed ? 'justify-center p-2' : 'gap-2.5 px-3 py-2.5',
+            projectMenuOpen ? 'bg-brand-50' : 'bg-cream hover:bg-cream-200'
+          )}
+        >
+          {activeProject?.site_analysis?.favicon_url && !faviconError ? (
+            <img
+              src={activeProject.site_analysis.favicon_url}
+              alt=""
+              className={cn('shrink-0 rounded-lg object-contain', collapsed ? 'h-6 w-6' : 'h-7 w-7')}
+              onError={() => setFaviconError(true)}
+            />
+          ) : (
+            <div className={cn(
+              'shrink-0 flex items-center justify-center rounded-lg bg-brand-100 text-brand-700 font-bold text-[11px] uppercase',
+              collapsed ? 'h-6 w-6' : 'h-7 w-7'
+            )}>
+              {activeProject?.name?.slice(0, 2) ?? 'SP'}
             </div>
-            <ChevronDown className={cn('h-3.5 w-3.5 text-[#9a9080] transition-transform', projectMenuOpen && 'rotate-180')} />
-          </button>
-
-          {projectMenuOpen && (
+          )}
+          {!collapsed && (
             <>
-              <div className="fixed inset-0 z-40" onClick={() => setProjectMenuOpen(false)} />
-
-              <div className="absolute bottom-full left-3 right-3 mb-1 z-50 bg-[#FEFEFE] rounded-xl border border-[#E8DCCB] shadow-lg max-h-[320px] overflow-hidden flex flex-col">
-                <div className="flex items-center justify-between px-3 py-2.5 border-b border-[#E8DCCB]">
-                  <span className="text-[10px] font-semibold uppercase tracking-widest text-[#b0a898]">{t('sidebar.projects')}</span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setProjectMenuOpen(false);
-                      setShowNewModal(true);
-                    }}
-                    className="flex items-center gap-1 text-[10px] font-semibold text-brand-600 hover:text-brand-700 transition-colors"
-                  >
-                    <Plus className="h-3 w-3" />
-                    {t('sidebar.new')}
-                  </button>
-                </div>
-
-                <div className="overflow-y-auto flex-1">
-                  {projects.length === 0 ? (
-                    <div className="px-3 py-6 text-center">
-                      <p className="text-xs text-[#9a9080]">{t('sidebar.noProject')}</p>
-                    </div>
-                  ) : (
-                    projects.map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => switchProject(p.id)}
-                        className={cn(
-                          'w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors group/item',
-                          p.id === activeProjectId
-                            ? 'bg-brand-50'
-                            : 'hover:bg-[#FAF7F2]'
-                        )}
-                      >
-                        {p.site_analysis?.favicon_url ? (
-                          <img
-                            src={p.site_analysis.favicon_url}
-                            alt=""
-                            className="h-6 w-6 shrink-0 rounded-md object-contain"
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                              e.target.nextElementSibling.style.display = 'flex';
-                            }}
-                          />
-                        ) : null}
-                        <div
-                          className={cn(
-                            'h-6 w-6 shrink-0 items-center justify-center rounded-md font-bold text-[10px] uppercase',
-                            p.id === activeProjectId
-                              ? 'bg-brand-100 text-brand-700'
-                              : 'bg-[#F0E6D8] text-[#9a9080]'
-                          )}
-                          style={{ display: p.site_analysis?.favicon_url ? 'none' : 'flex' }}
-                        >
-                          {p.name?.slice(0, 2) ?? 'PR'}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className={cn(
-                            'text-xs truncate leading-tight',
-                            p.id === activeProjectId ? 'font-semibold text-brand-700' : 'font-medium text-[#2A2A2A]'
-                          )}>
-                            {p.name}
-                          </p>
-                          <p className="text-[10px] text-[#9a9080] truncate leading-tight mt-0.5">
-                            {p.client_domain}
-                          </p>
-                        </div>
-                        {p.id === activeProjectId && (
-                          <Check className="h-3.5 w-3.5 text-brand-600 shrink-0" />
-                        )}
-                        <button
-                          onClick={(e) => handleDeleteProject(e, p.id, p.name)}
-                          className="p-1 rounded-md text-[#c0b8ae] opacity-0 group-hover/item:opacity-100 hover:text-red-500 hover:bg-red-50 transition-all shrink-0"
-                          title={t('sidebar.deleteTitle')}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </button>
-                      </button>
-                    ))
-                  )}
-                </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-ink truncate leading-tight">
+                  {activeProject?.name ?? t('sidebar.selectProject')}
+                </p>
+                <p className="text-[11px] text-ink-300 truncate leading-tight mt-0.5">
+                  {activeProject?.client_domain || t('sidebar.noActiveProject')}
+                </p>
               </div>
+              <ChevronDown className={cn('h-3.5 w-3.5 text-ink-300 transition-transform', projectMenuOpen && 'rotate-180')} />
             </>
           )}
+        </button>
+
+        {projectMenuOpen && (
+          <>
+            <div className="fixed inset-0 z-40" onClick={() => setProjectMenuOpen(false)} />
+
+            <div className="absolute bottom-full left-3 right-3 mb-1 z-50 bg-surface rounded-xl border border-cream-200 shadow-lg max-h-[320px] overflow-hidden flex flex-col">
+              <div className="flex items-center justify-between px-3 py-2.5 border-b border-cream-200">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-ink-200">{t('sidebar.projects')}</span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setProjectMenuOpen(false);
+                    setShowNewModal(true);
+                  }}
+                  className="flex items-center gap-1 text-[10px] font-semibold text-brand-600 hover:text-brand-700 transition-colors"
+                >
+                  <Plus className="h-3 w-3" />
+                  {t('sidebar.new')}
+                </button>
+              </div>
+
+              <div className="overflow-y-auto flex-1">
+                {projects.length === 0 ? (
+                  <div className="px-3 py-6 text-center">
+                    <p className="text-xs text-ink-300">{t('sidebar.noProject')}</p>
+                  </div>
+                ) : (
+                  projects.map((p) => (
+                    <button
+                      key={p.id}
+                      onClick={() => switchProject(p.id)}
+                      className={cn(
+                        'w-full flex items-center gap-2.5 px-3 py-2.5 text-left transition-colors group/item',
+                        p.id === activeProjectId
+                          ? 'bg-brand-50'
+                          : 'hover:bg-cream-50'
+                      )}
+                    >
+                      {p.site_analysis?.favicon_url ? (
+                        <img
+                          src={p.site_analysis.favicon_url}
+                          alt=""
+                          className="h-6 w-6 shrink-0 rounded-md object-contain"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div
+                        className={cn(
+                          'h-6 w-6 shrink-0 items-center justify-center rounded-md font-bold text-[10px] uppercase',
+                          p.id === activeProjectId
+                            ? 'bg-brand-100 text-brand-700'
+                            : 'bg-cream text-ink-300'
+                        )}
+                        style={{ display: p.site_analysis?.favicon_url ? 'none' : 'flex' }}
+                      >
+                        {p.name?.slice(0, 2) ?? 'PR'}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className={cn(
+                          'text-xs truncate leading-tight',
+                          p.id === activeProjectId ? 'font-semibold text-brand-700' : 'font-medium text-ink'
+                        )}>
+                          {p.name}
+                        </p>
+                        <p className="text-[10px] text-ink-300 truncate leading-tight mt-0.5">
+                          {p.client_domain}
+                        </p>
+                      </div>
+                      {p.id === activeProjectId && (
+                        <Check className="h-3.5 w-3.5 text-brand-600 shrink-0" />
+                      )}
+                      <button
+                        onClick={(e) => handleDeleteProject(e, p.id, p.name)}
+                        className="p-1 rounded-md text-ink-100 opacity-0 group-hover/item:opacity-100 hover:text-red-500 hover:bg-red-50 transition-all shrink-0"
+                        title={t('sidebar.deleteTitle')}
+                        aria-label={t('sidebar.deleteTitle')}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </>
+  );
+
+  return (
+    <div className="grain-overlay flex h-screen overflow-hidden bg-cream">
+      <a href="#main-content" className="skip-link">{t('sidebar.skipToContent', 'Skip to content')}</a>
+
+      {/* ── Mobile header ──────────────────────────────────────── */}
+      <header className="md:hidden fixed top-0 left-0 right-0 z-30 flex items-center justify-between px-4 py-3 bg-surface border-b border-cream-200">
+        <div className="flex items-center gap-2">
+          <img src="/snapeous-logo.svg" alt="Snapeous" className="h-5 w-5" />
+          <span className="text-sm font-bold tracking-tight text-ink">Snapeous</span>
         </div>
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 rounded-lg text-ink-500 hover:bg-cream transition-colors"
+          aria-label={sidebarOpen ? t('sidebar.closeMenu', 'Close menu') : t('sidebar.openMenu', 'Open menu')}
+          aria-expanded={sidebarOpen}
+        >
+          {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+      </header>
+
+      {/* ── Mobile sidebar overlay ─────────────────────────────── */}
+      {sidebarOpen && (
+        <div className="md:hidden fixed inset-0 z-40 bg-black/30 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      {/* ── Sidebar ───────────────────────────────────────────── */}
+      <aside aria-label={t('sidebar.navigation', 'Main navigation')} className={cn(
+        'shrink-0 bg-surface flex flex-col border-r border-cream-200 transition-all duration-300',
+        collapsed ? 'w-16' : 'w-[220px]',
+        // Mobile: slide in/out
+        'fixed inset-y-0 left-0 z-50 md:relative md:translate-x-0',
+        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+      )}>
+        {sidebarContent}
       </aside>
 
       {/* ── Content ───────────────────────────────────────────── */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <main className="flex-1 overflow-y-auto p-8">
+        <main id="main-content" className="flex-1 overflow-y-auto p-4 md:p-8 pt-16 md:pt-8">
           <div className="max-w-[1400px] mx-auto">
             <Outlet />
           </div>
@@ -360,41 +449,30 @@ export default function Layout() {
       <UpgradeModal />
 
       {/* ── Modal: New project ──────────────────────────────── */}
-      {showNewModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setShowNewModal(false)} />
-          <div className="relative bg-[#FEFEFE] rounded-2xl shadow-soft-lg w-full max-w-md border border-[#E8DCCB]">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8DCCB]">
-              <h2 className="text-base font-bold text-[#2A2A2A]">{t('projectModal.title')}</h2>
-              <button onClick={() => setShowNewModal(false)} className="p-1.5 text-[#9a9080] hover:text-[#2A2A2A] rounded-lg hover:bg-[#F0E6D8] transition-colors">
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            <form onSubmit={handleCreateSubmit} className="px-6 py-5 space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-[#2A2A2A] mb-1.5">{t('projectModal.nameLabel')}</label>
-                <input
-                  type="text" value={newName} onChange={e => setNewName(e.target.value)}
-                  placeholder={t('projectModal.namePlaceholder')} className="input" autoFocus required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold text-[#2A2A2A] mb-1.5">{t('projectModal.domainLabel')}</label>
-                <input
-                  type="text" value={newDomain} onChange={e => setNewDomain(e.target.value)}
-                  placeholder={t('projectModal.domainPlaceholder')} className="input" required
-                />
-              </div>
-              <div className="flex items-center justify-end gap-3 pt-2">
-                <button type="button" onClick={() => setShowNewModal(false)} className="btn-secondary">{t('projectModal.cancel')}</button>
-                <button type="submit" disabled={createMutation.isPending} className="btn-primary">
-                  {createMutation.isPending ? t('projectModal.creating') : t('projectModal.create')}
-                </button>
-              </div>
-            </form>
+      <Modal open={showNewModal} onClose={() => setShowNewModal(false)} title={t('projectModal.title')}>
+        <form onSubmit={handleCreateSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-ink mb-1.5">{t('projectModal.nameLabel')}</label>
+            <input
+              type="text" value={newName} onChange={e => setNewName(e.target.value)}
+              placeholder={t('projectModal.namePlaceholder')} className="input" autoFocus required
+            />
           </div>
-        </div>
-      )}
+          <div>
+            <label className="block text-sm font-semibold text-ink mb-1.5">{t('projectModal.domainLabel')}</label>
+            <input
+              type="text" value={newDomain} onChange={e => setNewDomain(e.target.value)}
+              placeholder={t('projectModal.domainPlaceholder')} className="input" required
+            />
+          </div>
+          <Modal.Footer>
+            <button type="button" onClick={() => setShowNewModal(false)} className="btn-secondary">{t('projectModal.cancel')}</button>
+            <button type="submit" disabled={createMutation.isPending} className="btn-primary">
+              {createMutation.isPending ? t('projectModal.creating') : t('projectModal.create')}
+            </button>
+          </Modal.Footer>
+        </form>
+      </Modal>
     </div>
   );
 }

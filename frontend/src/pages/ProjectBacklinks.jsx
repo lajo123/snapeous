@@ -42,7 +42,7 @@ export default function ProjectBacklinks() {
         <h1 className="page-title">{t('title')}</h1>
         <p className="page-subtitle">
           {t('subtitle', { count: stats?.total_backlinks ?? 0 })}{' '}
-          <span className="font-semibold text-gray-800">{project?.client_domain}</span>
+          <span className="font-semibold text-ink">{project?.client_domain}</span>
         </p>
       </div>
 

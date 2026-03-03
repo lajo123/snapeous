@@ -1,0 +1,22 @@
+{
+  "badge": "Blog",
+  "title": "SEO-Einblicke & Leitfäden",
+  "subtitle": "Expertentipps, Strategien und Tutorials, um deine Suchrankings und dein Backlink-Profil zu verbessern.",
+  "minRead": "Min. Lesezeit",
+  "comingSoon": "Weitere Artikel folgen in Kürze. Bleib dran!",
+  "backHome": "Zurück zur Startseite",
+  "posts": {
+    "backlinks": {
+      "title": "Was sind Backlinks und warum sind sie wichtig?",
+      "excerpt": "Lerne die Grundlagen von Backlinks, wie Suchmaschinen sie zur Bewertung von Seiten nutzen und warum sie nach wie vor einer der wichtigsten Ranking-Faktoren sind."
+    },
+    "linkBuilding": {
+      "title": "10 Linkbuilding-Strategien, die 2026 funktionieren",
+      "excerpt": "Entdecke bewährte Linkbuilding-Techniken – von Gastbeiträgen bis hin zu digitaler PR – die dir helfen, hochwertige Backlinks aufzubauen und deine Domain Authority zu verbessern."
+    },
+    "domainAuthority": {
+      "title": "Domain Authority erklärt: Was sie ist und wie du sie verbesserst",
+      "excerpt": "Verstehe Domain-Authority-Metriken, welche Faktoren deinen Score beeinflussen und welche konkreten Schritte du unternehmen kannst, um ihn langfristig zu steigern."
+    }
+  }
+}

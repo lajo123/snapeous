@@ -1,0 +1,47 @@
+{
+  "title": "Escolha seu plano",
+  "subtitle": "7 dias de teste gr\u00e1tis nos planos pagos \u00b7 Sem compromisso",
+  "monthly": "Mensal",
+  "annual": "Anual",
+  "discount": "-20%",
+  "recommended": "Recomendado",
+  "free": "Gr\u00e1tis",
+  "perMonth": "/m\u00eas",
+  "billedAnnually": "Cobrado {{amount}}\u20ac/ano",
+  "trialBadge": "7 dias de teste gr\u00e1tis",
+  "ctaFree": "Come\u00e7ar gr\u00e1tis",
+  "ctaFreePending": "Ativando...",
+  "ctaTrial": "Iniciar teste gr\u00e1tis",
+  "plans": {
+    "free": {
+      "desc": "Para descobrir",
+      "features": ["1 projeto", "50 backlinks", "Dashboard b\u00e1sico", "Alertas b\u00e1sicos"]
+    },
+    "starter": {
+      "desc": "Para independentes",
+      "features": ["3 projetos", "500 backlinks", "An\u00e1lise completa", "Links t\u00f3xicos", "Exporta\u00e7\u00e3o CSV", "Alertas completos"]
+    },
+    "pro": {
+      "desc": "Freelancers e equipes",
+      "features": ["10 projetos", "5.000 backlinks", "Tudo do Starter +", "Recomenda\u00e7\u00f5es IA", "3 concorrentes", "Relat\u00f3rios PDF", "Integra\u00e7\u00e3o GSC", "Acesso API"]
+    },
+    "agency": {
+      "desc": "Ag\u00eancias SEO",
+      "features": ["Projetos ilimitados", "25.000 backlinks", "Tudo do Pro +", "Concorrentes ilimitados", "Subcontas", "Relat\u00f3rios agendados", "Suporte priorit\u00e1rio", "API avan\u00e7ada"]
+    }
+  },
+  "checkout": {
+    "planTitle": "Plano {{plan}}",
+    "priceMonthly": "{{price}}\u20ac/m\u00eas",
+    "priceAnnual": "{{price}}\u20ac/m\u00eas (cobrado anualmente)",
+    "trialNotice": "7 dias de teste gr\u00e1tis. Cancele a qualquer momento.",
+    "cardLabel": "Cart\u00e3o de cr\u00e9dito",
+    "processing": "Processando...",
+    "submit": "Iniciar teste gr\u00e1tis",
+    "terms": "Ao assinar, voc\u00ea aceita nossos termos de uso. N\u00e3o ser\u00e1 cobrado durante os 7 dias de teste.",
+    "successTrial": "Assinatura ativada! 7 dias de teste gr\u00e1tis.",
+    "successFree": "Plano Free ativado!",
+    "error": "Ocorreu um erro.",
+    "activateError": "Erro durante a ativa\u00e7\u00e3o"
+  }
+}

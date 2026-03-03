@@ -70,15 +70,15 @@ export default function Settings() {
       <SEOHead pageKey="settings" />
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{t('settings.title')}</h1>
-        <p className="mt-1.5 text-sm text-gray-400">
+        <h1 className="text-2xl font-bold text-ink">{t('settings.title')}</h1>
+        <p className="mt-1.5 text-sm text-ink-300">
           {t('settings.subtitle')}
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-soft">
-        <nav className="flex border-b border-gray-50 px-2">
+      <div className="bg-white rounded-xl border border-ink-50 shadow-soft">
+        <nav className="flex border-b border-ink-50/50 px-2">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -87,7 +87,7 @@ export default function Settings() {
                 'flex items-center gap-2 px-5 py-4 text-sm font-medium border-b-2 transition-all',
                 activeTab === id
                   ? 'border-brand-500 text-brand-700'
-                  : 'border-transparent text-gray-400 hover:text-gray-700 hover:border-gray-200'
+                  : 'border-transparent text-ink-300 hover:text-ink-600 hover:border-ink-100'
               )}
             >
               <Icon className="h-4 w-4" />
@@ -128,28 +128,28 @@ export default function Settings() {
 
               <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
                 {/* OpenRouter / AI */}
-                <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
+                <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-6">
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <div className="rounded-xl bg-violet-50 p-2.5">
                         <Key className="h-4 w-4 text-violet-600" />
                       </div>
-                      <h2 className="text-sm font-semibold text-gray-900">{t('settings.openrouterTitle')}</h2>
+                      <h2 className="text-sm font-semibold text-ink">{t('settings.openrouterTitle')}</h2>
                     </div>
                     <StatusBadge configured={settings?.has_ai} />
                   </div>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-                      <span className="text-xs font-medium text-gray-400">{t('settings.openrouterModel')}</span>
-                      <span className="text-xs font-mono text-gray-900">{settings?.openrouter_model || '--'}</span>
+                    <div className="flex items-center justify-between rounded-xl bg-surface-muted px-4 py-3 border border-ink-50/50">
+                      <span className="text-xs font-medium text-ink-300">{t('settings.openrouterModel')}</span>
+                      <span className="text-xs font-mono text-ink">{settings?.openrouter_model || '--'}</span>
                     </div>
-                    <p className="text-xs text-gray-400 leading-relaxed">
+                    <p className="text-xs text-ink-300 leading-relaxed">
                       {t('settings.openrouterDesc').split('<code>').map((part, i) => {
                         if (i === 0) return part;
                         const [code, rest] = part.split('</code>');
                         return (
                           <span key={i}>
-                            <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono">{code}</code>
+                            <code className="rounded bg-cream-50 px-1.5 py-0.5 font-mono">{code}</code>
                             {rest}
                           </span>
                         );
@@ -159,23 +159,23 @@ export default function Settings() {
                 </div>
 
                 {/* Proxy Decodo */}
-                <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
+                <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-6">
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <div className="rounded-xl bg-blue-50 p-2.5">
                         <Shield className="h-4 w-4 text-blue-600" />
                       </div>
-                      <h2 className="text-sm font-semibold text-gray-900">{t('settings.proxyTitle')}</h2>
+                      <h2 className="text-sm font-semibold text-ink">{t('settings.proxyTitle')}</h2>
                     </div>
                     <StatusBadge configured={settings?.has_proxy} />
                   </div>
-                  <p className="text-xs text-gray-400 leading-relaxed">
+                  <p className="text-xs text-ink-300 leading-relaxed">
                     {t('settings.proxyDesc').split('<code>').map((part, i) => {
                       if (i === 0) return part;
                       const [code, rest] = part.split('</code>');
                       return (
                         <span key={i}>
-                          <code className="rounded bg-gray-100 px-1.5 py-0.5 font-mono">{code}</code>
+                          <code className="rounded bg-cream-50 px-1.5 py-0.5 font-mono">{code}</code>
                           {rest}
                         </span>
                       );
@@ -184,26 +184,26 @@ export default function Settings() {
                 </div>
 
                 {/* SERP API */}
-                <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
+                <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-6">
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <div className="rounded-xl bg-indigo-50 p-2.5">
                         <Globe className="h-4 w-4 text-indigo-600" />
                       </div>
-                      <h2 className="text-sm font-semibold text-gray-900">{t('settings.serpTitle')}</h2>
+                      <h2 className="text-sm font-semibold text-ink">{t('settings.serpTitle')}</h2>
                     </div>
                     <StatusBadge configured={settings?.has_dataforseo || settings?.has_serpapi} />
                   </div>
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-                      <span className="text-xs font-medium text-gray-400">dataforSEO</span>
-                      <span className={cn('text-xs font-medium', settings?.has_dataforseo ? 'text-brand-600' : 'text-gray-400')}>
+                    <div className="flex items-center justify-between rounded-xl bg-surface-muted px-4 py-3 border border-ink-50/50">
+                      <span className="text-xs font-medium text-ink-300">dataforSEO</span>
+                      <span className={cn('text-xs font-medium', settings?.has_dataforseo ? 'text-brand-600' : 'text-ink-300')}>
                         {settings?.has_dataforseo ? tc('configured') : tc('notConfigured')}
                       </span>
                     </div>
-                    <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-                      <span className="text-xs font-medium text-gray-400">SerpAPI</span>
-                      <span className={cn('text-xs font-medium', settings?.has_serpapi ? 'text-brand-600' : 'text-gray-400')}>
+                    <div className="flex items-center justify-between rounded-xl bg-surface-muted px-4 py-3 border border-ink-50/50">
+                      <span className="text-xs font-medium text-ink-300">SerpAPI</span>
+                      <span className={cn('text-xs font-medium', settings?.has_serpapi ? 'text-brand-600' : 'text-ink-300')}>
                         {settings?.has_serpapi ? tc('configured') : tc('notConfigured')}
                       </span>
                     </div>
@@ -211,65 +211,65 @@ export default function Settings() {
                 </div>
 
                 {/* SpeedyIndex */}
-                <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
+                <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-6">
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <div className="rounded-xl bg-cyan-50 p-2.5">
                         <Globe className="h-4 w-4 text-cyan-600" />
                       </div>
-                      <h2 className="text-sm font-semibold text-gray-900">{t('settings.speedyindexTitle')}</h2>
+                      <h2 className="text-sm font-semibold text-ink">{t('settings.speedyindexTitle')}</h2>
                     </div>
                     <StatusBadge configured={settings?.has_speedyindex} />
                   </div>
-                  <p className="text-xs text-gray-400 leading-relaxed">
+                  <p className="text-xs text-ink-300 leading-relaxed">
                     {t('settings.speedyindexDesc')}
                   </p>
                 </div>
 
                 {/* DomDetailer */}
-                <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
+                <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-6">
                   <div className="flex items-center justify-between mb-5">
                     <div className="flex items-center gap-3">
                       <div className="rounded-xl bg-amber-50 p-2.5">
                         <BarChart3 className="h-4 w-4 text-amber-600" />
                       </div>
-                      <h2 className="text-sm font-semibold text-gray-900">{t('settings.domdetailerTitle')}</h2>
+                      <h2 className="text-sm font-semibold text-ink">{t('settings.domdetailerTitle')}</h2>
                     </div>
                     <StatusBadge configured={settings?.has_domdetailer} />
                   </div>
-                  <p className="text-xs text-gray-400 leading-relaxed">
+                  <p className="text-xs text-ink-300 leading-relaxed">
                     {t('settings.domdetailerDesc')}
                   </p>
                 </div>
 
                 {/* Database */}
-                <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
+                <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-6">
                   <div className="flex items-center gap-3 mb-5">
                     <div className="rounded-xl bg-brand-50 p-2.5">
                       <Database className="h-4 w-4 text-brand-600" />
                     </div>
-                    <h2 className="text-sm font-semibold text-gray-900">{t('settings.databaseTitle')}</h2>
+                    <h2 className="text-sm font-semibold text-ink">{t('settings.databaseTitle')}</h2>
                   </div>
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-                      <span className="text-xs font-medium text-gray-400">{t('settings.databaseType')}</span>
-                      <span className="text-xs font-mono text-gray-900">SQLite</span>
+                    <div className="flex items-center justify-between rounded-xl bg-surface-muted px-4 py-3 border border-ink-50/50">
+                      <span className="text-xs font-medium text-ink-300">{t('settings.databaseType')}</span>
+                      <span className="text-xs font-mono text-ink">SQLite</span>
                     </div>
-                    <div className="flex items-center justify-between rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-                      <span className="text-xs font-medium text-gray-400">{t('settings.databasePath')}</span>
-                      <span className="text-xs font-mono text-gray-900">data/snapeous.db</span>
+                    <div className="flex items-center justify-between rounded-xl bg-surface-muted px-4 py-3 border border-ink-50/50">
+                      <span className="text-xs font-medium text-ink-300">{t('settings.databasePath')}</span>
+                      <span className="text-xs font-mono text-ink">data/snapeous.db</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Getting started guide */}
-              <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-7">
+              <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-7">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="rounded-xl bg-violet-50 p-2.5">
                     <Rocket className="h-4 w-4 text-violet-600" />
                   </div>
-                  <h2 className="text-sm font-semibold text-gray-900">{t('settings.guideTitle')}</h2>
+                  <h2 className="text-sm font-semibold text-ink">{t('settings.guideTitle')}</h2>
                 </div>
 
                 <div className="space-y-6">
@@ -303,8 +303,8 @@ export default function Settings() {
                         {n}
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
-                        <p className="mt-1 text-xs text-gray-400">{desc}</p>
+                        <h3 className="text-sm font-semibold text-ink">{title}</h3>
+                        <p className="mt-1 text-xs text-ink-300">{desc}</p>
                         {code && (
                           isCode ? (
                             <pre className="mt-2 rounded-xl bg-gray-900 p-3.5 text-xs text-gray-100 overflow-x-auto">

@@ -1,0 +1,24 @@
+{
+  "badge": "Documentation",
+  "title": "API Documentation",
+  "subtitle": "Everything you need to integrate Snapeous into your workflow.",
+  "backHome": "Back to home",
+  "sections": {
+    "auth": {
+      "title": "Authentication",
+      "desc": "Learn how to authenticate API requests using your API key and manage access tokens."
+    },
+    "endpoints": {
+      "title": "API Endpoints",
+      "desc": "Browse the full list of endpoints for projects, spots, backlinks, and analysis."
+    },
+    "webhooks": {
+      "title": "Webhooks",
+      "desc": "Set up real-time notifications when new spots are found or analysis completes."
+    }
+  },
+  "comingSoon": {
+    "title": "Full documentation coming soon",
+    "desc": "We're working on comprehensive API documentation with code examples, SDKs, and interactive playground. Stay tuned!"
+  }
+}

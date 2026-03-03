@@ -14,20 +14,20 @@ export default function ProjectKeywords() {
     <div className="space-y-6">
       <SEOHead pageKey="keywords" />
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{t('keywordsTitle')}</h1>
-        <p className="mt-1.5 text-sm text-gray-400">
+        <h1 className="text-2xl font-bold text-ink">{t('keywordsTitle')}</h1>
+        <p className="mt-1.5 text-sm text-ink-300">
           {t('keywordsSubtitle')}
         </p>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-soft px-6 py-20 text-center">
+      <div className="bg-white rounded-xl border border-ink-50 shadow-soft px-6 py-20 text-center">
         <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-xl bg-brand-50">
           <KeyRound className="h-8 w-8 text-brand-500" />
         </div>
-        <h3 className="mt-5 text-base font-semibold text-gray-900">
+        <h3 className="mt-5 text-base font-semibold text-ink">
           {t('keywordsWIP')}
         </h3>
-        <p className="mt-2 text-sm text-gray-400 max-w-sm mx-auto">
+        <p className="mt-2 text-sm text-ink-300 max-w-sm mx-auto">
           {t('keywordsWIPDesc')}{' '}
           <Link
             to={lp(`/projects/${id}/analysis`)}

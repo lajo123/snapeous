@@ -20,7 +20,7 @@ export default function AnchorDistributionChart({ anchors = [] }) {
     data.push({ name: t('charts.others'), value: othersCount });
   }
 
-  if (data.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-gray-400">{t('charts.noData')}</div>;
+  if (data.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-ink-300">{t('charts.noData')}</div>;
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -48,7 +48,7 @@ export default function AnchorDistributionChart({ anchors = [] }) {
           verticalAlign="middle"
           iconType="circle"
           iconSize={8}
-          formatter={(value) => <span className="text-xs text-[#6b6560]">{value}</span>}
+          formatter={(value) => <span className="text-xs text-ink-400">{value}</span>}
         />
       </PieChart>
     </ResponsiveContainer>

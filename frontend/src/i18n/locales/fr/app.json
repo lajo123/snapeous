@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "analysis": "Analyse",
+    "analysis": "Recommandation",
     "backlinks": "Backlinks",
     "spots": "Spots"
   },
@@ -17,7 +17,33 @@
     "selectProject": "Sélectionner un projet",
     "noActiveProject": "Aucun projet actif",
     "trial": "Essai",
-    "deleteTitle": "Supprimer"
+    "deleteTitle": "Supprimer",
+    "skipToContent": "Aller au contenu",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "navigation": "Navigation principale"
+  },
+  "upgrade": {
+    "title": "Limite atteinte",
+    "planLimitedTo": "Votre plan {{plan}} est limité à {{limit}} {{type}}.",
+    "currentUsage": "Vous en utilisez actuellement {{current}}.",
+    "upgradeTo": "Passer au plan {{plan}}",
+    "later": "Plus tard",
+    "limitTypes": {
+      "domains": "projets",
+      "backlinks": "backlinks"
+    }
+  },
+  "error": {
+    "title": "Une erreur est survenue",
+    "description": "L'application a rencontré une erreur inattendue. Consultez la console pour plus de détails.",
+    "retry": "Réessayer"
+  },
+  "projectNew": {
+    "backToDashboard": "Retour au tableau de bord",
+    "title": "Créer un nouveau projet",
+    "subtitle": "Renseignez les informations de votre projet",
+    "domainLabel": "Domaine du site"
   },
   "projectModal": {
     "title": "Nouveau projet",

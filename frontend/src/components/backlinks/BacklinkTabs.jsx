@@ -12,7 +12,7 @@ const TABS = [
 export default function BacklinkTabs({ activeTab, onTabChange }) {
   const { t } = useTranslation('backlinks');
   return (
-    <div className="flex items-center gap-1 p-1 bg-[#FAF7F2] rounded-xl border border-[#E8DCCB]">
+    <div className="flex items-center gap-1 p-1 bg-cream-50 rounded-xl border border-cream-200">
       {TABS.map((tab) => (
         <button
           key={tab.key}
@@ -21,7 +21,7 @@ export default function BacklinkTabs({ activeTab, onTabChange }) {
             "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
             activeTab === tab.key
               ? "bg-white text-brand-700 shadow-sm"
-              : "text-[#5a5550] hover:bg-white/50"
+              : "text-ink-500 hover:bg-white/50"
           )}
         >
           <tab.icon className="h-4 w-4" />

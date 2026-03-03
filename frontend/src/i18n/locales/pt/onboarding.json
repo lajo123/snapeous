@@ -1,0 +1,60 @@
+{
+  "progress": {
+    "step1": "Projeto",
+    "step2": "Idiomas",
+    "step3": "Backlinks",
+    "step4": "Lançar"
+  },
+  "step1": {
+    "title": "Vamos configurar seu primeiro projeto",
+    "subtitle": "Conte-nos sobre o site que você quer monitorar",
+    "nameLabel": "Nome do projeto",
+    "namePlaceholder": "Ex. Minha empresa SEO",
+    "domainLabel": "Domínio do site",
+    "domainPlaceholder": "meusite.com.br",
+    "continue": "Continuar",
+    "preview": "Prévia"
+  },
+  "step2": {
+    "title": "Quais idiomas seu site utiliza?",
+    "subtitle": "Selecione os idiomas do seu conteúdo para uma análise melhor",
+    "searchPlaceholder": "Buscar idiomas...",
+    "popular": "Populares",
+    "all": "Todos os idiomas",
+    "selected": "{{count}} selecionado(s)",
+    "none": "Selecione pelo menos um idioma",
+    "continue": "Continuar",
+    "back": "Voltar"
+  },
+  "step3": {
+    "title": "Como você quer gerenciar os backlinks?",
+    "subtitle": "Escolha a estratégia que melhor se adapta ao seu fluxo de trabalho",
+    "autoTitle": "Descoberta automática",
+    "autoDesc": "Vamos escanear a web para encontrar backlinks existentes para o seu site",
+    "autoTag": "Recomendado",
+    "manualTitle": "Importar manualmente",
+    "manualDesc": "Envie um arquivo CSV ou cole as URLs dos seus backlinks conhecidos",
+    "skipTitle": "Mais tarde",
+    "skipDesc": "Você pode adicionar backlinks depois pelo seu painel de controle",
+    "continue": "Continuar",
+    "back": "Voltar"
+  },
+  "step4": {
+    "title": "Pronto para lançar!",
+    "subtitle": "Aqui está um resumo da configuração do seu projeto",
+    "projectLabel": "Projeto",
+    "domainLabel": "Domínio",
+    "languagesLabel": "Idiomas",
+    "strategyLabel": "Estratégia de backlinks",
+    "strategyAuto": "Descoberta automática",
+    "strategyManual": "Importação manual",
+    "strategySkip": "Mais tarde",
+    "launch": "Lançar meu projeto",
+    "back": "Voltar",
+    "launching": "Preparando tudo...",
+    "progressCreate": "Criando projeto...",
+    "progressAnalyze": "Analisando seu site...",
+    "progressSetup": "Configurando painel...",
+    "progressDone": "Tudo pronto!"
+  }
+}

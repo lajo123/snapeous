@@ -1,0 +1,60 @@
+{
+  "progress": {
+    "step1": "Projet",
+    "step2": "Langues",
+    "step3": "Backlinks",
+    "step4": "Lancement"
+  },
+  "step1": {
+    "title": "Configurons votre premier projet",
+    "subtitle": "Parlez-nous du site que vous souhaitez suivre",
+    "nameLabel": "Nom du projet",
+    "namePlaceholder": "Ex. Mon site SEO",
+    "domainLabel": "Domaine du site",
+    "domainPlaceholder": "monsite.com",
+    "continue": "Continuer",
+    "preview": "Aperçu"
+  },
+  "step2": {
+    "title": "Quelles langues cible votre site ?",
+    "subtitle": "Sélectionnez les langues de votre contenu pour une meilleure analyse",
+    "searchPlaceholder": "Rechercher une langue...",
+    "popular": "Populaires",
+    "all": "Toutes les langues",
+    "selected": "{{count}} sélectionnée(s)",
+    "none": "Sélectionnez au moins une langue",
+    "continue": "Continuer",
+    "back": "Retour"
+  },
+  "step3": {
+    "title": "Comment voulez-vous gérer vos backlinks ?",
+    "subtitle": "Choisissez la stratégie qui correspond à votre workflow",
+    "autoTitle": "Découverte auto",
+    "autoDesc": "Nous scannerons le web pour trouver les backlinks existants vers votre site",
+    "autoTag": "Recommandé",
+    "manualTitle": "Import manuel",
+    "manualDesc": "Importez un fichier CSV ou collez les URLs de vos backlinks connus",
+    "skipTitle": "Plus tard",
+    "skipDesc": "Vous pourrez toujours ajouter des backlinks depuis votre tableau de bord",
+    "continue": "Continuer",
+    "back": "Retour"
+  },
+  "step4": {
+    "title": "Prêt à lancer !",
+    "subtitle": "Voici le résumé de la configuration de votre projet",
+    "projectLabel": "Projet",
+    "domainLabel": "Domaine",
+    "languagesLabel": "Langues",
+    "strategyLabel": "Stratégie backlinks",
+    "strategyAuto": "Découverte auto",
+    "strategyManual": "Import manuel",
+    "strategySkip": "Plus tard",
+    "launch": "Lancer mon projet",
+    "back": "Retour",
+    "launching": "Mise en place...",
+    "progressCreate": "Création du projet...",
+    "progressAnalyze": "Analyse de votre site...",
+    "progressSetup": "Configuration du dashboard...",
+    "progressDone": "C'est prêt !"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "title": "W\u00e4hlen Sie Ihren Plan",
+  "subtitle": "7 Tage kostenlos testen bei kostenpflichtigen Pl\u00e4nen \u00b7 Ohne Bindung",
+  "monthly": "Monatlich",
+  "annual": "J\u00e4hrlich",
+  "discount": "-20%",
+  "recommended": "Empfohlen",
+  "free": "Kostenlos",
+  "perMonth": "/Monat",
+  "billedAnnually": "{{amount}}\u20ac/Jahr abgerechnet",
+  "trialBadge": "7 Tage kostenlos testen",
+  "ctaFree": "Kostenlos starten",
+  "ctaFreePending": "Aktivierung...",
+  "ctaTrial": "Kostenlos testen",
+  "plans": {
+    "free": {
+      "desc": "Zum Entdecken",
+      "features": ["1 Projekt", "50 Backlinks", "Basis-Dashboard", "Basis-Benachrichtigungen"]
+    },
+    "starter": {
+      "desc": "F\u00fcr Selbstst\u00e4ndige",
+      "features": ["3 Projekte", "500 Backlinks", "Vollst\u00e4ndige Analyse", "Toxische Links", "CSV-Export", "Vollst\u00e4ndige Benachrichtigungen"]
+    },
+    "pro": {
+      "desc": "Freelancer & Teams",
+      "features": ["10 Projekte", "5.000 Backlinks", "Alles aus Starter +", "KI-Empfehlungen", "3 Wettbewerber", "PDF-Berichte", "GSC-Integration", "API-Zugang"]
+    },
+    "agency": {
+      "desc": "SEO-Agenturen",
+      "features": ["Unbegrenzte Projekte", "25.000 Backlinks", "Alles aus Pro +", "Unbegrenzte Wettbewerber", "Unterkonten", "Geplante Berichte", "Priorit\u00e4ts-Support", "Erweiterte API"]
+    }
+  },
+  "checkout": {
+    "planTitle": "Plan {{plan}}",
+    "priceMonthly": "{{price}}\u20ac/Monat",
+    "priceAnnual": "{{price}}\u20ac/Monat (j\u00e4hrlich abgerechnet)",
+    "trialNotice": "7 Tage kostenlos testen. Jederzeit k\u00fcndbar.",
+    "cardLabel": "Kreditkarte",
+    "processing": "Verarbeitung...",
+    "submit": "Kostenlos testen",
+    "terms": "Mit der Anmeldung akzeptieren Sie unsere Nutzungsbedingungen. W\u00e4hrend der 7-t\u00e4gigen Testphase werden keine Kosten erhoben.",
+    "successTrial": "Abonnement aktiviert! 7 Tage kostenlose Testphase.",
+    "successFree": "Free-Plan aktiviert!",
+    "error": "Ein Fehler ist aufgetreten.",
+    "activateError": "Fehler bei der Aktivierung"
+  }
+}

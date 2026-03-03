@@ -13,7 +13,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const BASE_URL = 'https://snapeous.com';
 const LANGS = ['en', 'fr', 'es', 'de', 'it', 'pt'];
-const PUBLIC_PATHS = ['', '/login', '/register', '/legal-notice', '/privacy', '/terms', '/gdpr'];
+const PUBLIC_PATHS = ['', '/login', '/register', '/contact', '/blog', '/changelog', '/docs', '/legal-notice', '/privacy', '/terms', '/gdpr'];
 
 function buildUrl(lang, path) {
   return `${BASE_URL}/${lang}${path}`;
@@ -36,7 +36,8 @@ function generateSitemap() {
       xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${buildUrl('en', path)}" />\n`;
 
       xml += '    <changefreq>weekly</changefreq>\n';
-      xml += `    <priority>${path === '' ? '1.0' : '0.6'}</priority>\n`;
+      const priority = path === '' ? '1.0' : ['/contact', '/blog', '/changelog', '/docs'].includes(path) ? '0.8' : '0.6';
+      xml += `    <priority>${priority}</priority>\n`;
       xml += '  </url>\n';
     }
   }

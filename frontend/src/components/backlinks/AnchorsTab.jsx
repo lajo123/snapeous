@@ -25,7 +25,7 @@ function getDiversityColor(score) {
 const CATEGORY_COLORS = {
   url: 'bg-blue-100 text-blue-700',
   branded: 'bg-violet-100 text-violet-700',
-  generic: 'bg-gray-100 text-gray-700',
+  generic: 'bg-cream-50 text-ink-600',
   other: 'bg-amber-100 text-amber-700',
 };
 
@@ -45,26 +45,26 @@ export default function AnchorsTab({ projectId, projectDomain }) {
     staleTime: 60000,
   });
 
-  if (isLoading) return <div className="text-center py-12 text-gray-400">{t('links.loading')}</div>;
-  if (!data || data.total_anchors === 0) return <div className="text-center py-12 text-gray-400">{t('anchors.noAnchors')}</div>;
+  if (isLoading) return <div className="text-center py-12 text-ink-300">{t('links.loading')}</div>;
+  if (!data || data.total_anchors === 0) return <div className="text-center py-12 text-ink-300">{t('anchors.noAnchors')}</div>;
 
   return (
     <div className="space-y-6">
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-4">
         <div className="card p-4 text-center">
-          <p className="text-3xl font-bold text-gray-900">{data.total_anchors}</p>
-          <p className="text-xs text-[#6b6560] mt-1">{t('anchors.totalAnchors')}</p>
+          <p className="text-3xl font-bold text-ink">{data.total_anchors}</p>
+          <p className="text-xs text-ink-400 mt-1">{t('anchors.totalAnchors')}</p>
         </div>
         <div className="card p-4 text-center">
-          <p className="text-3xl font-bold text-gray-900">{data.unique_anchors}</p>
-          <p className="text-xs text-[#6b6560] mt-1">{t('anchors.uniqueAnchors')}</p>
+          <p className="text-3xl font-bold text-ink">{data.unique_anchors}</p>
+          <p className="text-xs text-ink-400 mt-1">{t('anchors.uniqueAnchors')}</p>
         </div>
         <div className="card p-4 text-center">
           <p className={cn("text-3xl font-bold", getDiversityColor(data.diversity_score).split(' ')[0])}>
             {data.diversity_score}%
           </p>
-          <p className="text-xs text-[#6b6560] mt-1">{t('anchors.diversityScore')}</p>
+          <p className="text-xs text-ink-400 mt-1">{t('anchors.diversityScore')}</p>
           <span className={cn("inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-medium", getDiversityColor(data.diversity_score))}>
             {data.diversity_score >= 70 ? t('anchors.good') : data.diversity_score >= 40 ? t('anchors.medium') : t('anchors.weak')}
           </span>
@@ -85,14 +85,14 @@ export default function AnchorsTab({ projectId, projectDomain }) {
       <div className="grid grid-cols-5 gap-4">
         {/* Chart */}
         <div className="col-span-2 card p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('anchors.distribution')}</h3>
+          <h3 className="text-sm font-semibold text-ink mb-4">{t('anchors.distribution')}</h3>
           <AnchorDistributionChart anchors={data.anchors} />
         </div>
 
         {/* Table */}
         <div className="col-span-3 card overflow-hidden">
           <table className="w-full">
-            <thead style={{ backgroundColor: '#FAF7F2' }} className="border-b border-[#E8DCCB]">
+            <thead className="bg-cream-50 border-b border-cream-200">
               <tr>
                 <th className="table-header px-4 py-3">{t('anchors.anchorText')}</th>
                 <th className="table-header px-4 py-3 text-right">{t('anchors.count')}</th>
@@ -102,27 +102,27 @@ export default function AnchorsTab({ projectId, projectDomain }) {
                 <th className="table-header px-4 py-3">{t('anchors.category')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E8DCCB]">
+            <tbody className="divide-y divide-cream-200">
               {data.anchors.map((anchor, i) => {
                 const category = categorizeAnchor(anchor.text, projectDomain);
                 return (
                   <tr key={i} className="hover:bg-brand-50/40">
                     <td className="px-4 py-3">
-                      <span className="text-sm text-gray-900 font-medium">{anchor.text}</span>
+                      <span className="text-sm text-ink font-medium">{anchor.text}</span>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <span className="text-sm text-gray-900">{anchor.count}</span>
+                      <span className="text-sm text-ink">{anchor.count}</span>
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        <div className="w-16 h-1.5 rounded-full bg-gray-100">
+                        <div className="w-16 h-1.5 rounded-full bg-cream-50">
                           <div className="h-full rounded-full bg-brand-500" style={{ width: `${Math.min(anchor.percentage, 100)}%` }} />
                         </div>
-                        <span className="text-sm text-gray-600 w-10 text-right">{anchor.percentage}%</span>
+                        <span className="text-sm text-ink-500 w-10 text-right">{anchor.percentage}%</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right text-sm text-gray-600">{anchor.dofollow}</td>
-                    <td className="px-4 py-3 text-right text-sm text-gray-600">{anchor.nofollow}</td>
+                    <td className="px-4 py-3 text-right text-sm text-ink-500">{anchor.dofollow}</td>
+                    <td className="px-4 py-3 text-right text-sm text-ink-500">{anchor.nofollow}</td>
                     <td className="px-4 py-3">
                       <span className={cn("badge text-xs", CATEGORY_COLORS[category])}>{t(CATEGORY_KEYS[category])}</span>
                     </td>

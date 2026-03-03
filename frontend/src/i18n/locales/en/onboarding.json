@@ -1,0 +1,60 @@
+{
+  "progress": {
+    "step1": "Project",
+    "step2": "Languages",
+    "step3": "Backlinks",
+    "step4": "Launch"
+  },
+  "step1": {
+    "title": "Let's set up your first project",
+    "subtitle": "Tell us about the website you want to track",
+    "nameLabel": "Project name",
+    "namePlaceholder": "E.g. My Company SEO",
+    "domainLabel": "Website domain",
+    "domainPlaceholder": "mywebsite.com",
+    "continue": "Continue",
+    "preview": "Preview"
+  },
+  "step2": {
+    "title": "What languages does your site target?",
+    "subtitle": "Select the languages of your content for better analysis",
+    "searchPlaceholder": "Search languages...",
+    "popular": "Popular",
+    "all": "All languages",
+    "selected": "{{count}} selected",
+    "none": "Select at least one language",
+    "continue": "Continue",
+    "back": "Back"
+  },
+  "step3": {
+    "title": "How do you want to manage backlinks?",
+    "subtitle": "Choose the strategy that fits your workflow",
+    "autoTitle": "Auto-discover",
+    "autoDesc": "We'll scan the web to find existing backlinks pointing to your site",
+    "autoTag": "Recommended",
+    "manualTitle": "Import manually",
+    "manualDesc": "Upload a CSV file or paste URLs of your known backlinks",
+    "skipTitle": "Skip for now",
+    "skipDesc": "You can always add backlinks later from your project dashboard",
+    "continue": "Continue",
+    "back": "Back"
+  },
+  "step4": {
+    "title": "Ready to launch!",
+    "subtitle": "Here's a summary of your project setup",
+    "projectLabel": "Project",
+    "domainLabel": "Domain",
+    "languagesLabel": "Languages",
+    "strategyLabel": "Backlink strategy",
+    "strategyAuto": "Auto-discover",
+    "strategyManual": "Manual import",
+    "strategySkip": "Skip for now",
+    "launch": "Launch my project",
+    "back": "Back",
+    "launching": "Setting things up...",
+    "progressCreate": "Creating project...",
+    "progressAnalyze": "Analyzing your website...",
+    "progressSetup": "Configuring dashboard...",
+    "progressDone": "All set!"
+  }
+}

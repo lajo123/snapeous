@@ -1197,7 +1197,7 @@ async def analyze_site(project_id: str, domain: str, target_language: str | None
     except Exception as e:
         print(f"[SiteAnalyzer] DomDetailer import failed: {e}")
 
-    # ── Step 2c: Fetch domain metrics ─────────────────────────────────
+    # ── Step 2c: Fetch domain metrics (DomDetailer + DataForSEO) ─────
     domain_metrics = None
     try:
         from backend.services.domdetailer import fetch_domain_metrics
@@ -1206,6 +1206,31 @@ async def analyze_site(project_id: str, domain: str, target_language: str | None
             print(f"[SiteAnalyzer] Domain metrics fetched for {domain}")
     except Exception as e:
         print(f"[SiteAnalyzer] Domain metrics fetch failed: {e}")
+
+    # ── Step 2d: Fetch ALL DataForSEO data (summary, whois, tech, anchors, ref domains, history, competitors)
+    dataforseo_metrics = None
+    try:
+        from backend.services.dataforseo_domain import fetch_all_dataforseo
+        all_dfs = await fetch_all_dataforseo(domain)
+        if all_dfs:
+            # Flatten: summary fields go to top level, rest as sub-keys
+            dataforseo_metrics = all_dfs.get("summary") or {}
+            if "whois" in all_dfs:
+                dataforseo_metrics["whois"] = all_dfs["whois"]
+            if "technologies" in all_dfs:
+                dataforseo_metrics["technologies"] = all_dfs["technologies"]
+            if "top_anchors" in all_dfs:
+                dataforseo_metrics["top_anchors"] = all_dfs["top_anchors"]
+            if "top_referring_domains" in all_dfs:
+                dataforseo_metrics["top_referring_domains"] = all_dfs["top_referring_domains"]
+            if "history" in all_dfs:
+                dataforseo_metrics["history"] = all_dfs["history"]
+            if "competitors" in all_dfs:
+                dataforseo_metrics["competitors"] = all_dfs["competitors"]
+            print(f"[SiteAnalyzer] DataForSEO ALL fetched for {domain} "
+                  f"(sections: {list(all_dfs.keys())})")
+    except Exception as e:
+        print(f"[SiteAnalyzer] DataForSEO fetch failed: {e}")
 
     # ── Step 3: Analyze Backlink Profile ──────────────────────────────
     backlink_profile = await _analyze_backlink_profile(project_id, domain)
@@ -1252,6 +1277,8 @@ async def analyze_site(project_id: str, domain: str, target_language: str | None
         analysis["favicon_url"] = favicon_url
     if domain_metrics:
         analysis["domain_metrics"] = domain_metrics
+    if dataforseo_metrics:
+        analysis["dataforseo_metrics"] = dataforseo_metrics
 
     await _save_analysis(project_id, analysis)
 

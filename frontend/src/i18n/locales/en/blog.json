@@ -1,0 +1,22 @@
+{
+  "badge": "Blog",
+  "title": "SEO Insights & Guides",
+  "subtitle": "Expert tips, strategies and tutorials to boost your search rankings and backlink profile.",
+  "minRead": "min read",
+  "comingSoon": "More articles coming soon. Stay tuned!",
+  "backHome": "Back to home",
+  "posts": {
+    "backlinks": {
+      "title": "What Are Backlinks and Why Do They Matter?",
+      "excerpt": "Learn the fundamentals of backlinks, how search engines use them to rank pages, and why they remain one of the most important ranking factors."
+    },
+    "linkBuilding": {
+      "title": "10 Link Building Strategies That Work in 2026",
+      "excerpt": "Discover proven link building techniques from guest posting to digital PR that will help you earn high-quality backlinks and improve your domain authority."
+    },
+    "domainAuthority": {
+      "title": "Domain Authority Explained: What It Is and How to Improve It",
+      "excerpt": "Understanding domain authority metrics, what influences your score, and actionable steps to increase it over time."
+    }
+  }
+}

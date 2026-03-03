@@ -1,0 +1,60 @@
+{
+  "progress": {
+    "step1": "Projekt",
+    "step2": "Sprachen",
+    "step3": "Backlinks",
+    "step4": "Start"
+  },
+  "step1": {
+    "title": "Richten wir Ihr erstes Projekt ein",
+    "subtitle": "Erzählen Sie uns von der Website, die Sie verfolgen möchten",
+    "nameLabel": "Projektname",
+    "namePlaceholder": "Z.B. Meine Firma SEO",
+    "domainLabel": "Website-Domain",
+    "domainPlaceholder": "meineseite.de",
+    "continue": "Weiter",
+    "preview": "Vorschau"
+  },
+  "step2": {
+    "title": "Welche Sprachen nutzt Ihre Website?",
+    "subtitle": "Wählen Sie die Sprachen Ihres Inhalts für eine bessere Analyse",
+    "searchPlaceholder": "Sprachen suchen...",
+    "popular": "Beliebt",
+    "all": "Alle Sprachen",
+    "selected": "{{count}} ausgewählt",
+    "none": "Wählen Sie mindestens eine Sprache",
+    "continue": "Weiter",
+    "back": "Zurück"
+  },
+  "step3": {
+    "title": "Wie möchten Sie Backlinks verwalten?",
+    "subtitle": "Wählen Sie die Strategie, die zu Ihrem Workflow passt",
+    "autoTitle": "Auto-Erkennung",
+    "autoDesc": "Wir durchsuchen das Web nach vorhandenen Backlinks zu Ihrer Website",
+    "autoTag": "Empfohlen",
+    "manualTitle": "Manuell importieren",
+    "manualDesc": "Laden Sie eine CSV-Datei hoch oder fügen Sie URLs Ihrer bekannten Backlinks ein",
+    "skipTitle": "Später",
+    "skipDesc": "Sie können Backlinks jederzeit über Ihr Dashboard hinzufügen",
+    "continue": "Weiter",
+    "back": "Zurück"
+  },
+  "step4": {
+    "title": "Bereit zum Start!",
+    "subtitle": "Hier ist eine Zusammenfassung Ihrer Projekteinstellungen",
+    "projectLabel": "Projekt",
+    "domainLabel": "Domain",
+    "languagesLabel": "Sprachen",
+    "strategyLabel": "Backlink-Strategie",
+    "strategyAuto": "Auto-Erkennung",
+    "strategyManual": "Manueller Import",
+    "strategySkip": "Später",
+    "launch": "Projekt starten",
+    "back": "Zurück",
+    "launching": "Wird eingerichtet...",
+    "progressCreate": "Projekt wird erstellt...",
+    "progressAnalyze": "Website wird analysiert...",
+    "progressSetup": "Dashboard wird konfiguriert...",
+    "progressDone": "Alles bereit!"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "title": "Choisissez votre plan",
+  "subtitle": "7 jours d'essai gratuit sur les plans payants \u00b7 Sans engagement",
+  "monthly": "Mensuel",
+  "annual": "Annuel",
+  "discount": "-20%",
+  "recommended": "Recommand\u00e9",
+  "free": "Gratuit",
+  "perMonth": "/mois",
+  "billedAnnually": "Factur\u00e9 {{amount}}\u20ac/an",
+  "trialBadge": "7 jours d'essai gratuit",
+  "ctaFree": "Commencer gratuitement",
+  "ctaFreePending": "Activation...",
+  "ctaTrial": "D\u00e9marrer l'essai gratuit",
+  "plans": {
+    "free": {
+      "desc": "Pour d\u00e9couvrir",
+      "features": ["1 projet", "50 backlinks", "Dashboard basique", "Alertes basiques"]
+    },
+    "starter": {
+      "desc": "Ind\u00e9pendants",
+      "features": ["3 projets", "500 backlinks", "Analyse compl\u00e8te", "Liens toxiques", "Export CSV", "Alertes compl\u00e8tes"]
+    },
+    "pro": {
+      "desc": "Freelances & \u00e9quipes",
+      "features": ["10 projets", "5 000 backlinks", "Tout Starter +", "Recommandations IA", "3 concurrents", "Rapports PDF", "Int\u00e9gration GSC", "Acc\u00e8s API"]
+    },
+    "agency": {
+      "desc": "Agences SEO",
+      "features": ["Projets illimit\u00e9s", "25 000 backlinks", "Tout Pro +", "Concurrents illimit\u00e9s", "Sous-comptes", "Rapports planifi\u00e9s", "Support prioritaire", "API avanc\u00e9e"]
+    }
+  },
+  "checkout": {
+    "planTitle": "Plan {{plan}}",
+    "priceMonthly": "{{price}}\u20ac/mois",
+    "priceAnnual": "{{price}}\u20ac/mois (factur\u00e9 annuellement)",
+    "trialNotice": "7 jours d'essai gratuit. Annulez \u00e0 tout moment.",
+    "cardLabel": "Carte bancaire",
+    "processing": "Traitement...",
+    "submit": "D\u00e9marrer l'essai gratuit",
+    "terms": "En vous abonnant, vous acceptez nos conditions d'utilisation. Vous ne serez pas d\u00e9bit\u00e9 pendant les 7 jours d'essai.",
+    "successTrial": "Abonnement activ\u00e9 ! Essai gratuit de 7 jours.",
+    "successFree": "Plan Free activ\u00e9 !",
+    "error": "Une erreur est survenue.",
+    "activateError": "Erreur lors de l'activation"
+  }
+}

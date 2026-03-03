@@ -1,0 +1,47 @@
+{
+  "title": "Scegli il tuo piano",
+  "subtitle": "7 giorni di prova gratuita sui piani a pagamento \u00b7 Senza impegno",
+  "monthly": "Mensile",
+  "annual": "Annuale",
+  "discount": "-20%",
+  "recommended": "Consigliato",
+  "free": "Gratuito",
+  "perMonth": "/mese",
+  "billedAnnually": "Fatturato {{amount}}\u20ac/anno",
+  "trialBadge": "7 giorni di prova gratuita",
+  "ctaFree": "Inizia gratis",
+  "ctaFreePending": "Attivazione...",
+  "ctaTrial": "Inizia la prova gratuita",
+  "plans": {
+    "free": {
+      "desc": "Per scoprire",
+      "features": ["1 progetto", "50 backlink", "Dashboard base", "Avvisi base"]
+    },
+    "starter": {
+      "desc": "Per indipendenti",
+      "features": ["3 progetti", "500 backlink", "Analisi completa", "Link tossici", "Esportazione CSV", "Avvisi completi"]
+    },
+    "pro": {
+      "desc": "Freelancer e team",
+      "features": ["10 progetti", "5.000 backlink", "Tutto Starter +", "Raccomandazioni IA", "3 concorrenti", "Report PDF", "Integrazione GSC", "Accesso API"]
+    },
+    "agency": {
+      "desc": "Agenzie SEO",
+      "features": ["Progetti illimitati", "25.000 backlink", "Tutto Pro +", "Concorrenti illimitati", "Sotto-account", "Report pianificati", "Supporto prioritario", "API avanzata"]
+    }
+  },
+  "checkout": {
+    "planTitle": "Piano {{plan}}",
+    "priceMonthly": "{{price}}\u20ac/mese",
+    "priceAnnual": "{{price}}\u20ac/mese (fatturato annualmente)",
+    "trialNotice": "7 giorni di prova gratuita. Cancella in qualsiasi momento.",
+    "cardLabel": "Carta di credito",
+    "processing": "Elaborazione...",
+    "submit": "Inizia la prova gratuita",
+    "terms": "Iscrivendoti, accetti i nostri termini di utilizzo. Non ti verr\u00e0 addebitato nulla durante i 7 giorni di prova.",
+    "successTrial": "Abbonamento attivato! 7 giorni di prova gratuita.",
+    "successFree": "Piano Free attivato!",
+    "error": "Si \u00e8 verificato un errore.",
+    "activateError": "Errore durante l'attivazione"
+  }
+}

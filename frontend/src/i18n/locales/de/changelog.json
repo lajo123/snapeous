@@ -1,0 +1,22 @@
+{
+  "title": "Änderungsprotokoll",
+  "subtitle": "Neue Funktionen, Verbesserungen und Fehlerbehebungen in jeder Version.",
+  "backHome": "Zurück zur Startseite",
+  "types": {
+    "feature": "Funktion",
+    "improvement": "Verbesserung",
+    "fix": "Fehlerbehebung"
+  },
+  "entries": {
+    "v120.domainMetrics": "Vollständiges Domain-Metriken-Dashboard mit Trust-Scores, Backlink-Profil und organischen Traffic-Daten.",
+    "v120.backlinkHistory": "Backlink-Verlauf zur Überwachung neuer und verlorener Links im Zeitverlauf.",
+    "v120.fasterAnalysis": "Verbesserte Analysegeschwindigkeit — Website-Audits sind jetzt bis zu 2x schneller.",
+    "v120.loginFix": "Ein Problem wurde behoben, bei dem Login-Sitzungen vorzeitig abliefen.",
+    "v110.multiLanguage": "Mehrsprachige Unterstützung: Die App ist jetzt in 6 Sprachen verfügbar.",
+    "v110.footprints": "Footprint-Suchmaschine zum Finden von Linkbuilding-Möglichkeiten.",
+    "v110.dashboardRedesign": "Überarbeitetes Dashboard mit Statistiken auf einen Blick und Schnellaktionen.",
+    "v100.launch": "Erstveröffentlichung von Snapeous — deiner SEO-Backlink-Plattform.",
+    "v100.spotDiscovery": "Spot-Entdeckung: Finde Websites, auf denen du Backlinks aufbauen kannst.",
+    "v100.seoAnalysis": "On-Page-SEO-Analyse mit umsetzbaren Empfehlungen."
+  }
+}

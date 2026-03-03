@@ -70,7 +70,7 @@ export default function DashboardTab({ projectId, stats }) {
       {/* Charts Grid */}
       <div className="grid grid-cols-2 gap-4">
         <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('dashboard.dofollowVsNofollow')}</h3>
+          <h3 className="text-sm font-semibold text-ink mb-4">{t('dashboard.dofollowVsNofollow')}</h3>
           <DofollowNofollowChart
             dofollow={stats?.dofollow_count || 0}
             nofollow={stats?.nofollow_count || 0}
@@ -78,17 +78,17 @@ export default function DashboardTab({ projectId, stats }) {
         </div>
 
         <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('dashboard.topDomains')}</h3>
+          <h3 className="text-sm font-semibold text-ink mb-4">{t('dashboard.topDomains')}</h3>
           <TopDomainsChart domains={domains || stats?.top_referring_domains || []} />
         </div>
 
         <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('dashboard.daDistribution')}</h3>
+          <h3 className="text-sm font-semibold text-ink mb-4">{t('dashboard.daDistribution')}</h3>
           <DADistributionChart distribution={stats?.da_distribution || {}} />
         </div>
 
         <div className="card p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4">{t('dashboard.gainedLost')}</h3>
+          <h3 className="text-sm font-semibold text-ink mb-4">{t('dashboard.gainedLost')}</h3>
           <GainedLostChart timeline={historyData?.timeline || []} />
         </div>
       </div>

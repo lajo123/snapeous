@@ -1,0 +1,22 @@
+{
+  "title": "Changelog",
+  "subtitle": "New features, improvements and fixes in each release.",
+  "backHome": "Back to home",
+  "types": {
+    "feature": "Feature",
+    "improvement": "Improvement",
+    "fix": "Fix"
+  },
+  "entries": {
+    "v120.domainMetrics": "Full domain metrics dashboard with trust scores, backlink profile, and organic traffic data.",
+    "v120.backlinkHistory": "Backlink history tracking to monitor new and lost links over time.",
+    "v120.fasterAnalysis": "Improved analysis speed — site audits are now up to 2x faster.",
+    "v120.loginFix": "Fixed an issue where login sessions would expire prematurely.",
+    "v110.multiLanguage": "Multi-language support: the app is now available in 6 languages.",
+    "v110.footprints": "Footprint discovery engine to find link-building opportunities.",
+    "v110.dashboardRedesign": "Redesigned dashboard with at-a-glance stats and quick actions.",
+    "v100.launch": "Initial launch of Snapeous — your SEO backlink platform.",
+    "v100.spotDiscovery": "Spot discovery: find websites where you can build backlinks.",
+    "v100.seoAnalysis": "On-page SEO analysis with actionable recommendations."
+  }
+}

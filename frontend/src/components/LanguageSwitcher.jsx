@@ -50,8 +50,8 @@ export default function LanguageSwitcher({ variant = 'default' }) {
         className={cn(
           'flex items-center gap-2 rounded-lg transition-colors text-sm font-medium',
           isCompact
-            ? 'px-2.5 py-1.5 text-[#5a5550] hover:bg-[#F0E6D8] hover:text-[#2A2A2A]'
-            : 'px-3 py-2 text-[#6b6560] hover:text-[#2A2A2A] hover:bg-[#F0E6D8]/50'
+            ? 'px-2.5 py-1.5 text-ink-500 hover:bg-cream hover:text-ink'
+            : 'px-3 py-2 text-ink-400 hover:text-ink hover:bg-cream/50'
         )}
       >
         <Globe className="h-4 w-4 shrink-0" />
@@ -61,7 +61,7 @@ export default function LanguageSwitcher({ variant = 'default' }) {
 
       {open && (
         <div className={cn(
-          'absolute z-50 bg-white rounded-xl border border-[#E8DCCB] shadow-lg py-1 min-w-[160px] bottom-full mb-1',
+          'absolute z-50 bg-white rounded-xl border border-cream-200 shadow-lg py-1 min-w-[160px] bottom-full mb-1',
           isCompact ? 'left-0' : 'left-1/2 -translate-x-1/2'
         )}>
           {SUPPORTED_LANGS.map((lang) => (
@@ -72,7 +72,7 @@ export default function LanguageSwitcher({ variant = 'default' }) {
                 'w-full flex items-center gap-2.5 px-3 py-2 text-sm transition-colors text-left',
                 lang === currentLang
                   ? 'bg-brand-50 text-brand-700 font-medium'
-                  : 'text-[#5a5550] hover:bg-[#FAF7F2]'
+                  : 'text-ink-500 hover:bg-cream-50'
               )}
             >
               <span className="text-base">{FLAG_EMOJI[lang]}</span>

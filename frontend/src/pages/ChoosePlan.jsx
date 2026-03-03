@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -11,26 +12,10 @@ import useLocalizedNavigate from '@/hooks/useLocalizedNavigate';
 import { cn } from '@/lib/utils';
 
 const PLANS = [
-  {
-    id: 'free', label: 'Free', monthlyPrice: 0, annualPrice: 0,
-    desc: 'Pour découvrir',
-    features: ['1 projet', '50 backlinks', 'Dashboard basique', 'Alertes basiques'],
-  },
-  {
-    id: 'starter', label: 'Starter', monthlyPrice: 19, annualPrice: 15,
-    desc: 'Indépendants',
-    features: ['3 projets', '500 backlinks', 'Analyse complète', 'Liens toxiques', 'Export CSV', 'Alertes complètes'],
-  },
-  {
-    id: 'pro', label: 'Pro', monthlyPrice: 49, annualPrice: 39, recommended: true,
-    desc: 'Freelances & équipes',
-    features: ['10 projets', '5 000 backlinks', 'Tout Starter +', 'Recommandations IA', '3 concurrents', 'Rapports PDF', 'Intégration GSC', 'Accès API'],
-  },
-  {
-    id: 'agency', label: 'Agency', monthlyPrice: 99, annualPrice: 79,
-    desc: 'Agences SEO',
-    features: ['Projets illimités', '25 000 backlinks', 'Tout Pro +', 'Concurrents illimités', 'Sous-comptes', 'Rapports planifiés', 'Support prioritaire', 'API avancée'],
-  },
+  { id: 'free', label: 'Free', monthlyPrice: 0, annualPrice: 0 },
+  { id: 'starter', label: 'Starter', monthlyPrice: 19, annualPrice: 15 },
+  { id: 'pro', label: 'Pro', monthlyPrice: 49, annualPrice: 39, recommended: true },
+  { id: 'agency', label: 'Agency', monthlyPrice: 99, annualPrice: 79 },
 ];
 
 const CARD_STYLE = {
@@ -48,6 +33,7 @@ const CARD_STYLE = {
 /* ── Checkout Modal ────────────────────────────────────────── */
 
 function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
+  const { t } = useTranslation('pricing');
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useAuth();
@@ -79,10 +65,10 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
         email: user?.email,
       });
 
-      toast.success('Abonnement activé ! Essai gratuit de 7 jours.');
+      toast.success(t('checkout.successTrial'));
       onSuccess();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Une erreur est survenue.');
+      setError(err.response?.data?.detail || t('checkout.error'));
     } finally {
       setLoading(false);
     }
@@ -94,18 +80,25 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md border border-gray-100">
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md border border-ink-50">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-ink-50">
           <div className="flex items-center gap-3">
             <div className="rounded-xl bg-brand-50 p-2.5">
               <CreditCard className="h-4 w-4 text-brand-600" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-gray-900">Plan {plan.label}</h2>
-              <p className="text-xs text-gray-400 mt-0.5">{price}€/{interval === 'annual' ? 'mois (facturé annuellement)' : 'mois'}</p>
+              <h2 className="text-base font-bold text-ink">
+                {t('checkout.planTitle', { plan: plan.label })}
+              </h2>
+              <p className="text-xs text-ink-300 mt-0.5">
+                {interval === 'annual'
+                  ? t('checkout.priceAnnual', { price })
+                  : t('checkout.priceMonthly', { price })
+                }
+              </p>
             </div>
           </div>
-          <button onClick={onCancel} className="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+          <button onClick={onCancel} className="p-1.5 text-ink-300 hover:text-ink-600 rounded-lg hover:bg-surface-muted transition-colors" aria-label={t('common:close', 'Close')}>
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -113,12 +106,12 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
           <div className="flex items-center gap-2 rounded-xl bg-brand-50/80 border border-brand-100 px-4 py-3">
             <Shield className="h-4 w-4 text-brand-600 shrink-0" />
-            <p className="text-xs text-brand-700 font-medium">7 jours d'essai gratuit. Annulez à tout moment.</p>
+            <p className="text-xs text-brand-700 font-medium">{t('checkout.trialNotice')}</p>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-gray-900 mb-2">Carte bancaire</label>
-            <div className="border border-gray-200 rounded-xl px-4 py-3.5 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100 transition-all">
+            <label className="block text-sm font-semibold text-ink mb-2">{t('checkout.cardLabel')}</label>
+            <div className="border border-ink-100 rounded-xl px-4 py-3.5 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-100 transition-all">
               <CardElement options={CARD_STYLE} />
             </div>
           </div>
@@ -135,15 +128,14 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
             className="w-full btn-primary py-3 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {loading ? (
-              <><Loader className="h-4 w-4 animate-spin" />Traitement...</>
+              <><Loader className="h-4 w-4 animate-spin" />{t('checkout.processing')}</>
             ) : (
-              <>Démarrer l'essai gratuit</>
+              <>{t('checkout.submit')}</>
             )}
           </button>
 
-          <p className="text-[11px] text-gray-400 text-center leading-relaxed">
-            En vous abonnant, vous acceptez nos conditions d'utilisation.
-            Vous ne serez pas débité pendant les 7 jours d'essai.
+          <p className="text-[11px] text-ink-300 text-center leading-relaxed">
+            {t('checkout.terms')}
           </p>
         </form>
       </div>
@@ -154,6 +146,7 @@ function CheckoutForm({ selectedPlan, interval, onSuccess, onCancel }) {
 /* ── Main Page ─────────────────────────────────────────────── */
 
 export default function ChoosePlan() {
+  const { t } = useTranslation('pricing');
   const navigate = useLocalizedNavigate();
   const { refetchSubscription } = useSubscription();
   const [interval, setInterval] = useState('monthly');
@@ -163,10 +156,10 @@ export default function ChoosePlan() {
     mutationFn: () => subscribe({ plan: 'free' }),
     onSuccess: async () => {
       await refetchSubscription();
-      toast.success('Plan Free activé !');
-      navigate('/dashboard');
+      toast.success(t('checkout.successFree'));
+      navigate('/onboarding');
     },
-    onError: (err) => toast.error(err.response?.data?.detail || 'Erreur lors de l\'activation'),
+    onError: (err) => toast.error(err.response?.data?.detail || t('checkout.activateError')),
   });
 
   const handleSelectPlan = (planId) => {
@@ -177,7 +170,7 @@ export default function ChoosePlan() {
   const handleCheckoutSuccess = async () => {
     setCheckoutPlan(null);
     await refetchSubscription();
-    navigate('/dashboard');
+    navigate('/onboarding');
   };
 
   return (
@@ -190,41 +183,41 @@ export default function ChoosePlan() {
       <header className="shrink-0 relative z-10 pt-5 sm:pt-6 pb-3 sm:pb-4 px-4 text-center">
         <div className="flex items-center justify-center gap-2 mb-2.5">
           <img src="/snapeous-logo.svg" alt="Snapeous" className="h-6 w-6" />
-          <span className="text-base font-bold tracking-tight text-[#2A2A2A]">Snapeous</span>
+          <span className="text-base font-bold tracking-tight text-ink">Snapeous</span>
         </div>
 
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#2A2A2A] mb-1">
-          Choisissez votre plan
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-ink mb-1">
+          {t('title')}
         </h1>
-        <p className="text-xs text-[#6b6560] mb-3.5">
-          7 jours d'essai gratuit sur les plans payants &middot; Sans engagement
+        <p className="text-xs text-ink-400 mb-3.5">
+          {t('subtitle')}
         </p>
 
-        {/* Toggle mensuel / annuel */}
-        <div className="inline-flex items-center bg-white/60 backdrop-blur-sm rounded-full p-1 border border-[#D6CEC2]/50 shadow-soft">
+        {/* Toggle monthly / annual */}
+        <div className="inline-flex items-center bg-white/60 backdrop-blur-sm rounded-full p-1 border border-ink-50/50 shadow-soft">
           <button
             onClick={() => setInterval('monthly')}
             className={cn(
               'px-4 py-1.5 rounded-full text-xs font-semibold transition-all',
               interval === 'monthly'
-                ? 'bg-white shadow-sm text-[#2A2A2A]'
-                : 'text-[#6b6560] hover:text-[#2A2A2A]'
+                ? 'bg-white shadow-sm text-ink'
+                : 'text-ink-400 hover:text-ink'
             )}
           >
-            Mensuel
+            {t('monthly')}
           </button>
           <button
             onClick={() => setInterval('annual')}
             className={cn(
               'px-4 py-1.5 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5',
               interval === 'annual'
-                ? 'bg-white shadow-sm text-[#2A2A2A]'
-                : 'text-[#6b6560] hover:text-[#2A2A2A]'
+                ? 'bg-white shadow-sm text-ink'
+                : 'text-ink-400 hover:text-ink'
             )}
           >
-            Annuel
+            {t('annual')}
             <span className="text-[10px] font-bold text-brand-600 bg-brand-50 px-1.5 py-0.5 rounded-full leading-none">
-              -20%
+              {t('discount')}
             </span>
           </button>
         </div>
@@ -245,6 +238,7 @@ export default function ChoosePlan() {
           {PLANS.map((plan) => {
             const price = interval === 'annual' ? plan.annualPrice : plan.monthlyPrice;
             const isFree = plan.id === 'free';
+            const features = t(`plans.${plan.id}.features`, { returnObjects: true });
 
             return (
               <div
@@ -257,36 +251,36 @@ export default function ChoosePlan() {
                   'p-4 md:p-3.5 lg:p-5 transition-all duration-200',
                   plan.recommended
                     ? 'border-brand-300 shadow-lg shadow-brand-100/50 ring-1 ring-brand-200'
-                    : 'border-[rgba(0,0,0,0.07)] shadow-soft hover:shadow-md hover:border-[rgba(0,0,0,0.12)]'
+                    : 'border-ink-50/50 shadow-soft hover:shadow-md hover:border-ink-100'
                 )}
               >
                 {/* Recommended badge */}
                 {plan.recommended && (
                   <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-brand-500 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full flex items-center gap-1 whitespace-nowrap">
                     <Sparkles className="h-2.5 w-2.5" />
-                    Recommandé
+                    {t('recommended')}
                   </div>
                 )}
 
                 {/* Plan name + desc */}
                 <div className="mb-3">
-                  <h3 className="text-base font-bold text-[#2A2A2A]">{plan.label}</h3>
-                  <p className="text-[11px] text-[#9a9080] mt-0.5">{plan.desc}</p>
+                  <h3 className="text-base font-bold text-ink">{plan.label}</h3>
+                  <p className="text-[11px] text-ink-300 mt-0.5">{t(`plans.${plan.id}.desc`)}</p>
                 </div>
 
                 {/* Price */}
                 <div className="mb-3">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl sm:text-[28px] font-bold text-[#2A2A2A] leading-none">
-                      {isFree ? 'Gratuit' : `${price}€`}
+                    <span className="text-2xl sm:text-[28px] font-bold text-ink leading-none">
+                      {isFree ? t('free') : `${price}€`}
                     </span>
                     {!isFree && (
-                      <span className="text-xs text-[#9a9080] font-medium">/mois</span>
+                      <span className="text-xs text-ink-300 font-medium">{t('perMonth')}</span>
                     )}
                   </div>
                   {!isFree && interval === 'annual' && (
                     <p className="text-[10px] text-brand-600 font-medium mt-1">
-                      Facturé {price * 12}€/an
+                      {t('billedAnnually', { amount: price * 12 })}
                     </p>
                   )}
                 </div>
@@ -296,15 +290,15 @@ export default function ChoosePlan() {
                   <div className="rounded-lg bg-brand-50/80 border border-brand-100 px-2.5 py-1.5 mb-3">
                     <p className="text-[10px] text-brand-700 font-semibold flex items-center gap-1">
                       <Shield className="h-3 w-3 shrink-0" />
-                      7 jours d'essai gratuit
+                      {t('trialBadge')}
                     </p>
                   </div>
                 )}
 
                 {/* Features */}
                 <ul className="space-y-1.5 mb-4 flex-1">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-1.5 text-xs text-[#4a4a4a]">
+                  {Array.isArray(features) && features.map((f, i) => (
+                    <li key={i} className="flex items-start gap-1.5 text-xs text-ink-600">
                       <Check className="h-3.5 w-3.5 text-brand-500 shrink-0 mt-px" strokeWidth={2.5} />
                       <span>{f}</span>
                     </li>
@@ -320,13 +314,13 @@ export default function ChoosePlan() {
                     plan.recommended
                       ? 'bg-brand-500 text-white hover:bg-brand-600 shadow-md shadow-brand-200/40 hover:shadow-glow'
                       : isFree
-                        ? 'bg-[#F5F2ED] text-[#4a4a4a] hover:bg-[#EBE7E0]'
-                        : 'bg-[#2A2A2A] text-white hover:bg-[#1a1a1a]'
+                        ? 'bg-surface-muted text-ink-600 hover:bg-surface-hover'
+                        : 'bg-ink text-white hover:bg-ink-900'
                   )}
                 >
                   {isFree
-                    ? (freeMutation.isPending ? 'Activation...' : 'Commencer gratuitement')
-                    : 'Démarrer l\'essai gratuit'
+                    ? (freeMutation.isPending ? t('ctaFreePending') : t('ctaFree'))
+                    : t('ctaTrial')
                   }
                 </button>
               </div>

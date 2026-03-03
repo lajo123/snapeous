@@ -58,9 +58,9 @@ export default function Login() {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2.5 mb-3">
             <img src="/snapeous-logo.svg" alt="Snapeous" className="h-8 w-8" />
-            <h1 className="text-2xl font-bold tracking-tight text-[#2A2A2A]">Snapeous</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-ink">Snapeous</h1>
           </div>
-          <p className="text-sm text-[#6b6560]">{t('login.subtitle')}</p>
+          <p className="text-sm text-ink-400">{t('login.subtitle')}</p>
         </div>
 
         <div className="card p-6">
@@ -74,7 +74,7 @@ export default function Login() {
               <label htmlFor="login-password" className="section-label block mb-1.5">{t('login.password')}</label>
               <div className="relative">
                 <input id="login-password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} className="input pr-10" placeholder={t('login.passwordPlaceholder')} required />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9a9080] transition-colors">
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-300 transition-colors">
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
@@ -99,9 +99,9 @@ export default function Login() {
           </form>
         </div>
 
-        <p className="text-center mt-4 text-sm text-[#6b6560]">
+        <p className="text-center mt-4 text-sm text-ink-400">
           {t('login.noAccount')}{' '}
-          <Link to={lp('/register')} className="font-medium text-[#2A2A2A] hover:underline">{t('login.createAccount')}</Link>
+          <Link to={lp('/register')} className="font-medium text-ink hover:underline">{t('login.createAccount')}</Link>
         </p>
       </div>
     </div>

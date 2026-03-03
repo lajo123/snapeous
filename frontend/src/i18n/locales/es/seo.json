@@ -7,8 +7,8 @@
   "register.description": "Crea tu cuenta Snapeous y empieza a optimizar tu estrategia de backlinks.",
   "dashboard.title": "Panel - Snapeous",
   "dashboard.description": "Gestiona tus proyectos SEO desde el panel de Snapeous.",
-  "analysis.title": "Análisis - Snapeous",
-  "analysis.description": "Analiza tu sitio y obtén recomendaciones SEO personalizadas.",
+  "analysis.title": "Recomendación - Snapeous",
+  "analysis.description": "Obtén recomendaciones SEO personalizadas para tu sitio.",
   "spots.title": "Spots - Snapeous",
   "spots.description": "Encuentra y gestiona los mejores spots para tus backlinks.",
   "backlinks.title": "Backlinks - Snapeous",
@@ -21,5 +21,11 @@
   "keywords.description": "Rastrea posiciones de palabras clave y rendimiento en búsqueda orgánica.",
   "contact.title": "Contacto - Snapeous",
   "contact.description": "Contacta con el equipo de Snapeous. Estamos aqui para ayudarte con tus preguntas de SEO.",
+  "blog.title": "Blog - Consejos y guias SEO | Snapeous",
+  "blog.description": "Consejos, estrategias y tutoriales para mejorar tu posicionamiento y perfil de backlinks.",
+  "changelog.title": "Changelog - Snapeous",
+  "changelog.description": "Descubre las novedades de Snapeous. Funcionalidades, mejoras y correcciones.",
+  "docs.title": "Documentacion API - Snapeous",
+  "docs.description": "Referencia API y documentacion para desarrolladores de Snapeous.",
   "og.siteName": "Snapeous"
 }

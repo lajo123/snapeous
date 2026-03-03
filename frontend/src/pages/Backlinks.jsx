@@ -164,8 +164,8 @@ export default function Backlinks() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Backlinks</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-ink">Backlinks</h1>
+          <p className="text-sm text-ink-400 mt-1">
             {counts?.total || 0} backlinks trackés
           </p>
         </div>
@@ -195,8 +195,8 @@ export default function Backlinks() {
               <CheckCircle className="h-5 w-5 text-brand-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{counts?.by_status?.active || 0}</p>
-              <p className="text-xs text-gray-500">Actifs</p>
+              <p className="text-2xl font-bold text-ink">{counts?.by_status?.active || 0}</p>
+              <p className="text-xs text-ink-400">Actifs</p>
             </div>
           </div>
         </div>
@@ -206,8 +206,8 @@ export default function Backlinks() {
               <XCircle className="h-5 w-5 text-red-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{counts?.by_status?.lost || 0}</p>
-              <p className="text-xs text-gray-500">Perdus</p>
+              <p className="text-2xl font-bold text-ink">{counts?.by_status?.lost || 0}</p>
+              <p className="text-xs text-ink-400">Perdus</p>
             </div>
           </div>
         </div>
@@ -217,8 +217,8 @@ export default function Backlinks() {
               <AlertCircle className="h-5 w-5 text-amber-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{counts?.by_status?.pending || 0}</p>
-              <p className="text-xs text-gray-500">En attente</p>
+              <p className="text-2xl font-bold text-ink">{counts?.by_status?.pending || 0}</p>
+              <p className="text-xs text-ink-400">En attente</p>
             </div>
           </div>
         </div>
@@ -228,8 +228,8 @@ export default function Backlinks() {
               <Link2 className="h-5 w-5 text-blue-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-gray-900">{counts?.total || 0}</p>
-              <p className="text-xs text-gray-500">Total</p>
+              <p className="text-2xl font-bold text-ink">{counts?.total || 0}</p>
+              <p className="text-xs text-ink-400">Total</p>
             </div>
           </div>
         </div>
@@ -239,19 +239,19 @@ export default function Backlinks() {
       <div className="card p-4">
         <div className="flex items-center gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-300" />
             <input
               type="text"
               placeholder="Rechercher par URL ou texte d'ancre..."
               value={filters.search}
               onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))}
-              className="w-full pl-10 pr-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+              className="w-full pl-10 pr-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
             />
           </div>
           <select
             value={filters.status}
             onChange={(e) => setFilters(f => ({ ...f, status: e.target.value }))}
-            className="px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+            className="px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
           >
             <option value="">Tous les statuts</option>
             {Object.entries(BACKLINK_STATUS_LABELS).map(([key, label]) => (
@@ -261,7 +261,7 @@ export default function Backlinks() {
           <select
             value={filters.link_type}
             onChange={(e) => setFilters(f => ({ ...f, link_type: e.target.value }))}
-            className="px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+            className="px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
           >
             <option value="">Tous les types</option>
             {Object.entries(BACKLINK_LINK_TYPE_LABELS).map(([key, label]) => (
@@ -297,7 +297,7 @@ export default function Backlinks() {
       {/* Table */}
       <div className="card overflow-hidden">
         <table className="w-full">
-          <thead className="bg-gray-50/50 border-b border-gray-100">
+          <thead className="bg-surface-muted border-b border-ink-50">
             <tr>
               <th className="table-header px-6 py-4">URL Source</th>
               <th className="table-header px-6 py-4">URL Cible</th>
@@ -310,16 +310,16 @@ export default function Backlinks() {
               <th className="table-header px-6 py-4">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-ink-50/50">
             {isLoading ? (
               <tr>
-                <td colSpan="9" className="px-6 py-12 text-center text-gray-400">
+                <td colSpan="9" className="px-6 py-12 text-center text-ink-300">
                   Chargement...
                 </td>
               </tr>
             ) : backlinks?.length === 0 ? (
               <tr>
-                <td colSpan="9" className="px-6 py-12 text-center text-gray-400">
+                <td colSpan="9" className="px-6 py-12 text-center text-ink-300">
                   Aucun backlink trouvé
                 </td>
               </tr>
@@ -338,12 +338,12 @@ export default function Backlinks() {
                     </a>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm text-gray-600">
+                    <span className="text-sm text-ink-500">
                       {truncateUrl(backlink.target_url, 35)}
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm text-gray-900">{backlink.anchor_text || '-'}</span>
+                    <span className="text-sm text-ink">{backlink.anchor_text || '-'}</span>
                   </td>
                   <td className="px-6 py-4">
                     <span className={cn("badge", getHttpStatusColor(backlink.http_code))}>
@@ -366,7 +366,7 @@ export default function Backlinks() {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-ink">
                       {backlink.domain_rank || '-'}
                     </span>
                   </td>
@@ -375,7 +375,7 @@ export default function Backlinks() {
                       <button
                         onClick={() => checkMutation.mutate(backlink.id)}
                         disabled={checkMutation.isPending}
-                        className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+                        className="p-2 rounded-lg hover:bg-cream-50 text-ink-500"
                         title="Vérifier HTTP"
                       >
                         <RefreshCw className={cn("h-4 w-4", checkMutation.isPending && "animate-spin")} />
@@ -383,7 +383,7 @@ export default function Backlinks() {
                       <button
                         onClick={() => indexCheckMutation.mutate(backlink.id)}
                         disabled={indexCheckMutation.isPending}
-                        className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+                        className="p-2 rounded-lg hover:bg-cream-50 text-ink-500"
                         title="Vérifier indexation"
                       >
                         <Globe className="h-4 w-4" />
@@ -391,14 +391,14 @@ export default function Backlinks() {
                       <button
                         onClick={() => metricsMutation.mutate(backlink.id)}
                         disabled={metricsMutation.isPending}
-                        className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+                        className="p-2 rounded-lg hover:bg-cream-50 text-ink-500"
                         title="Métriques domaine"
                       >
                         <BarChart3 className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => setEditingBacklink(backlink)}
-                        className="p-2 rounded-lg hover:bg-gray-100 text-gray-600"
+                        className="p-2 rounded-lg hover:bg-cream-50 text-ink-500"
                         title="Modifier"
                       >
                         <FileText className="h-4 w-4" />
@@ -421,22 +421,22 @@ export default function Backlinks() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between px-6 py-4 border-t border-gray-100">
-            <p className="text-sm text-gray-500">
+          <div className="flex items-center justify-between px-6 py-4 border-t border-ink-50">
+            <p className="text-sm text-ink-400">
               Page {page} sur {totalPages}
             </p>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-50 hover:bg-gray-50"
+                className="px-4 py-2 rounded-lg border border-ink-100 text-sm font-medium disabled:opacity-50 hover:bg-surface-muted"
               >
                 Précédent
               </button>
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium disabled:opacity-50 hover:bg-gray-50"
+                className="px-4 py-2 rounded-lg border border-ink-100 text-sm font-medium disabled:opacity-50 hover:bg-surface-muted"
               >
                 Suivant
               </button>
@@ -494,46 +494,46 @@ function AddBacklinkModal({ onClose, onSubmit, isPending }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Ajouter un backlink</h2>
+        <h2 className="text-lg font-bold text-ink mb-4">Ajouter un backlink</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL Source</label>
+            <label className="block text-sm font-medium text-ink-600 mb-1">URL Source</label>
             <input
               type="url"
               required
               value={formData.source_url}
               onChange={(e) => setFormData(d => ({ ...d, source_url: e.target.value }))}
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+              className="w-full px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
               placeholder="https://exemple.com/page"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL Cible</label>
+            <label className="block text-sm font-medium text-ink-600 mb-1">URL Cible</label>
             <input
               type="url"
               required
               value={formData.target_url}
               onChange={(e) => setFormData(d => ({ ...d, target_url: e.target.value }))}
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+              className="w-full px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
               placeholder="https://votresite.com"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Texte d'ancre</label>
+            <label className="block text-sm font-medium text-ink-600 mb-1">Texte d'ancre</label>
             <input
               type="text"
               value={formData.anchor_text}
               onChange={(e) => setFormData(d => ({ ...d, anchor_text: e.target.value }))}
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+              className="w-full px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
               placeholder="Cliquez ici"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Type de lien</label>
+            <label className="block text-sm font-medium text-ink-600 mb-1">Type de lien</label>
             <select
               value={formData.link_type}
               onChange={(e) => setFormData(d => ({ ...d, link_type: e.target.value }))}
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+              className="w-full px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
             >
               <option value="dofollow">Dofollow</option>
               <option value="nofollow">Nofollow</option>
@@ -621,7 +621,7 @@ function ImportBacklinksModal({ onClose, onSubmit, isPending }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-xl shadow-xl max-w-lg w-full p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Importer des backlinks</h2>
+        <h2 className="text-lg font-bold text-ink mb-4">Importer des backlinks</h2>
 
         <div
           onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -629,14 +629,14 @@ function ImportBacklinksModal({ onClose, onSubmit, isPending }) {
           onDrop={handleDrop}
           className={cn(
             "border-2 border-dashed rounded-xl p-8 text-center transition-colors",
-            isDragging ? "border-orange-400 bg-orange-50" : "border-gray-300 hover:border-gray-400"
+            isDragging ? "border-orange-400 bg-orange-50" : "border-ink-200 hover:border-ink-300"
           )}
         >
-          <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-          <p className="text-sm text-gray-600 mb-2">
+          <Upload className="h-8 w-8 text-ink-300 mx-auto mb-2" />
+          <p className="text-sm text-ink-500 mb-2">
             Glissez-déposez un fichier CSV ici
           </p>
-          <p className="text-xs text-gray-400 mb-4">ou</p>
+          <p className="text-xs text-ink-300 mb-4">ou</p>
           <label className="btn-secondary cursor-pointer">
             <input
               type="file"
@@ -649,12 +649,12 @@ function ImportBacklinksModal({ onClose, onSubmit, isPending }) {
         </div>
 
         <div className="mt-4">
-          <p className="text-xs text-gray-500 mb-2">Format CSV: source_url, target_url, anchor_text (optionnel)</p>
+          <p className="text-xs text-ink-400 mb-2">Format CSV: source_url, target_url, anchor_text (optionnel)</p>
           <textarea
             value={csvText}
             onChange={(e) => setCsvText(e.target.value)}
             placeholder="https://source.com/page,https://cible.com,mon ancre&#10;https://autre.com/page,https://cible.com"
-            className="w-full h-32 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm font-mono focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+            className="w-full h-32 px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm font-mono focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
           />
         </div>
 
@@ -696,55 +696,55 @@ function EditBacklinkModal({ backlink, onClose, onSubmit, isPending }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Modifier le backlink</h2>
+        <h2 className="text-lg font-bold text-ink mb-4">Modifier le backlink</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL Source</label>
+            <label className="block text-sm font-medium text-ink-600 mb-1">URL Source</label>
             <input
               type="url"
               required
               value={formData.source_url}
               onChange={(e) => setFormData(d => ({ ...d, source_url: e.target.value }))}
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+              className="w-full px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">URL Cible</label>
+            <label className="block text-sm font-medium text-ink-600 mb-1">URL Cible</label>
             <input
               type="url"
               required
               value={formData.target_url}
               onChange={(e) => setFormData(d => ({ ...d, target_url: e.target.value }))}
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+              className="w-full px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Texte d'ancre</label>
+            <label className="block text-sm font-medium text-ink-600 mb-1">Texte d'ancre</label>
             <input
               type="text"
               value={formData.anchor_text}
               onChange={(e) => setFormData(d => ({ ...d, anchor_text: e.target.value }))}
-              className="w-full px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+              className="w-full px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+              <label className="block text-sm font-medium text-ink-600 mb-1">Type</label>
               <select
                 value={formData.link_type}
                 onChange={(e) => setFormData(d => ({ ...d, link_type: e.target.value }))}
-                className="w-full px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+                className="w-full px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
               >
                 <option value="dofollow">Dofollow</option>
                 <option value="nofollow">Nofollow</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+              <label className="block text-sm font-medium text-ink-600 mb-1">Statut</label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData(d => ({ ...d, status: e.target.value }))}
-                className="w-full px-4 py-2 rounded-xl border border-gray-200 bg-gray-50/50 text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
+                className="w-full px-4 py-2 rounded-xl border border-ink-100 bg-surface-muted text-sm focus:border-orange-300 focus:ring-2 focus:ring-orange-100"
               >
                 <option value="active">Actif</option>
                 <option value="lost">Perdu</option>

@@ -1,7 +1,7 @@
 {
   "nav": {
     "dashboard": "Dashboard",
-    "analysis": "Analysis",
+    "analysis": "Recommendation",
     "backlinks": "Backlinks",
     "spots": "Spots"
   },
@@ -17,7 +17,33 @@
     "selectProject": "Select a project",
     "noActiveProject": "No active project",
     "trial": "Trial",
-    "deleteTitle": "Delete"
+    "deleteTitle": "Delete",
+    "skipToContent": "Skip to content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "navigation": "Main navigation"
+  },
+  "upgrade": {
+    "title": "Limit reached",
+    "planLimitedTo": "Your {{plan}} plan is limited to {{limit}} {{type}}.",
+    "currentUsage": "You are currently using {{current}}.",
+    "upgradeTo": "Upgrade to {{plan}}",
+    "later": "Later",
+    "limitTypes": {
+      "domains": "projects",
+      "backlinks": "backlinks"
+    }
+  },
+  "error": {
+    "title": "An error occurred",
+    "description": "The application encountered an unexpected error. Check the console for details.",
+    "retry": "Retry"
+  },
+  "projectNew": {
+    "backToDashboard": "Back to dashboard",
+    "title": "Create a new project",
+    "subtitle": "Enter your project information",
+    "domainLabel": "Site domain"
   },
   "projectModal": {
     "title": "New project",

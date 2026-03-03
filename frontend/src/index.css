@@ -7,9 +7,92 @@
     box-sizing: border-box;
   }
 
+  /* ── Light-mode CSS custom properties ──────────────────────── */
+  :root {
+    --color-brand-50:  253 245 242;
+    --color-brand-100: 251 232 224;
+    --color-brand-200: 245 207 192;
+    --color-brand-300: 237 176 151;
+    --color-brand-400: 224 144 112;
+    --color-brand-500: 201 120 93;
+    --color-brand-600: 181 104 78;
+    --color-brand-700: 154 86 65;
+    --color-brand-800: 125 70 54;
+    --color-brand-900: 102 57 45;
+    --color-brand-950: 58 30 23;
+
+    --color-cream-50:  250 247 242;
+    --color-cream:     240 230 216;
+    --color-cream-200: 232 220 203;
+    --color-cream-300: 221 208 184;
+    --color-cream-400: 201 184 153;
+    --color-cream-500: 176 158 126;
+
+    --color-ink:       42 42 42;
+    --color-ink-900:   26 26 26;
+    --color-ink-800:   42 42 42;
+    --color-ink-700:   58 58 58;
+    --color-ink-600:   74 74 74;
+    --color-ink-500:   90 85 80;
+    --color-ink-400:   107 101 96;
+    --color-ink-300:   154 144 128;
+    --color-ink-200:   176 168 152;
+    --color-ink-100:   192 184 174;
+    --color-ink-50:    214 206 194;
+
+    --color-surface:       254 254 254;
+    --color-surface-warm:  253 250 245;
+    --color-surface-muted: 245 242 237;
+
+    --shadow-soft:    0 1px 4px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+    --shadow-soft-md: 0 4px 16px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+    --shadow-glow:    0 4px 14px rgba(201,120,93,0.22);
+  }
+
+  /* ── Dark-mode overrides (activated via class="dark" on <html>) ── */
+  .dark {
+    --color-brand-50:  58 30 23;
+    --color-brand-100: 102 57 45;
+    --color-brand-200: 125 70 54;
+    --color-brand-300: 154 86 65;
+    --color-brand-400: 201 120 93;
+    --color-brand-500: 224 144 112;
+    --color-brand-600: 237 176 151;
+    --color-brand-700: 245 207 192;
+    --color-brand-800: 251 232 224;
+    --color-brand-900: 253 245 242;
+    --color-brand-950: 253 245 242;
+
+    --color-cream-50:  30 28 26;
+    --color-cream:     38 35 32;
+    --color-cream-200: 48 44 40;
+    --color-cream-300: 58 54 48;
+    --color-cream-400: 74 68 60;
+    --color-cream-500: 96 88 76;
+
+    --color-ink:       235 235 230;
+    --color-ink-900:   250 250 248;
+    --color-ink-800:   240 240 236;
+    --color-ink-700:   225 222 218;
+    --color-ink-600:   205 200 195;
+    --color-ink-500:   180 174 168;
+    --color-ink-400:   155 148 140;
+    --color-ink-300:   120 114 106;
+    --color-ink-200:   90 84 76;
+    --color-ink-100:   65 60 54;
+    --color-ink-50:    48 44 40;
+
+    --color-surface:       28 26 24;
+    --color-surface-warm:  32 30 27;
+    --color-surface-muted: 38 35 32;
+
+    --shadow-soft:    0 1px 4px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-soft-md: 0 4px 16px rgba(0,0,0,0.4), 0 1px 4px rgba(0,0,0,0.25);
+    --shadow-glow:    0 4px 14px rgba(224,144,112,0.25);
+  }
+
   body {
-    background-color: #F0E6D8;
-    color: #2A2A2A;
+    @apply bg-cream text-ink;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -23,27 +106,27 @@
 
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5
-           text-sm font-semibold text-white transition-all duration-150
+           text-sm font-semibold text-white bg-brand-500 transition-all duration-150
            disabled:opacity-40 disabled:cursor-not-allowed;
-    background-color: #C9785D;
   }
   .btn-primary:hover:not(:disabled) {
-    background-color: #B5684E;
-    box-shadow: 0 4px 14px rgba(201, 120, 93, 0.28);
+    @apply bg-brand-600 shadow-glow;
     transform: translateY(-0.5px);
   }
   .btn-primary:active:not(:disabled) {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.98);
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-[#D6CEC2]
-           bg-white px-5 py-2.5 text-sm font-medium text-[#3a3a3a] transition-all duration-150
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-ink-50
+           bg-white px-5 py-2.5 text-sm font-medium text-ink-700 transition-all duration-150
            disabled:opacity-40 disabled:cursor-not-allowed;
   }
   .btn-secondary:hover:not(:disabled) {
-    background-color: #FAF7F2;
-    border-color: #C0B8AE;
+    @apply bg-cream-50 border-ink-100;
+  }
+  .btn-secondary:active:not(:disabled) {
+    transform: scale(0.98);
   }
 
   .btn-danger {
@@ -53,41 +136,38 @@
   .btn-danger:hover {
     @apply bg-red-50 border-red-300;
   }
+  .btn-danger:active {
+    transform: scale(0.98);
+  }
 
   /* ── Cards ───────────────────────────────────────────────── */
 
   .card {
-    background-color: #FEFEFE;
-    border-radius: 1rem;
-    border: 1px solid rgba(0,0,0,0.07);
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    @apply bg-surface rounded-2xl border border-black/[0.07] shadow-soft transition-shadow duration-200;
+  }
+  .card:hover {
+    @apply shadow-md;
   }
 
   /* ── Form inputs ─────────────────────────────────────────── */
 
   .input {
-    @apply w-full rounded-xl border text-sm text-gray-900
-           placeholder:text-[#999] transition-colors;
-    background-color: #FDFAF5;
-    border-color: #D6CEC2;
+    @apply w-full rounded-xl border text-sm text-ink
+           placeholder:text-ink-300 transition-colors
+           bg-surface-warm border-ink-50;
     padding: 0.625rem 0.875rem;
   }
   .input:focus {
-    outline: none;
-    border-color: #C9785D;
-    box-shadow: 0 0 0 3px rgba(201, 120, 93, 0.12);
+    @apply outline-none border-brand-500 ring-[3px] ring-brand-200;
   }
 
   .select {
-    @apply rounded-xl text-sm text-gray-900 transition-colors;
-    background-color: #FDFAF5;
-    border: 1px solid #D6CEC2;
+    @apply rounded-xl text-sm text-ink transition-colors
+           bg-surface-warm border border-ink-50;
     padding: 0.625rem 0.875rem;
   }
   .select:focus {
-    outline: none;
-    border-color: #C9785D;
-    box-shadow: 0 0 0 3px rgba(201, 120, 93, 0.12);
+    @apply outline-none border-brand-500 ring-[3px] ring-brand-200;
   }
 
   /* ── Badges ──────────────────────────────────────────────── */
@@ -99,26 +179,22 @@
   /* ── Section label ───────────────────────────────────────── */
 
   .section-label {
-    @apply text-[11px] font-semibold uppercase tracking-widest;
-    color: #9a9080;
+    @apply text-[11px] font-semibold uppercase tracking-widest text-ink-300;
   }
 
   /* ── Page header ─────────────────────────────────────────── */
 
   .page-title {
-    @apply text-3xl font-bold tracking-tight;
-    color: #2A2A2A;
+    @apply text-3xl font-bold tracking-tight text-ink;
   }
 
   .page-subtitle {
-    @apply mt-1.5 text-sm;
-    color: #6b6560;
+    @apply mt-1.5 text-sm text-ink-400;
   }
 
   /* ── Table header ────────────────────────────────────────── */
   .table-header {
-    @apply text-xs font-semibold uppercase tracking-wider text-left;
-    color: #9a9080;
+    @apply text-xs font-semibold uppercase tracking-wider text-left text-ink-300;
   }
 }
 
@@ -126,13 +202,13 @@
 
 ::-webkit-scrollbar        { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track  { background: transparent; }
-::-webkit-scrollbar-thumb  { background: #D6CEC2; border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: #B0A898; }
+::-webkit-scrollbar-thumb  { @apply bg-ink-50; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { @apply bg-ink-200; }
 
 /* ── Grain texture (global) ─────────────────────────────────── */
 
 .grain-bg {
-  background-color: #F0E6D8;
+  @apply bg-cream;
   position: relative;
 }
 
@@ -178,7 +254,7 @@
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #66392d 0%, #C9785D 50%, #66392d 100%);
+  @apply bg-gradient-to-br from-brand-900 via-brand-500 to-brand-900;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -221,11 +297,30 @@
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-::selection { background: #fbe8e0; color: #66392d; }
+::selection { @apply bg-brand-100 text-brand-900; }
+
+/* ── Skip to content link ───────────────────────────────────── */
+
+.skip-link {
+  @apply sr-only;
+}
+.skip-link:focus {
+  @apply not-sr-only fixed top-3 left-3 z-[9999] rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-lg;
+}
 
 /* ── Focus ring global ──────────────────────────────────────── */
 
 *:focus-visible {
-  outline: 2px solid #C9785D;
-  outline-offset: 2px;
+  @apply outline-2 outline-brand-500 outline-offset-2;
+}
+
+/* ── Reduced motion ────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

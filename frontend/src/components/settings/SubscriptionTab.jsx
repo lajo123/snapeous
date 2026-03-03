@@ -14,7 +14,7 @@ const STATUS_CONFIG = {
   active:     { label: 'Actif',      color: 'bg-green-50 text-green-700 border-green-200',    icon: CheckCircle },
   trialing:   { label: 'Essai',      color: 'bg-blue-50 text-blue-700 border-blue-200',       icon: Clock },
   past_due:   { label: 'Impayé',     color: 'bg-red-50 text-red-700 border-red-200',          icon: AlertTriangle },
-  canceled:   { label: 'Annulé',     color: 'bg-gray-50 text-gray-600 border-gray-200',       icon: XCircle },
+  canceled:   { label: 'Annulé',     color: 'bg-surface-muted text-ink-500 border-ink-100',       icon: XCircle },
   incomplete: { label: 'Incomplet',  color: 'bg-amber-50 text-amber-700 border-amber-200',    icon: AlertTriangle },
   unpaid:     { label: 'Impayé',     color: 'bg-red-50 text-red-700 border-red-200',          icon: AlertTriangle },
 };
@@ -69,13 +69,13 @@ export default function SubscriptionTab() {
   return (
     <div className="space-y-5">
       {/* Plan actuel */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
+      <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-6">
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
             <div className="rounded-xl bg-brand-50 p-2.5">
               <CreditCard className="h-4 w-4 text-brand-600" />
             </div>
-            <h2 className="text-sm font-semibold text-gray-900">Plan actuel</h2>
+            <h2 className="text-sm font-semibold text-ink">Plan actuel</h2>
           </div>
           <div className={cn('inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium', statusConfig.color)}>
             <StatusIcon className="h-3.5 w-3.5" />
@@ -84,19 +84,19 @@ export default function SubscriptionTab() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-            <span className="text-xs font-medium text-gray-400 block mb-1">Plan</span>
-            <span className="text-sm font-bold text-gray-900">{PLAN_LABELS[plan]}</span>
+          <div className="rounded-xl bg-surface-muted px-4 py-3 border border-ink-50/50">
+            <span className="text-xs font-medium text-ink-300 block mb-1">Plan</span>
+            <span className="text-sm font-bold text-ink">{PLAN_LABELS[plan]}</span>
           </div>
-          <div className="rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-            <span className="text-xs font-medium text-gray-400 block mb-1">Projets</span>
-            <span className="text-sm font-bold text-gray-900">
+          <div className="rounded-xl bg-surface-muted px-4 py-3 border border-ink-50/50">
+            <span className="text-xs font-medium text-ink-300 block mb-1">Projets</span>
+            <span className="text-sm font-bold text-ink">
               {limits.max_domains === 999999 ? 'Illimité' : limits.max_domains}
             </span>
           </div>
-          <div className="rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-            <span className="text-xs font-medium text-gray-400 block mb-1">Backlinks</span>
-            <span className="text-sm font-bold text-gray-900">
+          <div className="rounded-xl bg-surface-muted px-4 py-3 border border-ink-50/50">
+            <span className="text-xs font-medium text-ink-300 block mb-1">Backlinks</span>
+            <span className="text-sm font-bold text-ink">
               {limits.max_backlinks >= 25000 ? '25 000' : limits.max_backlinks.toLocaleString('fr-FR')}
             </span>
           </div>
@@ -126,29 +126,29 @@ export default function SubscriptionTab() {
 
       {/* Période & dates */}
       {!isFree && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
+        <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-6">
           <div className="flex items-center gap-3 mb-5">
             <div className="rounded-xl bg-violet-50 p-2.5">
               <Calendar className="h-4 w-4 text-violet-600" />
             </div>
-            <h2 className="text-sm font-semibold text-gray-900">Période de facturation</h2>
+            <h2 className="text-sm font-semibold text-ink">Période de facturation</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-              <span className="text-xs font-medium text-gray-400 block mb-1">Début de la période</span>
-              <span className="text-sm font-semibold text-gray-900">{formatDate(subscription?.current_period_start)}</span>
+            <div className="rounded-xl bg-surface-muted px-4 py-3 border border-ink-50/50">
+              <span className="text-xs font-medium text-ink-300 block mb-1">Début de la période</span>
+              <span className="text-sm font-semibold text-ink">{formatDate(subscription?.current_period_start)}</span>
             </div>
-            <div className="rounded-xl bg-gray-50/80 px-4 py-3 border border-gray-100/50">
-              <span className="text-xs font-medium text-gray-400 block mb-1">Fin de la période</span>
-              <span className="text-sm font-semibold text-gray-900">{formatDate(subscription?.current_period_end)}</span>
+            <div className="rounded-xl bg-surface-muted px-4 py-3 border border-ink-50/50">
+              <span className="text-xs font-medium text-ink-300 block mb-1">Fin de la période</span>
+              <span className="text-sm font-semibold text-ink">{formatDate(subscription?.current_period_end)}</span>
             </div>
           </div>
         </div>
       )}
 
       {/* Actions */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-soft p-6">
-        <h2 className="text-sm font-semibold text-gray-900 mb-4">Actions</h2>
+      <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-6">
+        <h2 className="text-sm font-semibold text-ink mb-4">Actions</h2>
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => navigate('/settings', { state: { tab: 'subscription', changePlan: true } })}
@@ -194,12 +194,12 @@ export default function SubscriptionTab() {
       {showCancelConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowCancelConfirm(false)} />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm border border-gray-100 p-6 text-center">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm border border-ink-50 p-6 text-center">
             <div className="mx-auto w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
               <AlertTriangle className="h-6 w-6 text-red-500" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Annuler l'abonnement ?</h3>
-            <p className="text-sm text-gray-500 mb-6">
+            <h3 className="text-lg font-bold text-ink mb-2">Annuler l'abonnement ?</h3>
+            <p className="text-sm text-ink-400 mb-6">
               Votre abonnement restera actif jusqu'à la fin de la période en cours.
               Vous serez ensuite rétrogradé au plan Free.
             </p>

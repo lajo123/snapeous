@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function TopDomainsChart({ domains = [] }) {
   const { t } = useTranslation('backlinks');
-  if (domains.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-gray-400">{t('charts.noData')}</div>;
+  if (domains.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-ink-300">{t('charts.noData')}</div>;
 
   const data = domains.slice(0, 10).map(d => ({
     domain: d.domain?.length > 25 ? d.domain.slice(0, 22) + '...' : d.domain,

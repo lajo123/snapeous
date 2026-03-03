@@ -32,13 +32,13 @@ const INTENTION_BADGE = {
   informational: 'bg-blue-50 text-blue-700',
   transactional: 'bg-brand-50 text-brand-700',
   commercial: 'bg-violet-50 text-violet-700',
-  navigational: 'bg-gray-50 text-gray-600',
+  navigational: 'bg-surface-muted text-ink-500',
 };
 
 const PRIORITY_BADGE = {
   high: 'bg-red-50 text-red-700',
   medium: 'bg-amber-50 text-amber-700',
-  low: 'bg-gray-50 text-gray-600',
+  low: 'bg-surface-muted text-ink-500',
 };
 
 const ANCHOR_TYPE_BADGE = {
@@ -47,7 +47,7 @@ const ANCHOR_TYPE_BADGE = {
   optimized: 'bg-red-50 text-red-700',
   semi_optimized: 'bg-blue-50 text-blue-700',
   brand: 'bg-brand-50 text-brand-700',
-  generic: 'bg-gray-50 text-gray-600',
+  generic: 'bg-surface-muted text-ink-500',
   naked_url: 'bg-violet-50 text-violet-700',
 };
 
@@ -91,27 +91,27 @@ function SitemapPickerModal({ projectId, existingUrls, onAdd, onClose }) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[80vh] flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-          <h3 className="text-base font-bold text-gray-900">
+        <div className="px-6 py-4 border-b border-ink-50 flex items-center justify-between">
+          <h3 className="text-base font-bold text-ink">
             {t('sitemapTitle')}
           </h3>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-all"
+            className="rounded-lg p-1.5 text-ink-300 hover:bg-cream-50 hover:text-ink-500 transition-all"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Language tabs + search */}
-        <div className="px-6 py-3 border-b border-gray-50 flex items-center gap-3 flex-wrap">
+        <div className="px-6 py-3 border-b border-ink-50/50 flex items-center gap-3 flex-wrap">
           <button
             onClick={() => { setLangFilter(''); setPage(1); }}
             className={cn(
               'rounded-full px-3 py-1 text-xs font-medium transition-all',
               !langFilter
                 ? 'bg-brand-100 text-brand-700'
-                : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                : 'bg-surface-muted text-ink-400 hover:bg-cream-50'
             )}
           >
             {t('allLanguages')}
@@ -124,7 +124,7 @@ function SitemapPickerModal({ projectId, existingUrls, onAdd, onClose }) {
                 'rounded-full px-3 py-1 text-xs font-medium transition-all',
                 langFilter === lang
                   ? 'bg-brand-100 text-brand-700'
-                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                  : 'bg-surface-muted text-ink-400 hover:bg-cream-50'
               )}
             >
               {lang.toUpperCase()} ({count})
@@ -136,7 +136,7 @@ function SitemapPickerModal({ projectId, existingUrls, onAdd, onClose }) {
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
               placeholder={t('filterUrls')}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs text-gray-700 focus:border-brand-300 focus:outline-none focus:ring-1 focus:ring-brand-200 w-56"
+              className="rounded-lg border border-ink-100 px-3 py-1.5 text-xs text-ink-600 focus:border-brand-300 focus:outline-none focus:ring-1 focus:ring-brand-200 w-56"
             />
           </div>
         </div>
@@ -148,13 +148,13 @@ function SitemapPickerModal({ projectId, existingUrls, onAdd, onClose }) {
               <Loader2 className="h-6 w-6 text-brand-500 animate-spin" />
             </div>
           ) : filtered.length === 0 ? (
-            <div className="py-16 text-center text-sm text-gray-400">
+            <div className="py-16 text-center text-sm text-ink-300">
               {pages.length === 0
                 ? t('noSitemapPages')
                 : t('noFilterMatch')}
             </div>
           ) : (
-            <ul className="divide-y divide-gray-50">
+            <ul className="divide-y divide-ink-50">
               {filtered.map((p, i) => {
                 const alreadyAdded = existingSet.has(p.url);
                 return (
@@ -168,7 +168,7 @@ function SitemapPickerModal({ projectId, existingUrls, onAdd, onClose }) {
                           {p.language}
                         </span>
                       )}
-                      <span className="text-sm text-gray-700 truncate">
+                      <span className="text-sm text-ink-600 truncate">
                         {p.url}
                       </span>
                     </div>
@@ -178,7 +178,7 @@ function SitemapPickerModal({ projectId, existingUrls, onAdd, onClose }) {
                       className={cn(
                         'rounded-lg px-3 py-1.5 text-xs font-medium transition-all flex-shrink-0',
                         alreadyAdded
-                          ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
+                          ? 'bg-surface-muted text-ink-200 cursor-not-allowed'
                           : 'bg-brand-50 text-brand-700 hover:bg-brand-100'
                       )}
                     >
@@ -193,22 +193,22 @@ function SitemapPickerModal({ projectId, existingUrls, onAdd, onClose }) {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between">
+          <div className="px-6 py-3 border-t border-ink-50 flex items-center justify-between">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-ink-400 hover:bg-surface-muted disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
               <ChevronLeft className="h-3.5 w-3.5" />
               {t('previous')}
             </button>
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-ink-300">
               {t('page', { current: page, total: totalPages })}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page >= totalPages}
-              className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+              className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-medium text-ink-400 hover:bg-surface-muted disabled:opacity-30 disabled:cursor-not-allowed transition-all"
             >
               {t('next')}
               <ChevronRight className="h-3.5 w-3.5" />
@@ -472,7 +472,7 @@ export default function ProjectAnalysis() {
   if (isError || !project) {
     return (
       <div className="text-center py-16">
-        <p className="text-gray-400">{t('projectNotFound')}</p>
+        <p className="text-ink-300">{t('projectNotFound')}</p>
       </div>
     );
   }
@@ -489,15 +489,15 @@ export default function ProjectAnalysis() {
   if (analysisInProgress) {
     return (
       <div className="space-y-6">
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm px-6 py-20 text-center">
+        <div className="bg-white rounded-xl border border-ink-50 shadow-sm px-6 py-20 text-center">
           <Loader2 className="h-12 w-12 text-blue-500 animate-spin mx-auto" />
-          <h3 className="mt-5 text-lg font-semibold text-gray-900">
+          <h3 className="mt-5 text-lg font-semibold text-ink">
             {t('analyzingTitle')}
           </h3>
-          <p className="mt-2 text-sm text-[#6b6560] max-w-md mx-auto">
+          <p className="mt-2 text-sm text-ink-400 max-w-md mx-auto">
             {analysis.progress || t('analyzingDesc')}
           </p>
-          <p className="mt-4 text-xs text-gray-300">
+          <p className="mt-4 text-xs text-ink-200">
             {t('analyzingAutoRefresh')}
           </p>
         </div>
@@ -510,21 +510,21 @@ export default function ProjectAnalysis() {
   if (!hasAnalysis) {
     return (
       <div className="space-y-6">
-        <div className="bg-white rounded-xl border border-gray-100 shadow-soft px-6 py-20 text-center">
-          <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-xl bg-gray-50">
-            <Search className="h-8 w-8 text-gray-300" />
+        <div className="bg-white rounded-xl border border-ink-50 shadow-soft px-6 py-20 text-center">
+          <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-xl bg-surface-muted">
+            <Search className="h-8 w-8 text-ink-200" />
           </div>
-          <h3 className="mt-5 text-lg font-semibold text-gray-900">
+          <h3 className="mt-5 text-lg font-semibold text-ink">
             {t('noAnalysis')}
           </h3>
-          <p className="mt-2 text-sm text-[#6b6560] max-w-md mx-auto">
+          <p className="mt-2 text-sm text-ink-400 max-w-md mx-auto">
             {t('noAnalysisDesc')}
           </p>
           <div className="mt-6 flex items-center justify-center gap-3">
             <select
               value={selectedLanguage}
               onChange={(e) => setSelectedLanguage(e.target.value)}
-              className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-700 focus:border-brand-300 focus:outline-none focus:ring-1 focus:ring-brand-200"
+              className="rounded-xl border border-ink-100 px-3 py-2.5 text-sm text-ink-600 focus:border-brand-300 focus:outline-none focus:ring-1 focus:ring-brand-200"
             >
               {LANGUAGE_OPTION_KEYS.map((val) => (
                 <option key={val} value={val}>
@@ -563,12 +563,12 @@ export default function ProjectAnalysis() {
       {/* Header + language selector + re-analyze */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-3xl font-bold tracking-tight text-ink">
             {t('title')}
           </h1>
-          <p className="mt-1.5 text-sm text-[#6b6560] flex items-center gap-1.5 flex-wrap">
+          <p className="mt-1.5 text-sm text-ink-400 flex items-center gap-1.5 flex-wrap">
             {t('resultsFor')}{' '}
-            <span className="inline-flex items-center gap-1.5 font-medium text-gray-700">
+            <span className="inline-flex items-center gap-1.5 font-medium text-ink-600">
               {analysis.favicon_url && (
                 <img
                   src={analysis.favicon_url}
@@ -591,7 +591,7 @@ export default function ProjectAnalysis() {
           <select
             value={selectedLanguage}
             onChange={(e) => setSelectedLanguage(e.target.value)}
-            className="rounded-xl border border-gray-200 px-3 py-2.5 text-sm text-gray-700 focus:border-brand-300 focus:outline-none focus:ring-1 focus:ring-brand-200"
+            className="rounded-xl border border-ink-100 px-3 py-2.5 text-sm text-ink-600 focus:border-brand-300 focus:outline-none focus:ring-1 focus:ring-brand-200"
           >
             {LANGUAGE_OPTION_KEYS.map((val) => (
               <option key={val} value={val}>
@@ -621,60 +621,60 @@ export default function ProjectAnalysis() {
 
       {/* ── Domain metrics from DomDetailer ────────────────────────── */}
       {analysis?.domain_metrics && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-soft">
+        <div className="bg-white rounded-xl border border-ink-50 shadow-soft">
           <button
             onClick={() => toggleSection('metrics')}
-            className="w-full px-7 py-5 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 transition-colors rounded-xl"
+            className="w-full px-7 py-5 flex items-center justify-between cursor-pointer hover:bg-surface-muted transition-colors rounded-xl"
           >
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-ink-300">
               {t('section.metrics')}
             </h2>
-            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.metrics && 'rotate-180')} />
+            <ChevronDown className={cn('h-4 w-4 text-ink-300 transition-transform duration-200', !collapsedSections.metrics && 'rotate-180')} />
           </button>
           {!collapsedSections.metrics && <div className="px-7 pb-7">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
+            <div className="rounded-xl p-4 bg-surface-muted border border-ink-50">
               <div className="flex items-center gap-2 mb-1.5">
                 <Shield className="h-4 w-4 text-brand-600" />
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Domain Rank</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-300">Domain Rank</p>
               </div>
-              <p className="text-2xl font-bold text-gray-900">{analysis.domain_metrics.domain_rank ?? '--'}</p>
+              <p className="text-2xl font-bold text-ink">{analysis.domain_metrics.domain_rank ?? '--'}</p>
             </div>
-            <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
+            <div className="rounded-xl p-4 bg-surface-muted border border-ink-50">
               <div className="flex items-center gap-2 mb-1.5">
                 <BarChart3 className="h-4 w-4 text-blue-600" />
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">URL Rank</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-300">URL Rank</p>
               </div>
-              <p className="text-2xl font-bold text-gray-900">{analysis.domain_metrics.url_rank ?? '--'}</p>
+              <p className="text-2xl font-bold text-ink">{analysis.domain_metrics.url_rank ?? '--'}</p>
             </div>
-            <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
+            <div className="rounded-xl p-4 bg-surface-muted border border-ink-50">
               <div className="flex items-center gap-2 mb-1.5">
                 <Link2 className="h-4 w-4 text-violet-600" />
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Backlinks</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-300">Backlinks</p>
               </div>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-ink">
                 {analysis.domain_metrics.backlinks_count != null
                   ? Number(analysis.domain_metrics.backlinks_count).toLocaleString(i18n.language)
                   : '--'}
               </p>
             </div>
-            <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
+            <div className="rounded-xl p-4 bg-surface-muted border border-ink-50">
               <div className="flex items-center gap-2 mb-1.5">
                 <Users className="h-4 w-4 text-amber-600" />
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Ref. Domains</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-300">Ref. Domains</p>
               </div>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-ink">
                 {analysis.domain_metrics.referring_domains != null
                   ? Number(analysis.domain_metrics.referring_domains).toLocaleString(i18n.language)
                   : '--'}
               </p>
             </div>
-            <div className="rounded-xl p-4 bg-gray-50/80 border border-gray-100">
+            <div className="rounded-xl p-4 bg-surface-muted border border-ink-50">
               <div className="flex items-center gap-2 mb-1.5">
                 <TrendingUp className="h-4 w-4 text-rose-600" />
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">Dofollow</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-ink-300">Dofollow</p>
               </div>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-ink">
                 {(() => {
                   const df = Number(analysis.domain_metrics.dofollow_backlinks || 0);
                   const nf = Number(analysis.domain_metrics.nofollow_backlinks || 0);
@@ -689,16 +689,16 @@ export default function ProjectAnalysis() {
       )}
 
       {/* ── Niches ─────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-soft">
+      <div className="bg-white rounded-xl border border-ink-50 shadow-soft">
         <div className="flex items-center justify-between px-7 py-5">
           <button
             onClick={() => toggleSection('niches')}
             className="flex items-center gap-2 cursor-pointer"
           >
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-ink-300">
               {t('section.niches')} ({niches.length})
             </h2>
-            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.niches && 'rotate-180')} />
+            <ChevronDown className={cn('h-4 w-4 text-ink-300 transition-transform duration-200', !collapsedSections.niches && 'rotate-180')} />
           </button>
           {nichesDirty && (
             <button
@@ -739,7 +739,7 @@ export default function ProjectAnalysis() {
                 }}
                 autoFocus
                 placeholder={t('nichePlaceholder')}
-                className="rounded-lg border border-violet-200 px-2.5 py-1 text-sm text-gray-900 focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-200 w-48"
+                className="rounded-lg border border-violet-200 px-2.5 py-1 text-sm text-ink focus:border-violet-400 focus:outline-none focus:ring-1 focus:ring-violet-200 w-48"
               />
               <button
                 onClick={handleAddNiche}
@@ -749,7 +749,7 @@ export default function ProjectAnalysis() {
               </button>
               <button
                 onClick={() => { setIsAddingNiche(false); setNewNicheText(''); }}
-                className="rounded-lg p-1 text-gray-400 hover:text-gray-600 transition-colors"
+                className="rounded-lg p-1 text-ink-300 hover:text-ink-500 transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -765,7 +765,7 @@ export default function ProjectAnalysis() {
           )}
         </div>
         {niches.length === 0 && !isAddingNiche && (
-          <p className="mt-2 text-xs text-gray-400">
+          <p className="mt-2 text-xs text-ink-300">
             {t('noNichesDesc')}
           </p>
         )}
@@ -773,16 +773,16 @@ export default function ProjectAnalysis() {
       </div>
 
       {/* ── Keywords table ─────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
-        <div className="px-7 py-5 border-b border-[#E8DCCB] flex items-center justify-between">
+      <div className="bg-white rounded-xl border border-ink-50 shadow-soft overflow-hidden">
+        <div className="px-7 py-5 border-b border-cream-200 flex items-center justify-between">
           <button
             onClick={() => toggleSection('keywords')}
             className="flex items-center gap-2 cursor-pointer"
           >
-            <h2 className="text-base font-bold text-gray-900">
+            <h2 className="text-base font-bold text-ink">
               {t('section.keywords')} ({keywords.length})
             </h2>
-            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.keywords && 'rotate-180')} />
+            <ChevronDown className={cn('h-4 w-4 text-ink-300 transition-transform duration-200', !collapsedSections.keywords && 'rotate-180')} />
           </button>
           <div className="flex items-center gap-2">
             {keywordsDirty && (
@@ -808,22 +808,22 @@ export default function ProjectAnalysis() {
         </div>
 
         {!collapsedSections.keywords && (keywords.length === 0 ? (
-          <div className="px-7 py-10 text-center text-sm text-[#6b6560]">
+          <div className="px-7 py-10 text-center text-sm text-ink-400">
             {t('keywordsEmpty')}
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-50 text-left">
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('keyword')}</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('intent')}</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('priorityLabel')}</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('volumeEstimate')}</th>
+                <tr className="border-b border-ink-50/50 text-left">
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('keyword')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('intent')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('priorityLabel')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('volumeEstimate')}</th>
                   <th className="px-7 py-3.5 w-12" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-ink-50">
                 {keywords.map((kw, i) => (
                   <tr
                     key={i}
@@ -836,7 +836,7 @@ export default function ProjectAnalysis() {
                         onChange={(e) =>
                           handleKeywordChange(i, 'keyword', e.target.value)
                         }
-                        className="w-full rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm text-gray-900 focus:border-brand-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-200 hover:border-gray-200 transition-all"
+                        className="w-full rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm text-ink focus:border-brand-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-200 hover:border-ink-100 transition-all"
                         placeholder={t('keywordPlaceholder')}
                       />
                     </td>
@@ -884,13 +884,13 @@ export default function ProjectAnalysis() {
                         onChange={(e) =>
                           handleKeywordChange(i, 'volume', Number(e.target.value))
                         }
-                        className="w-24 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm text-gray-900 focus:border-brand-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-200 hover:border-gray-200 transition-all"
+                        className="w-24 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm text-ink focus:border-brand-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-200 hover:border-ink-100 transition-all"
                       />
                     </td>
                     <td className="px-7 py-3.5">
                       <button
                         onClick={() => handleDeleteKeyword(i)}
-                        className="rounded-lg p-1.5 text-gray-300 opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:text-red-600 transition-all"
+                        className="rounded-lg p-1.5 text-ink-200 opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:text-red-600 transition-all"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -905,36 +905,36 @@ export default function ProjectAnalysis() {
 
       {/* ── Backlink profile summary ─────────────────────────────── */}
       {backlinkProfile && backlinkProfile.total > 0 && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-soft">
+        <div className="bg-white rounded-xl border border-ink-50 shadow-soft">
           <button
             onClick={() => toggleSection('backlinks')}
-            className="w-full px-7 py-5 flex items-center justify-between cursor-pointer hover:bg-gray-50/50 transition-colors rounded-xl"
+            className="w-full px-7 py-5 flex items-center justify-between cursor-pointer hover:bg-surface-muted transition-colors rounded-xl"
           >
             <div className="flex items-center gap-2">
-              <Link2 className="h-4 w-4 text-gray-400" />
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+              <Link2 className="h-4 w-4 text-ink-300" />
+              <h2 className="text-xs font-semibold uppercase tracking-wider text-ink-300">
                 {t('backlinkProfileTitle')} ({backlinkProfile.total} backlinks)
               </h2>
             </div>
-            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.backlinks && 'rotate-180')} />
+            <ChevronDown className={cn('h-4 w-4 text-ink-300 transition-transform duration-200', !collapsedSections.backlinks && 'rotate-180')} />
           </button>
           {!collapsedSections.backlinks && <div className="px-7 pb-7">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {Object.entries(backlinkProfile.distribution || {}).map(([type, pct]) => (
               <div key={type} className="text-center">
-                <div className="text-2xl font-bold text-gray-900">
+                <div className="text-2xl font-bold text-ink">
                   {typeof pct === 'number' ? pct.toFixed(0) : pct}%
                 </div>
-                <div className="mt-1 text-xs text-gray-500">
+                <div className="mt-1 text-xs text-ink-400">
                   {t(`backlinkDist.${type}`)}
                 </div>
-                <div className="mt-2 h-2 w-full rounded-full bg-gray-100">
+                <div className="mt-2 h-2 w-full rounded-full bg-cream-50">
                   <div
                     className={cn(
                       'h-2 rounded-full transition-all',
                       type === 'brand' ? 'bg-brand-400' :
                       type === 'keyword_based' ? 'bg-red-400' :
-                      type === 'generic' ? 'bg-gray-400' :
+                      type === 'generic' ? 'bg-ink-300' :
                       'bg-violet-400'
                     )}
                     style={{ width: `${Math.min(Number(pct) || 0, 100)}%` }}
@@ -948,17 +948,17 @@ export default function ProjectAnalysis() {
       )}
 
       {/* ── Anchors table ──────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
-        <div className="px-7 py-5 border-b border-[#E8DCCB] flex items-center justify-between">
+      <div className="bg-white rounded-xl border border-ink-50 shadow-soft overflow-hidden">
+        <div className="px-7 py-5 border-b border-cream-200 flex items-center justify-between">
           <button
             onClick={() => toggleSection('anchors')}
             className="flex items-center gap-4 cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold text-gray-900">
+              <h2 className="text-base font-bold text-ink">
                 {t('section.anchors')} ({anchors.length})
               </h2>
-              <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.anchors && 'rotate-180')} />
+              <ChevronDown className={cn('h-4 w-4 text-ink-300 transition-transform duration-200', !collapsedSections.anchors && 'rotate-180')} />
             </div>
             <span
               className={cn(
@@ -996,21 +996,21 @@ export default function ProjectAnalysis() {
         </div>
 
         {!collapsedSections.anchors && (anchors.length === 0 ? (
-          <div className="px-7 py-10 text-center text-sm text-[#6b6560]">
+          <div className="px-7 py-10 text-center text-sm text-ink-400">
             {t('anchorsEmpty')}
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-50 text-left">
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('anchorText')}</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('type')}</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('anchorWeightPercent')}</th>
+                <tr className="border-b border-ink-50/50 text-left">
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('anchorText')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('type')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('anchorWeightPercent')}</th>
                   <th className="px-7 py-3.5 w-12" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-ink-50">
                 {anchors.map((anchor, i) => (
                   <tr
                     key={i}
@@ -1023,7 +1023,7 @@ export default function ProjectAnalysis() {
                         onChange={(e) =>
                           handleAnchorChange(i, 'text', e.target.value)
                         }
-                        className="w-full rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm text-gray-900 focus:border-brand-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-200 hover:border-gray-200 transition-all"
+                        className="w-full rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm text-ink focus:border-brand-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-200 hover:border-ink-100 transition-all"
                         placeholder={t('anchorTextPlaceholder')}
                       />
                     </td>
@@ -1055,10 +1055,10 @@ export default function ProjectAnalysis() {
                           onChange={(e) =>
                             handleAnchorChange(i, 'weight', e.target.value)
                           }
-                          className="w-16 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm text-gray-900 focus:border-brand-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-200 hover:border-gray-200 transition-all"
+                          className="w-16 rounded-lg border border-transparent bg-transparent px-2 py-1 text-sm text-ink focus:border-brand-200 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-200 hover:border-ink-100 transition-all"
                         />
                         <div className="flex-1 min-w-[80px]">
-                          <div className="h-2 w-full rounded-full bg-gray-100">
+                          <div className="h-2 w-full rounded-full bg-cream-50">
                             <div
                               className={cn(
                                 'h-2 rounded-full transition-all',
@@ -1079,7 +1079,7 @@ export default function ProjectAnalysis() {
                     <td className="px-7 py-3.5">
                       <button
                         onClick={() => handleDeleteAnchor(i)}
-                        className="rounded-lg p-1.5 text-gray-300 opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:text-red-600 transition-all"
+                        className="rounded-lg p-1.5 text-ink-200 opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:text-red-600 transition-all"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -1093,16 +1093,16 @@ export default function ProjectAnalysis() {
       </div>
 
       {/* ── Target pages ───────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
-        <div className="px-7 py-5 border-b border-[#E8DCCB] flex items-center justify-between">
+      <div className="bg-white rounded-xl border border-ink-50 shadow-soft overflow-hidden">
+        <div className="px-7 py-5 border-b border-cream-200 flex items-center justify-between">
           <button
             onClick={() => toggleSection('targetPages')}
             className="flex items-center gap-2 cursor-pointer"
           >
-            <h2 className="text-base font-bold text-gray-900">
+            <h2 className="text-base font-bold text-ink">
               {t('section.targetPages')} ({currentTargetPages.length})
             </h2>
-            <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.targetPages && 'rotate-180')} />
+            <ChevronDown className={cn('h-4 w-4 text-ink-300 transition-transform duration-200', !collapsedSections.targetPages && 'rotate-180')} />
           </button>
           <div className="flex items-center gap-2">
             {targetPagesDirty && (
@@ -1130,14 +1130,14 @@ export default function ProjectAnalysis() {
         {!collapsedSections.targetPages && (<>
         {/* Language filter tabs */}
         {targetPageLanguages.length > 1 && (
-          <div className="px-7 py-3 border-b border-gray-50 flex items-center gap-2 flex-wrap">
+          <div className="px-7 py-3 border-b border-ink-50/50 flex items-center gap-2 flex-wrap">
             <button
               onClick={() => setTargetLangFilter('')}
               className={cn(
                 'rounded-full px-3 py-1 text-xs font-medium transition-all',
                 !targetLangFilter
                   ? 'bg-brand-100 text-brand-700'
-                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                  : 'bg-surface-muted text-ink-400 hover:bg-cream-50'
               )}
             >
               {t('allPages', { count: currentTargetPages.length })}
@@ -1152,7 +1152,7 @@ export default function ProjectAnalysis() {
                     'rounded-full px-3 py-1 text-xs font-medium transition-all',
                     targetLangFilter === lang
                       ? 'bg-brand-100 text-brand-700'
-                      : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
+                      : 'bg-surface-muted text-ink-400 hover:bg-cream-50'
                   )}
                 >
                   {lang.toUpperCase()} ({count})
@@ -1163,11 +1163,11 @@ export default function ProjectAnalysis() {
         )}
 
         {currentTargetPages.length === 0 ? (
-          <div className="px-7 py-10 text-center text-sm text-[#6b6560]">
+          <div className="px-7 py-10 text-center text-sm text-ink-400">
             {t('targetPagesEmpty')}
           </div>
         ) : (
-          <ul className="divide-y divide-gray-50">
+          <ul className="divide-y divide-ink-50">
             {filteredTargetPages.map((page, i) => {
               const realIndex = currentTargetPages.indexOf(page);
               return (
@@ -1193,12 +1193,12 @@ export default function ProjectAnalysis() {
                       </a>
                     </div>
                     {page.reason && (
-                      <p className="mt-1 text-xs text-gray-400">{page.reason}</p>
+                      <p className="mt-1 text-xs text-ink-300">{page.reason}</p>
                     )}
                   </div>
                   <button
                     onClick={() => handleDeleteTargetPage(realIndex)}
-                    className="rounded-lg p-1.5 text-gray-300 opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:text-red-600 transition-all flex-shrink-0"
+                    className="rounded-lg p-1.5 text-ink-200 opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:text-red-600 transition-all flex-shrink-0"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -1212,20 +1212,20 @@ export default function ProjectAnalysis() {
 
       {/* ── Competitors ────────────────────────────────────────────── */}
       {competitors.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
-          <div className="px-7 py-5 border-b border-[#E8DCCB]">
+        <div className="bg-white rounded-xl border border-ink-50 shadow-soft overflow-hidden">
+          <div className="px-7 py-5 border-b border-cream-200">
             <button
               onClick={() => toggleSection('competitors')}
               className="flex items-center gap-2 cursor-pointer"
             >
-              <h2 className="text-base font-bold text-gray-900">
+              <h2 className="text-base font-bold text-ink">
                 {t('section.competitors')} ({competitors.length})
               </h2>
-              <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.competitors && 'rotate-180')} />
+              <ChevronDown className={cn('h-4 w-4 text-ink-300 transition-transform duration-200', !collapsedSections.competitors && 'rotate-180')} />
             </button>
           </div>
           {!collapsedSections.competitors && (
-          <ul className="divide-y divide-gray-50">
+          <ul className="divide-y divide-ink-50">
             {competitors.map((competitor, i) => {
               const domain =
                 typeof competitor === 'string' ? competitor : competitor.domain;
@@ -1237,14 +1237,14 @@ export default function ProjectAnalysis() {
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
                     <Target className="h-4 w-4" />
                   </div>
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-ink">
                     {domain}
                   </span>
                   <a
                     href={`https://${domain}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="ml-auto text-gray-300 hover:text-brand-500 transition-colors"
+                    className="ml-auto text-ink-200 hover:text-brand-500 transition-colors"
                   >
                     <ExternalLink className="h-4 w-4" />
                   </a>
@@ -1258,20 +1258,20 @@ export default function ProjectAnalysis() {
 
       {/* ── Recommendations ──────────────────────────────────────── */}
       {contentGaps.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-soft overflow-hidden">
-          <div className="px-7 py-5 border-b border-[#E8DCCB]">
+        <div className="bg-white rounded-xl border border-ink-50 shadow-soft overflow-hidden">
+          <div className="px-7 py-5 border-b border-cream-200">
             <button
               onClick={() => toggleSection('recommendations')}
               className="flex items-center gap-2 cursor-pointer"
             >
-              <h2 className="text-base font-bold text-gray-900">
+              <h2 className="text-base font-bold text-ink">
                 {t('section.recommendations')} ({contentGaps.length})
               </h2>
-              <ChevronDown className={cn('h-4 w-4 text-gray-400 transition-transform duration-200', !collapsedSections.recommendations && 'rotate-180')} />
+              <ChevronDown className={cn('h-4 w-4 text-ink-300 transition-transform duration-200', !collapsedSections.recommendations && 'rotate-180')} />
             </button>
           </div>
           {!collapsedSections.recommendations && (
-          <ul className="divide-y divide-gray-50">
+          <ul className="divide-y divide-ink-50">
             {contentGaps.map((gap, i) => {
               const isObject = typeof gap === 'object' && gap !== null;
               const text = isObject ? (gap.suggestion ?? gap.topic ?? '') : String(gap);
@@ -1291,7 +1291,7 @@ export default function ProjectAnalysis() {
                         {type && (
                           <span className={cn(
                             'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase',
-                            RECO_TYPE_BADGE[type] ?? 'bg-gray-50 text-gray-600'
+                            RECO_TYPE_BADGE[type] ?? 'bg-surface-muted text-ink-500'
                           )}>
                             {t(`recoType.${type}`)}
                           </span>
@@ -1299,14 +1299,14 @@ export default function ProjectAnalysis() {
                         {priority && (
                           <span className={cn(
                             'inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold',
-                            PRIORITY_BADGE[priority] ?? 'bg-gray-50 text-gray-600'
+                            PRIORITY_BADGE[priority] ?? 'bg-surface-muted text-ink-500'
                           )}>
                             {t(`priority.${priority}`)}
                           </span>
                         )}
                       </div>
                     )}
-                    <span className="text-sm text-gray-700">{text}</span>
+                    <span className="text-sm text-ink-600">{text}</span>
                   </div>
                 </li>
               );

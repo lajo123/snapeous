@@ -67,7 +67,7 @@ const SPOT_TYPE_COLORS = {
   wiki: 'bg-cyan-50 text-cyan-700',
   social: 'bg-indigo-50 text-indigo-700',
   news: 'bg-brand-50 text-brand-700',
-  other: 'bg-gray-50 text-gray-600',
+  other: 'bg-surface-muted text-ink-500',
 };
 
 const SORT_OPTION_KEYS = ['quality_score', 'da', 'created_at'];
@@ -436,7 +436,7 @@ export default function ProjectSpots() {
             type="checkbox"
             checked={spots.length > 0 && selectedIds.size === spots.length}
             onChange={toggleSelectAll}
-            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+            className="h-4 w-4 rounded border-ink-200 text-brand-600 focus:ring-brand-500"
           />
         ),
         cell: ({ row }) => (
@@ -447,7 +447,7 @@ export default function ProjectSpots() {
               e.stopPropagation();
               toggleSelect(row.original.id);
             }}
-            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+            className="h-4 w-4 rounded border-ink-200 text-brand-600 focus:ring-brand-500"
           />
         ),
         size: 40,
@@ -456,7 +456,7 @@ export default function ProjectSpots() {
         accessorKey: 'url',
         header: t('tableHeader.url'),
         cell: ({ getValue }) => (
-          <span className="text-gray-900 font-mono text-xs" title={getValue()}>
+          <span className="text-ink font-mono text-xs" title={getValue()}>
             {truncateUrl(getValue(), 40)}
           </span>
         ),
@@ -466,7 +466,7 @@ export default function ProjectSpots() {
         accessorKey: 'domain',
         header: t('tableHeader.domain'),
         cell: ({ getValue }) => (
-          <span className="text-gray-700 text-xs font-medium">
+          <span className="text-ink-600 text-xs font-medium">
             {getValue() || '--'}
           </span>
         ),
@@ -481,13 +481,13 @@ export default function ProjectSpots() {
             <span
               className={cn(
                 'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
-                SPOT_TYPE_COLORS[v] || 'bg-gray-50 text-gray-600'
+                SPOT_TYPE_COLORS[v] || 'bg-surface-muted text-ink-500'
               )}
             >
               {t(`spotType.${v}`, { defaultValue: v })}
             </span>
           ) : (
-            <span className="text-gray-300 text-xs">--</span>
+            <span className="text-ink-200 text-xs">--</span>
           );
         },
         size: 100,
@@ -496,7 +496,7 @@ export default function ProjectSpots() {
         accessorKey: 'platform',
         header: t('tableHeader.platform'),
         cell: ({ getValue }) => (
-          <span className="text-gray-500 text-xs">{getValue() || '--'}</span>
+          <span className="text-ink-400 text-xs">{getValue() || '--'}</span>
         ),
         size: 110,
       },
@@ -512,13 +512,13 @@ export default function ProjectSpots() {
                 'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
                 isDofollow
                   ? 'bg-brand-50 text-brand-700'
-                  : 'bg-gray-50 text-gray-500'
+                  : 'bg-surface-muted text-ink-400'
               )}
             >
               {tc(`linkType.${v}`) || v}
             </span>
           ) : (
-            <span className="text-gray-300 text-xs">--</span>
+            <span className="text-ink-200 text-xs">--</span>
           );
         },
         size: 90,
@@ -533,7 +533,7 @@ export default function ProjectSpots() {
               {tc('yes')}
             </span>
           ) : (
-            <span className="text-gray-300 text-xs">{tc('no')}</span>
+            <span className="text-ink-200 text-xs">{tc('no')}</span>
           );
         },
         size: 90,
@@ -551,13 +551,13 @@ export default function ProjectSpots() {
                   ? 'text-brand-600'
                   : v >= 20
                     ? 'text-amber-600'
-                    : 'text-gray-500'
+                    : 'text-ink-400'
               )}
             >
               {v}
             </span>
           ) : (
-            <span className="text-gray-300 text-xs">--</span>
+            <span className="text-ink-200 text-xs">--</span>
           );
         },
         size: 60,
@@ -581,7 +581,7 @@ export default function ProjectSpots() {
               {v}
             </span>
           ) : (
-            <span className="text-gray-300 text-xs">--</span>
+            <span className="text-ink-200 text-xs">--</span>
           );
         },
         size: 60,
@@ -595,7 +595,7 @@ export default function ProjectSpots() {
             <span
               className={cn(
                 'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
-                SPOT_STATUS_COLORS[v] || 'bg-gray-100 text-gray-800'
+                SPOT_STATUS_COLORS[v] || 'bg-cream-50 text-ink'
               )}
             >
               {tc(`spotStatus.${v}`) || v}
@@ -617,7 +617,7 @@ export default function ProjectSpots() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={(e) => e.stopPropagation()}
-                  className="p-1.5 text-gray-300 hover:text-brand-600 transition-colors rounded-lg hover:bg-brand-50"
+                  className="p-1.5 text-ink-200 hover:text-brand-600 transition-colors rounded-lg hover:bg-brand-50"
                   title={t('openUrl')}
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
@@ -673,14 +673,14 @@ export default function ProjectSpots() {
       </div>
 
       {/* ── Tab switcher ─────────────────────────────────────────── */}
-      <div className="flex items-center gap-1 bg-white rounded-xl p-1 border border-[#E8E0D5] w-fit">
+      <div className="flex items-center gap-1 bg-white rounded-xl p-1 border border-cream-200 w-fit">
         <button
           onClick={() => setActiveTab('spots')}
           className={cn(
             'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all',
             activeTab === 'spots'
               ? 'bg-brand-500 text-white shadow-sm'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+              : 'text-ink-400 hover:text-ink-600 hover:bg-surface-muted'
           )}
         >
           <Target className="h-4 w-4" />
@@ -688,7 +688,7 @@ export default function ProjectSpots() {
           {stats?.total != null && (
             <span className={cn(
               'text-xs rounded-full px-2 py-0.5 font-semibold',
-              activeTab === 'spots' ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-600'
+              activeTab === 'spots' ? 'bg-white/20 text-white' : 'bg-cream-50 text-ink-500'
             )}>
               {stats.total}
             </span>
@@ -700,7 +700,7 @@ export default function ProjectSpots() {
             'inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all',
             activeTab === 'search'
               ? 'bg-brand-500 text-white shadow-sm'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+              : 'text-ink-400 hover:text-ink-600 hover:bg-surface-muted'
           )}
         >
           <Search className="h-4 w-4" />
@@ -740,7 +740,7 @@ export default function ProjectSpots() {
       {/* ── Stats summary ───────────────────────────────────────────── */}
       {stats && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center rounded-full bg-white text-gray-700 px-3 py-1.5 text-xs font-medium border border-[#D6CEC2]">
+          <span className="inline-flex items-center rounded-full bg-white text-ink-600 px-3 py-1.5 text-xs font-medium border border-ink-50">
             {tc('total')} : {stats.total ?? 0}
           </span>
           {stats.by_status &&
@@ -749,7 +749,7 @@ export default function ProjectSpots() {
                 key={status}
                 className={cn(
                   'inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium',
-                  SPOT_STATUS_COLORS[status] || 'bg-gray-100 text-gray-800'
+                  SPOT_STATUS_COLORS[status] || 'bg-cream-50 text-ink'
                 )}
               >
                 {tc(`spotStatus.${status}`) || status} : {count}
@@ -761,7 +761,7 @@ export default function ProjectSpots() {
                 key={type}
                 className={cn(
                   'inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium',
-                  SPOT_TYPE_COLORS[type] || 'bg-gray-50 text-gray-600'
+                  SPOT_TYPE_COLORS[type] || 'bg-surface-muted text-ink-500'
                 )}
               >
                 {t(`spotType.${type}`, { defaultValue: type })} : {count}
@@ -773,18 +773,18 @@ export default function ProjectSpots() {
       {/* ── Filters ─────────────────────────────────────────────────── */}
       <div className="card p-5">
         <div className="flex items-center gap-2 mb-4">
-          <Filter className="h-4 w-4 text-gray-300" />
-          <span className="text-sm font-medium text-gray-700">{t('filters')}</span>
+          <Filter className="h-4 w-4 text-ink-200" />
+          <span className="text-sm font-medium text-ink-600">{t('filters')}</span>
         </div>
 
         <div className="flex flex-wrap items-end gap-3">
           {/* Status */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-400 font-medium">{t('filterLabel.status')}</label>
+            <label className="text-xs text-ink-300 font-medium">{t('filterLabel.status')}</label>
             <select
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
+              className="rounded-xl border border-ink-100 bg-cream-50/50 px-3 py-2 text-sm text-ink-600 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
             >
               <option value="">{tc('all')}</option>
               {Object.keys(SPOT_STATUS_COLORS).map((k) => (
@@ -797,11 +797,11 @@ export default function ProjectSpots() {
 
           {/* Type */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-400 font-medium">{t('filterLabel.type')}</label>
+            <label className="text-xs text-ink-300 font-medium">{t('filterLabel.type')}</label>
             <select
               value={filters.type}
               onChange={(e) => handleFilterChange('type', e.target.value)}
-              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
+              className="rounded-xl border border-ink-100 bg-cream-50/50 px-3 py-2 text-sm text-ink-600 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
             >
               <option value="">{tc('all')}</option>
               {SPOT_TYPE_KEYS.map((val) => (
@@ -814,13 +814,13 @@ export default function ProjectSpots() {
 
           {/* Platform */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-400 font-medium">{t('filterLabel.platform')}</label>
+            <label className="text-xs text-ink-300 font-medium">{t('filterLabel.platform')}</label>
             <input
               type="text"
               value={filters.platform}
               onChange={(e) => handleFilterChange('platform', e.target.value)}
               placeholder="WordPress, Joomla..."
-              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none w-36 transition-all"
+              className="rounded-xl border border-ink-100 bg-cream-50/50 px-3 py-2 text-sm text-ink-600 placeholder:text-ink-200 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none w-36 transition-all"
             />
           </div>
 
@@ -832,9 +832,9 @@ export default function ProjectSpots() {
               onChange={(e) =>
                 handleFilterChange('dofollow_only', e.target.checked)
               }
-              className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+              className="h-4 w-4 rounded border-ink-200 text-brand-600 focus:ring-brand-500"
             />
-            <span className="text-sm text-gray-700">{t('dofollowOnly')}</span>
+            <span className="text-sm text-ink-600">{t('dofollowOnly')}</span>
           </label>
 
           {/* Has form */}
@@ -845,14 +845,14 @@ export default function ProjectSpots() {
               onChange={(e) =>
                 handleFilterChange('has_form', e.target.checked)
               }
-              className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+              className="h-4 w-4 rounded border-ink-200 text-brand-600 focus:ring-brand-500"
             />
-            <span className="text-sm text-gray-700">{t('withForm')}</span>
+            <span className="text-sm text-ink-600">{t('withForm')}</span>
           </label>
 
           {/* DA min */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-400 font-medium">{t('filterLabel.daMin')}</label>
+            <label className="text-xs text-ink-300 font-medium">{t('filterLabel.daMin')}</label>
             <input
               type="number"
               min="0"
@@ -860,17 +860,17 @@ export default function ProjectSpots() {
               value={filters.da_min}
               onChange={(e) => handleFilterChange('da_min', e.target.value)}
               placeholder="0"
-              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 placeholder:text-gray-300 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none w-20 transition-all"
+              className="rounded-xl border border-ink-100 bg-cream-50/50 px-3 py-2 text-sm text-ink-600 placeholder:text-ink-200 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none w-20 transition-all"
             />
           </div>
 
           {/* Sort by */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs text-gray-400 font-medium">{t('sortBy')}</label>
+            <label className="text-xs text-ink-300 font-medium">{t('sortBy')}</label>
             <select
               value={filters.sort_by}
               onChange={(e) => handleFilterChange('sort_by', e.target.value)}
-              className="rounded-xl border border-gray-200 bg-[#FAF7F2]/50 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
+              className="rounded-xl border border-ink-100 bg-cream-50/50 px-3 py-2 text-sm text-ink-600 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition-all"
             >
               {SORT_OPTION_KEYS.map((val) => (
                 <option key={val} value={val}>
@@ -884,7 +884,7 @@ export default function ProjectSpots() {
           {hasFilters && (
             <button
               onClick={handleClearFilters}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-500 hover:bg-gray-50 transition-all"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-ink-100 bg-white px-3 py-2 text-sm text-ink-400 hover:bg-surface-muted transition-all"
             >
               <X className="h-3.5 w-3.5" />
               {t('clearFilters')}
@@ -898,7 +898,7 @@ export default function ProjectSpots() {
         <div className="flex items-center gap-3">
           {selectedIds.size > 0 && (
             <>
-              <span className="text-sm text-gray-500 font-medium">
+              <span className="text-sm text-ink-400 font-medium">
                 {t('selected', { count: selectedIds.size })}
               </span>
               <button
@@ -946,13 +946,13 @@ export default function ProjectSpots() {
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="sticky top-0 z-10 bg-[#FAF7F2] backdrop-blur-sm border-b border-gray-100">
+            <thead className="sticky top-0 z-10 bg-cream-50 backdrop-blur-sm border-b border-ink-50">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 whitespace-nowrap"
+                      className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-ink-300 whitespace-nowrap"
                       style={{
                         width: header.getSize(),
                       }}
@@ -968,7 +968,7 @@ export default function ProjectSpots() {
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-ink-50">
               {isLoading ? (
                 <tr>
                   <td
@@ -976,7 +976,7 @@ export default function ProjectSpots() {
                     className="px-4 py-20 text-center"
                   >
                     <RefreshCw className="h-6 w-6 text-brand-500 animate-spin mx-auto" />
-                    <p className="mt-3 text-sm text-[#6b6560]">
+                    <p className="mt-3 text-sm text-ink-400">
                       {t('loadingSpots')}
                     </p>
                   </td>
@@ -987,10 +987,10 @@ export default function ProjectSpots() {
                     colSpan={columns.length}
                     className="px-4 py-20 text-center"
                   >
-                    <div className="flex h-14 w-14 mx-auto items-center justify-center rounded-xl bg-gray-50">
-                      <Search className="h-7 w-7 text-gray-300" />
+                    <div className="flex h-14 w-14 mx-auto items-center justify-center rounded-xl bg-surface-muted">
+                      <Search className="h-7 w-7 text-ink-200" />
                     </div>
-                    <p className="mt-3 text-sm text-[#6b6560]">
+                    <p className="mt-3 text-sm text-ink-400">
                       {t('noSpotsFiltered')}
                     </p>
                     {hasFilters && (
@@ -1016,7 +1016,7 @@ export default function ProjectSpots() {
                           'cursor-pointer transition-colors duration-150',
                           isExpanded
                             ? 'bg-brand-50/50'
-                            : 'hover:bg-[#FAF7F2]',
+                            : 'hover:bg-cream-50',
                           selectedIds.has(spot.id) && 'bg-brand-50/30'
                         )}
                       >
@@ -1038,7 +1038,7 @@ export default function ProjectSpots() {
                         <tr>
                           <td
                             colSpan={columns.length}
-                            className="bg-[#FAF7F2]/50 border-t border-b border-gray-100"
+                            className="bg-cream-50/50 border-t border-b border-ink-50"
                           >
                             <SpotDetailPanel
                               spot={spot}
@@ -1065,8 +1065,8 @@ export default function ProjectSpots() {
 
         {/* ── Pagination ──────────────────────────────────────────── */}
         {totalCount > PAGE_SIZE && (
-          <div className="flex items-center justify-between px-5 py-4 border-t border-gray-100 bg-[#FAF7F2]/50">
-            <p className="text-xs text-gray-400">
+          <div className="flex items-center justify-between px-5 py-4 border-t border-ink-50 bg-cream-50/50">
+            <p className="text-xs text-ink-300">
               {t('pagination', { current: page + 1, total: totalPages, count: totalCount })}
             </p>
             <div className="flex items-center gap-2">
@@ -1127,14 +1127,14 @@ function SearchPanel({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* ── Footprint selection ──────────────────────────────────── */}
         <div className="card">
-          <div className="px-7 py-5 border-b border-[#E8DCCB] flex items-center justify-between">
-            <h2 className="text-base font-bold text-gray-900">{t('search.footprints')}</h2>
-            <span className="text-xs font-medium text-[#9a9080] bg-[#F0E6D8] rounded-full px-2.5 py-1">
+          <div className="px-7 py-5 border-b border-cream-200 flex items-center justify-between">
+            <h2 className="text-base font-bold text-ink">{t('search.footprints')}</h2>
+            <span className="text-xs font-medium text-ink-300 bg-cream rounded-full px-2.5 py-1">
               {t('search.selectedCount', { count: selectedFootprints.size })}
             </span>
           </div>
 
-          <div className="divide-y divide-[#E8DCCB] max-h-[480px] overflow-y-auto">
+          <div className="divide-y divide-cream-200 max-h-[480px] overflow-y-auto">
             {Object.entries(footprintsByCategory).map(([cat, fps]) => {
               const isExpanded = expandedCategories.has(cat);
               const catIds = fps.map((fp) => fp.id);
@@ -1146,10 +1146,10 @@ function SearchPanel({
 
               return (
                 <div key={cat}>
-                  <div className="flex items-center gap-2 px-7 py-3 bg-[#FAF7F2]/50 hover:bg-gray-50 transition-colors cursor-pointer select-none">
+                  <div className="flex items-center gap-2 px-7 py-3 bg-cream-50/50 hover:bg-surface-muted transition-colors cursor-pointer select-none">
                     <button
                       onClick={() => toggleSearchCategoryAll(cat)}
-                      className="flex-shrink-0 text-gray-400 hover:text-brand-600 transition-colors"
+                      className="flex-shrink-0 text-ink-300 hover:text-brand-600 transition-colors"
                       title={t('search.selectDeselectAll')}
                     >
                       {allSelected ? (
@@ -1165,21 +1165,21 @@ function SearchPanel({
                       className="flex-1 flex items-center gap-2 text-left"
                     >
                       {isExpanded ? (
-                        <ChevronDown className="h-4 w-4 text-gray-300" />
+                        <ChevronDown className="h-4 w-4 text-ink-200" />
                       ) : (
-                        <ChevronRight className="h-4 w-4 text-gray-300" />
+                        <ChevronRight className="h-4 w-4 text-ink-200" />
                       )}
-                      <span className="text-sm font-medium text-gray-700">
+                      <span className="text-sm font-medium text-ink-600">
                         {tc(`category.${cat}`) || cat}
                       </span>
-                      <span className="text-xs text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">
+                      <span className="text-xs text-ink-300 bg-cream-50 rounded-full px-2 py-0.5">
                         {fps.length}
                       </span>
                     </button>
                   </div>
 
                   {isExpanded && (
-                    <div className="divide-y divide-gray-50/50">
+                    <div className="divide-y divide-ink-50/50">
                       {fps.map((fp) => (
                         <label
                           key={fp.id}
@@ -1189,9 +1189,9 @@ function SearchPanel({
                             type="checkbox"
                             checked={selectedFootprints.has(fp.id)}
                             onChange={() => toggleFootprint(fp.id)}
-                            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                            className="h-4 w-4 rounded border-ink-200 text-brand-600 focus:ring-brand-500"
                           />
-                          <span className="flex-1 text-sm text-gray-700 truncate">
+                          <span className="flex-1 text-sm text-ink-600 truncate">
                             {fp.name}
                           </span>
                           {fp.difficulty && (
@@ -1199,7 +1199,7 @@ function SearchPanel({
                               className={cn(
                                 'text-xs font-medium rounded-full px-2 py-0.5',
                                 DIFFICULTY_COLORS[fp.difficulty] ||
-                                  'bg-gray-100 text-gray-600'
+                                  'bg-cream-50 text-ink-500'
                               )}
                             >
                               {tc(`difficulty.${fp.difficulty}`) || fp.difficulty}
@@ -1214,7 +1214,7 @@ function SearchPanel({
             })}
 
             {Object.keys(footprintsByCategory).length === 0 && (
-              <div className="px-7 py-10 text-center text-sm text-gray-400">
+              <div className="px-7 py-10 text-center text-sm text-ink-300">
                 {t('search.noFootprints')}
               </div>
             )}
@@ -1224,8 +1224,8 @@ function SearchPanel({
         {/* ── Keywords + Launch ─────────────────────────────────────── */}
         <div className="space-y-6">
           <div className="card">
-            <div className="px-7 py-5 border-b border-[#E8DCCB] flex items-center justify-between">
-              <h2 className="text-base font-bold text-gray-900">{t('search.keywords')}</h2>
+            <div className="px-7 py-5 border-b border-cream-200 flex items-center justify-between">
+              <h2 className="text-base font-bold text-ink">{t('search.keywords')}</h2>
               {keywords.length > 0 && (
                 <button
                   onClick={toggleAllKeywords}
@@ -1243,7 +1243,7 @@ function SearchPanel({
                 <p className="text-sm text-amber-600 font-medium">
                   {t('search.analyzeSiteFirst')}
                 </p>
-                <p className="mt-1.5 text-xs text-gray-400">
+                <p className="mt-1.5 text-xs text-ink-300">
                   {t('search.analyzeSiteDesc')}
                 </p>
                 <Link
@@ -1254,7 +1254,7 @@ function SearchPanel({
                 </Link>
               </div>
             ) : (
-              <div className="divide-y divide-[#E8DCCB] max-h-[280px] overflow-y-auto">
+              <div className="divide-y divide-cream-200 max-h-[280px] overflow-y-auto">
                 {keywords.map((kw) => (
                   <label
                     key={kw}
@@ -1264,9 +1264,9 @@ function SearchPanel({
                       type="checkbox"
                       checked={selectedKeywords.has(kw)}
                       onChange={() => toggleKeyword(kw)}
-                      className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                      className="h-4 w-4 rounded border-ink-200 text-brand-600 focus:ring-brand-500"
                     />
-                    <span className="text-sm text-gray-700">{kw}</span>
+                    <span className="text-sm text-ink-600">{kw}</span>
                   </label>
                 ))}
               </div>
@@ -1275,20 +1275,20 @@ function SearchPanel({
 
           {/* ── Search preview ──────────────────────────────────────── */}
           <div className="card p-7">
-            <h2 className="text-base font-bold text-gray-900 mb-5">
+            <h2 className="text-base font-bold text-ink mb-5">
               {t('search.preview')}
             </h2>
 
             <div className="grid grid-cols-3 gap-4 mb-6">
-              <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#FAF7F2', border: '1px solid #E8DCCB' }}>
-                <p className="text-xs text-[#9a9080]">{t('search.footprints')}</p>
-                <p className="mt-1.5 text-xl font-bold text-gray-900">
+              <div className="rounded-xl p-4 text-center bg-cream-50 border border-cream-200">
+                <p className="text-xs text-ink-300">{t('search.footprints')}</p>
+                <p className="mt-1.5 text-xl font-bold text-ink">
                   {selectedFootprints.size}
                 </p>
               </div>
-              <div className="rounded-xl p-4 text-center" style={{ backgroundColor: '#FAF7F2', border: '1px solid #E8DCCB' }}>
-                <p className="text-xs text-[#9a9080]">{t('search.keywords')}</p>
-                <p className="mt-1.5 text-xl font-bold text-gray-900">
+              <div className="rounded-xl p-4 text-center bg-cream-50 border border-cream-200">
+                <p className="text-xs text-ink-300">{t('search.keywords')}</p>
+                <p className="mt-1.5 text-xl font-bold text-ink">
                   {selectedKeywords.size}
                 </p>
               </div>
@@ -1324,33 +1324,33 @@ function SearchPanel({
       {/* ── Search history table ─────────────────────────────────── */}
       {searches.length > 0 && (
         <div className="card overflow-hidden">
-          <div className="px-7 py-5 border-b border-[#E8DCCB]">
-            <h2 className="text-base font-bold text-gray-900">
+          <div className="px-7 py-5 border-b border-cream-200">
+            <h2 className="text-base font-bold text-ink">
               {t('search.history', { count: searches.length })}
             </h2>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead style={{ backgroundColor: '#FAF7F2' }} className="border-b border-[#E8DCCB]">
+              <thead className="bg-cream-50 border-b border-cream-200">
                 <tr className="text-left">
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('search.historyCol.query')}</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('search.historyCol.keyword')}</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('search.historyCol.status')}</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('search.historyCol.results')}</th>
-                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#9a9080]">{t('search.historyCol.date')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('search.historyCol.query')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('search.historyCol.keyword')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('search.historyCol.status')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('search.historyCol.results')}</th>
+                  <th className="px-7 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">{t('search.historyCol.date')}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E8DCCB]">
+              <tbody className="divide-y divide-cream-200">
                 {searches.map((search) => (
                   <tr
                     key={search.id}
-                    className="hover:bg-[#FAF7F2] transition-colors duration-150"
+                    className="hover:bg-cream-50 transition-colors duration-150"
                   >
-                    <td className="px-7 py-3.5 text-gray-900 max-w-xs truncate">
+                    <td className="px-7 py-3.5 text-ink max-w-xs truncate">
                       {search.query || '--'}
                     </td>
-                    <td className="px-7 py-3.5 text-gray-700">
+                    <td className="px-7 py-3.5 text-ink-600">
                       {search.keyword || '--'}
                     </td>
                     <td className="px-7 py-3.5">
@@ -1358,16 +1358,16 @@ function SearchPanel({
                         className={cn(
                           'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
                           SEARCH_STATUS_COLORS[search.status] ||
-                            'bg-[#E8DCCB] text-gray-700'
+                            'bg-cream-200 text-ink-600'
                         )}
                       >
                         {tc(`searchStatus.${search.status}`) || search.status}
                       </span>
                     </td>
-                    <td className="px-7 py-3.5 text-gray-700 font-semibold">
+                    <td className="px-7 py-3.5 text-ink-600 font-semibold">
                       {search.results_count ?? '--'}
                     </td>
-                    <td className="px-7 py-3.5 text-[#9a9080] text-xs">
+                    <td className="px-7 py-3.5 text-ink-300 text-xs">
                       {formatDate(search.created_at, i18n.language)}
                     </td>
                   </tr>
@@ -1403,13 +1403,13 @@ function SpotDetailPanel({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* ── Info column ──────────────────────────────────────────── */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900">
+          <h3 className="text-sm font-semibold text-ink">
             {t('detail.info')}
           </h3>
 
           <div className="space-y-2.5 text-xs">
             <div className="flex justify-between">
-              <span className="text-gray-400">{t('detail.fullUrl')}</span>
+              <span className="text-ink-300">{t('detail.fullUrl')}</span>
               <a
                 href={spot.url}
                 target="_blank"
@@ -1421,62 +1421,62 @@ function SpotDetailPanel({
               </a>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">{t('detail.domain')}</span>
-              <span className="text-gray-900 font-medium">
+              <span className="text-ink-300">{t('detail.domain')}</span>
+              <span className="text-ink font-medium">
                 {spot.domain || '--'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">{t('detail.type')}</span>
+              <span className="text-ink-300">{t('detail.type')}</span>
               <span
                 className={cn(
                   'inline-flex items-center rounded-full px-2 py-0.5 font-medium',
-                  SPOT_TYPE_COLORS[spot.type] || 'bg-gray-50 text-gray-600'
+                  SPOT_TYPE_COLORS[spot.type] || 'bg-surface-muted text-ink-500'
                 )}
               >
                 {t(`spotType.${spot.type}`, { defaultValue: spot.type || '--' })}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">{t('detail.platform')}</span>
-              <span className="text-gray-900">
+              <span className="text-ink-300">{t('detail.platform')}</span>
+              <span className="text-ink">
                 {spot.platform || '--'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">{t('detail.linkType')}</span>
+              <span className="text-ink-300">{t('detail.linkType')}</span>
               <span
                 className={cn(
                   'inline-flex items-center rounded-full px-2 py-0.5 font-medium',
                   spot.link_type === 'dofollow'
                     ? 'bg-brand-50 text-brand-700'
-                    : 'bg-gray-50 text-gray-500'
+                    : 'bg-surface-muted text-ink-400'
                 )}
               >
                 {tc(`linkType.${spot.link_type}`) || spot.link_type || '--'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">{t('detail.form')}</span>
-              <span className="text-gray-900">
+              <span className="text-ink-300">{t('detail.form')}</span>
+              <span className="text-ink">
                 {spot.has_form ? tc('yes') : tc('no')}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">{t('detail.da')}</span>
-              <span className="text-gray-900 font-bold">
+              <span className="text-ink-300">{t('detail.da')}</span>
+              <span className="text-ink font-bold">
                 {spot.da ?? '--'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">{t('detail.qualityScore')}</span>
-              <span className="text-gray-900 font-bold">
+              <span className="text-ink-300">{t('detail.qualityScore')}</span>
+              <span className="text-ink font-bold">
                 {spot.quality_score ?? '--'}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-400">{t('detail.discoveredAt')}</span>
-              <span className="text-gray-600">
+              <span className="text-ink-300">{t('detail.discoveredAt')}</span>
+              <span className="text-ink-500">
                 {formatDate(spot.created_at, i18n.language)}
               </span>
             </div>
@@ -1485,13 +1485,13 @@ function SpotDetailPanel({
 
         {/* ── Notes column ────────────────────────────────────────── */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900">{t('detail.notes')}</h3>
+          <h3 className="text-sm font-semibold text-ink">{t('detail.notes')}</h3>
           <textarea
             value={editNotes}
             onChange={(e) => setEditNotes(e.target.value)}
             placeholder={t('detail.notesPlaceholder')}
             rows={5}
-            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 placeholder:text-gray-300 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 resize-none outline-none transition-all"
+            className="w-full rounded-xl border border-ink-100 bg-white px-4 py-3 text-sm text-ink-600 placeholder:text-ink-200 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 resize-none outline-none transition-all"
           />
           <button
             onClick={() => onSaveNotes(spot.id)}
@@ -1505,7 +1505,7 @@ function SpotDetailPanel({
 
         {/* ── Actions column ──────────────────────────────────────── */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold text-gray-900">
+          <h3 className="text-sm font-semibold text-ink">
             {t('detail.changeStatus')}
           </h3>
           <div className="flex flex-wrap gap-2">
@@ -1530,11 +1530,11 @@ function SpotDetailPanel({
           </div>
 
           {/* ── Manual verification ───────────────────────────── */}
-          <div className="pt-4 border-t border-gray-200 space-y-3">
-            <h3 className="text-sm font-semibold text-gray-900">
+          <div className="pt-4 border-t border-ink-100 space-y-3">
+            <h3 className="text-sm font-semibold text-ink">
               {t('detail.manualVerification')}
             </h3>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-ink-300">
               {t('detail.isRelevant')}
             </p>
             <div className="flex flex-wrap gap-2">
@@ -1558,7 +1558,7 @@ function SpotDetailPanel({
             </div>
           </div>
 
-          <div className="pt-4 flex flex-wrap gap-2 border-t border-gray-200">
+          <div className="pt-4 flex flex-wrap gap-2 border-t border-ink-100">
             <button
               onClick={() => onQualify(spot.id)}
               disabled={isQualifying}

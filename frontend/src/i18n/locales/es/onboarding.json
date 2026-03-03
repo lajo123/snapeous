@@ -1,0 +1,60 @@
+{
+  "progress": {
+    "step1": "Proyecto",
+    "step2": "Idiomas",
+    "step3": "Backlinks",
+    "step4": "Lanzar"
+  },
+  "step1": {
+    "title": "Configuremos tu primer proyecto",
+    "subtitle": "Cuéntanos sobre el sitio web que quieres rastrear",
+    "nameLabel": "Nombre del proyecto",
+    "namePlaceholder": "Ej. Mi empresa SEO",
+    "domainLabel": "Dominio del sitio",
+    "domainPlaceholder": "misitio.com",
+    "continue": "Continuar",
+    "preview": "Vista previa"
+  },
+  "step2": {
+    "title": "¿Qué idiomas utiliza tu sitio?",
+    "subtitle": "Selecciona los idiomas de tu contenido para un mejor análisis",
+    "searchPlaceholder": "Buscar idiomas...",
+    "popular": "Populares",
+    "all": "Todos los idiomas",
+    "selected": "{{count}} seleccionado(s)",
+    "none": "Selecciona al menos un idioma",
+    "continue": "Continuar",
+    "back": "Volver"
+  },
+  "step3": {
+    "title": "¿Cómo quieres gestionar los backlinks?",
+    "subtitle": "Elige la estrategia que mejor se adapte a tu flujo de trabajo",
+    "autoTitle": "Descubrimiento auto",
+    "autoDesc": "Escanearemos la web para encontrar backlinks existentes hacia tu sitio",
+    "autoTag": "Recomendado",
+    "manualTitle": "Importar manualmente",
+    "manualDesc": "Sube un archivo CSV o pega las URLs de tus backlinks conocidos",
+    "skipTitle": "Más tarde",
+    "skipDesc": "Siempre puedes añadir backlinks desde tu panel de control",
+    "continue": "Continuar",
+    "back": "Volver"
+  },
+  "step4": {
+    "title": "¡Listo para lanzar!",
+    "subtitle": "Aquí tienes un resumen de la configuración de tu proyecto",
+    "projectLabel": "Proyecto",
+    "domainLabel": "Dominio",
+    "languagesLabel": "Idiomas",
+    "strategyLabel": "Estrategia de backlinks",
+    "strategyAuto": "Descubrimiento auto",
+    "strategyManual": "Importación manual",
+    "strategySkip": "Más tarde",
+    "launch": "Lanzar mi proyecto",
+    "back": "Volver",
+    "launching": "Preparando todo...",
+    "progressCreate": "Creando proyecto...",
+    "progressAnalyze": "Analizando tu sitio...",
+    "progressSetup": "Configurando panel...",
+    "progressDone": "¡Todo listo!"
+  }
+}

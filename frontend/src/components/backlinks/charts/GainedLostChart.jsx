@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 export default function GainedLostChart({ timeline = [] }) {
   const { t } = useTranslation('backlinks');
 
-  if (timeline.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-gray-400">{t('charts.noHistory')}</div>;
+  if (timeline.length === 0) return <div className="h-64 flex items-center justify-center text-sm text-ink-300">{t('charts.noHistory')}</div>;
 
   return (
     <ResponsiveContainer width="100%" height={260}>
@@ -17,7 +17,7 @@ export default function GainedLostChart({ timeline = [] }) {
         <Legend
           iconType="circle"
           iconSize={8}
-          formatter={(value) => <span className="text-xs text-[#6b6560]">{value}</span>}
+          formatter={(value) => <span className="text-xs text-ink-400">{value}</span>}
         />
         <Bar dataKey="gained" name={t('charts.gained')} fill="#C9785D" radius={[4, 4, 0, 0]} barSize={20} />
         <Bar dataKey="lost" name={t('charts.lost')} fill="#ef4444" radius={[4, 4, 0, 0]} barSize={20} />

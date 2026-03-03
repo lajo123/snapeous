@@ -7,8 +7,8 @@
   "register.description": "Create your Snapeous account and start optimizing your backlink strategy.",
   "dashboard.title": "Dashboard - Snapeous",
   "dashboard.description": "Manage your SEO projects from the Snapeous dashboard.",
-  "analysis.title": "Analysis - Snapeous",
-  "analysis.description": "Analyze your site and get personalized SEO recommendations.",
+  "analysis.title": "Recommendation - Snapeous",
+  "analysis.description": "Get personalized SEO recommendations for your site.",
   "spots.title": "Spots - Snapeous",
   "spots.description": "Find and manage the best spots for your backlinks.",
   "backlinks.title": "Backlinks - Snapeous",
@@ -21,5 +21,11 @@
   "keywords.description": "Track keyword positions and organic search performance.",
   "contact.title": "Contact Us - Snapeous",
   "contact.description": "Get in touch with the Snapeous team. We're here to help with your SEO questions.",
+  "blog.title": "Blog - SEO Insights & Guides | Snapeous",
+  "blog.description": "Expert tips, strategies and tutorials to boost your search rankings and backlink profile.",
+  "changelog.title": "Changelog - Snapeous",
+  "changelog.description": "See what's new in Snapeous. Latest features, improvements and fixes.",
+  "docs.title": "API Documentation - Snapeous",
+  "docs.description": "API reference and developer documentation for Snapeous.",
   "og.siteName": "Snapeous"
 }
