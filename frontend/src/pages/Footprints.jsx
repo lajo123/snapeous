@@ -1,601 +1,70 @@
-import { useState, useEffect } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner';
-import {
-  getFootprints,
-  getFootprintCategories,
-  createFootprint,
-  deleteFootprint,
-  seedFootprints,
-} from '@/lib/api';
-import {
-  cn,
-  CATEGORY_LABELS,
-  CATEGORY_COLORS,
-  DIFFICULTY_LABELS,
-  DIFFICULTY_COLORS,
-  LINK_TYPE_LABELS,
-} from '@/lib/utils';
-import { Plus, Trash2, Search, Filter, Database, Loader2, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Lock, Sparkles, ArrowRight } from 'lucide-react';
+import { useSubscription } from '@/contexts/SubscriptionContext';
+import useLocalizedNavigate from '@/hooks/useLocalizedNavigate';
+import SEOHead from '@/components/SEOHead';
+import FootprintsPanel from './FootprintsPanel';
 
-const INITIAL_FORM = {
-  name: '',
-  category: '',
-  query_template: '',
-  expected_link_type: '',
-  difficulty: '',
-  platform_target: '',
-  description: '',
-  tags: '',
-};
+const PREMIUM_PLANS = ['pro', 'agency'];
 
 export default function Footprints() {
-  const queryClient = useQueryClient();
+  const { plan } = useSubscription();
+  const { t } = useTranslation('app');
+  const navigate = useLocalizedNavigate();
 
-  const [categoryFilter, setCategoryFilter] = useState('');
-  const [difficultyFilter, setDifficultyFilter] = useState('');
-  const [searchText, setSearchText] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState(INITIAL_FORM);
-  const [seeded, setSeeded] = useState(false);
+  const hasPremiumAccess = PREMIUM_PLANS.includes(plan);
 
-  // ── Queries ──────────────────────────────────────────────────────────
-
-  const buildParams = () => {
-    const params = {};
-    if (categoryFilter) params.category = categoryFilter;
-    if (difficultyFilter) params.difficulty = difficultyFilter;
-    if (searchText.trim()) params.search = searchText.trim();
-    return params;
-  };
-
-  const {
-    data: footprints = [],
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ['footprints', categoryFilter, difficultyFilter, searchText],
-    queryFn: () => getFootprints(buildParams()),
-  });
-
-  const { data: categories = [] } = useQuery({
-    queryKey: ['footprint-categories'],
-    queryFn: getFootprintCategories,
-  });
-
-  // ── Auto-seed on first load ──────────────────────────────────────────
-
-  const seedMutation = useMutation({
-    mutationFn: seedFootprints,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['footprints'] });
-      queryClient.invalidateQueries({ queryKey: ['footprint-categories'] });
-      toast.success(`${data?.count ?? 'Les'} footprints initialises avec succes`);
-    },
-    onError: () => {
-      toast.error("Erreur lors de l'initialisation des footprints");
-    },
-  });
-
-  useEffect(() => {
-    if (!isLoading && !isError && footprints.length === 0 && !seeded && !seedMutation.isPending) {
-      setSeeded(true);
-      seedMutation.mutate();
-    }
-  }, [isLoading, isError, footprints.length, seeded, seedMutation.isPending]);
-
-  // ── Mutations ────────────────────────────────────────────────────────
-
-  const createMutation = useMutation({
-    mutationFn: createFootprint,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['footprints'] });
-      queryClient.invalidateQueries({ queryKey: ['footprint-categories'] });
-      toast.success('Footprint cree avec succes');
-      setShowModal(false);
-      setForm(INITIAL_FORM);
-    },
-    onError: () => {
-      toast.error('Erreur lors de la creation du footprint');
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: deleteFootprint,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['footprints'] });
-      queryClient.invalidateQueries({ queryKey: ['footprint-categories'] });
-      toast.success('Footprint supprime');
-    },
-    onError: () => {
-      toast.error('Erreur lors de la suppression');
-    },
-  });
-
-  // ── Handlers ─────────────────────────────────────────────────────────
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.name || !form.category || !form.query_template) {
-      toast.error('Veuillez remplir les champs obligatoires');
-      return;
-    }
-    const payload = {
-      ...form,
-      tags: form.tags
-        ? form.tags.split(',').map((t) => t.trim()).filter(Boolean)
-        : [],
-    };
-    createMutation.mutate(payload);
-  };
-
-  const handleFormChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // ── Category counts ──────────────────────────────────────────────────
-
-  const categoryCountMap = {};
-  if (Array.isArray(categories)) {
-    categories.forEach((c) => {
-      categoryCountMap[c.category] = c.count;
-    });
-  }
-
-  const totalCount = Object.values(categoryCountMap).reduce((a, b) => a + b, 0);
-
-  // ── Loading state ────────────────────────────────────────────────────
-
-  if (isLoading || seedMutation.isPending) {
+  if (!hasPremiumAccess) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 text-brand-500 animate-spin" />
-          <span className="text-sm text-ink-300">
-            {seedMutation.isPending ? 'Initialisation des footprints...' : 'Chargement...'}
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Empty state ──────────────────────────────────────────────────────
-
-  if (!isLoading && footprints.length === 0 && !categoryFilter && !difficultyFilter && !searchText) {
-    return (
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-2xl font-bold text-ink">Bibliotheque de Footprints</h1>
-          <p className="mt-1.5 text-sm text-ink-300">
-            Gerez vos footprints pour la recherche de spots
-          </p>
-        </div>
-        <div className="bg-white rounded-xl border border-ink-50 shadow-soft px-6 py-20 text-center">
-          <div className="flex h-16 w-16 mx-auto items-center justify-center rounded-xl bg-surface-muted">
-            <Database className="h-8 w-8 text-ink-200" />
-          </div>
-          <h3 className="mt-5 text-sm font-semibold text-ink">Aucun footprint</h3>
-          <p className="mt-1.5 text-sm text-ink-300">
-            Initialisez la bibliotheque avec les footprints par defaut.
-          </p>
-          <button
-            onClick={() => seedMutation.mutate()}
-            disabled={seedMutation.isPending}
-            className="btn-primary mt-5"
-          >
-            {seedMutation.isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Database className="h-4 w-4" />
-            )}
-            Initialiser les footprints
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Main render ──────────────────────────────────────────────────────
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-ink">Bibliotheque de Footprints</h1>
-          <p className="mt-1.5 text-sm text-ink-300">
-            {totalCount} footprints disponibles dans {Object.keys(categoryCountMap).length} categories
-          </p>
-        </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="btn-primary"
-        >
-          <Plus className="h-4 w-4" />
-          Ajouter un footprint
-        </button>
-      </div>
-
-      {/* Filter bar */}
-      <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-5">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-ink-200" />
-            <span className="text-sm font-medium text-ink-600">Filtres :</span>
-          </div>
-
-          {/* Category dropdown */}
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-xl border border-ink-100 bg-surface-muted px-3 py-2 text-sm text-ink-600 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
-          >
-            <option value="">Toutes les categories</option>
-            {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </select>
-
-          {/* Difficulty dropdown */}
-          <select
-            value={difficultyFilter}
-            onChange={(e) => setDifficultyFilter(e.target.value)}
-            className="rounded-xl border border-ink-100 bg-surface-muted px-3 py-2 text-sm text-ink-600 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
-          >
-            <option value="">Toutes les difficultes</option>
-            {Object.entries(DIFFICULTY_LABELS).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </select>
-
-          {/* Search */}
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-200" />
-            <input
-              type="text"
-              placeholder="Rechercher un footprint..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
-              className="w-full rounded-xl border border-ink-100 bg-surface-muted pl-10 pr-3 py-2 text-sm text-ink-600 placeholder:text-ink-200 focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="flex gap-6">
-        {/* Category sidebar */}
-        <div className="hidden lg:block w-56 flex-shrink-0">
-          <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-3 sticky top-4">
-            <h3 className="px-3 pb-3 text-xs font-semibold uppercase tracking-wider text-ink-300">
-              Categories
-            </h3>
-            <nav className="space-y-0.5">
-              <button
-                onClick={() => setCategoryFilter('')}
-                className={cn(
-                  'flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm transition-all',
-                  !categoryFilter
-                    ? 'bg-brand-50 text-brand-700 font-semibold'
-                    : 'text-ink-400 hover:bg-surface-muted'
-                )}
-              >
-                <span>Toutes</span>
-                <span className="text-xs text-ink-300">{totalCount}</span>
-              </button>
-              {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
-                const count = categoryCountMap[key] ?? 0;
-                if (count === 0) return null;
-                return (
-                  <button
-                    key={key}
-                    onClick={() => setCategoryFilter(key)}
-                    className={cn(
-                      'flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm transition-all',
-                      categoryFilter === key
-                        ? 'bg-brand-50 text-brand-700 font-semibold'
-                        : 'text-ink-400 hover:bg-surface-muted'
-                    )}
-                  >
-                    <span className="truncate">{label}</span>
-                    <span className="ml-2 text-xs text-ink-300">{count}</span>
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="flex-1 min-w-0">
-          <div className="bg-white rounded-xl border border-ink-50 shadow-soft overflow-hidden">
-            {footprints.length === 0 ? (
-              <div className="px-6 py-20 text-center">
-                <div className="flex h-14 w-14 mx-auto items-center justify-center rounded-xl bg-surface-muted">
-                  <Search className="h-7 w-7 text-ink-200" />
-                </div>
-                <h3 className="mt-4 text-sm font-semibold text-ink">
-                  Aucun resultat
-                </h3>
-                <p className="mt-1.5 text-sm text-ink-300">
-                  Aucun footprint ne correspond a vos filtres.
-                </p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-ink-50/50 text-left">
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Nom</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Categorie</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Template</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Type de lien</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Difficulte</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300">Plateforme</th>
-                      <th className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-ink-300 text-right">Utilisations</th>
-                      <th className="px-5 py-3.5 w-10"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {footprints.map((fp, idx) => (
-                      <tr
-                        key={fp.id}
-                        className={cn(
-                          'transition-colors duration-150 hover:bg-brand-50/30',
-                          idx % 2 === 0 ? 'bg-white' : 'bg-surface-muted'
-                        )}
-                      >
-                        <td className="px-5 py-3">
-                          <span className="font-medium text-ink">{fp.name}</span>
-                        </td>
-                        <td className="px-5 py-3">
-                          <span
-                            className={cn(
-                              'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
-                              CATEGORY_COLORS[fp.category] ?? 'bg-cream-50 text-ink'
-                            )}
-                          >
-                            {CATEGORY_LABELS[fp.category] ?? fp.category}
-                          </span>
-                        </td>
-                        <td className="px-5 py-3 max-w-[260px]">
-                          <code className="block truncate text-xs bg-surface-muted text-ink-500 rounded-lg px-2 py-1 font-mono">
-                            {fp.query_template}
-                          </code>
-                        </td>
-                        <td className="px-5 py-3">
-                          {fp.expected_link_type && (
-                            <span className="inline-flex items-center rounded-full bg-slate-50 text-slate-600 px-2.5 py-1 text-xs font-medium">
-                              {LINK_TYPE_LABELS[fp.expected_link_type] ?? fp.expected_link_type}
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-5 py-3">
-                          {fp.difficulty && (
-                            <span
-                              className={cn(
-                                'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
-                                DIFFICULTY_COLORS[fp.difficulty] ?? 'bg-cream-50 text-ink'
-                              )}
-                            >
-                              {DIFFICULTY_LABELS[fp.difficulty] ?? fp.difficulty}
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-5 py-3 text-ink-300 text-xs">
-                          {fp.platform_target || '--'}
-                        </td>
-                        <td className="px-5 py-3 text-right text-ink-400 tabular-nums font-medium">
-                          {fp.usage_count ?? 0}
-                        </td>
-                        <td className="px-5 py-3">
-                          {fp.is_custom && (
-                            <button
-                              onClick={() => {
-                                if (window.confirm('Supprimer ce footprint personnalise ?')) {
-                                  deleteMutation.mutate(fp.id);
-                                }
-                              }}
-                              className="rounded-lg p-1.5 text-ink-200 hover:text-red-600 hover:bg-red-50 transition-all"
-                              title="Supprimer"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Modal: Ajouter un footprint */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
-            onClick={() => setShowModal(false)}
-          />
-
-          {/* Panel */}
-          <div className="relative bg-white rounded-xl shadow-soft-lg border border-ink-50 w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="px-7 py-5 border-b border-ink-50/50 flex items-center justify-between">
-              <div>
-                <h2 className="text-lg font-semibold text-ink">
-                  Ajouter un footprint personnalise
-                </h2>
-                <p className="mt-0.5 text-sm text-ink-300">
-                  Creez un nouveau footprint pour vos recherches de spots.
-                </p>
-              </div>
-              <button
-                onClick={() => setShowModal(false)}
-                className="rounded-lg p-1.5 text-ink-200 hover:text-ink-500 hover:bg-cream-50 transition-all"
-              >
-                <X className="h-5 w-5" />
-              </button>
+      <div className="space-y-6">
+        <SEOHead pageKey="footprints" />
+        <div className="flex flex-col items-center justify-center min-h-[60vh]">
+          <div className="max-w-md w-full text-center">
+            <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-100 to-brand-100 flex items-center justify-center mb-6">
+              <Lock className="h-7 w-7 text-violet-600" />
             </div>
 
-            <form onSubmit={handleSubmit} className="px-7 py-5 space-y-5">
-              {/* Nom */}
-              <div>
-                <label className="block text-sm font-medium text-ink-600 mb-2">
-                  Nom <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={form.name}
-                  onChange={(e) => handleFormChange('name', e.target.value)}
-                  placeholder="Ex: Forums WordPress FR"
-                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
-                />
-              </div>
+            <h1 className="text-2xl font-bold text-ink mb-2">
+              {t('footprints.premiumTitle')}
+            </h1>
+            <p className="text-sm text-ink-400 leading-relaxed mb-8">
+              {t('footprints.premiumDesc')}
+            </p>
 
-              {/* Categorie */}
-              <div>
-                <label className="block text-sm font-medium text-ink-600 mb-2">
-                  Categorie <span className="text-red-400">*</span>
-                </label>
-                <select
-                  value={form.category}
-                  onChange={(e) => handleFormChange('category', e.target.value)}
-                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
-                >
-                  <option value="">Selectionner une categorie</option>
-                  {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                    <option key={key} value={key}>
-                      {label}
-                    </option>
-                  ))}
-                </select>
+            <div className="bg-white rounded-xl border border-ink-50 shadow-soft p-5 mb-6 text-left">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="h-4 w-4 text-brand-500" />
+                <span className="text-xs font-semibold uppercase tracking-wider text-brand-600">
+                  {t('footprints.premiumIncluded')}
+                </span>
               </div>
+              <ul className="space-y-2">
+                {(t('footprints.premiumFeatures', { returnObjects: true }) || []).map((f, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-ink-600">
+                    <span className="text-brand-500 mt-0.5">&#10003;</span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-              {/* Query template */}
-              <div>
-                <label className="block text-sm font-medium text-ink-600 mb-2">
-                  Template de requete <span className="text-red-400">*</span>
-                </label>
-                <textarea
-                  value={form.query_template}
-                  onChange={(e) => handleFormChange('query_template', e.target.value)}
-                  rows={3}
-                  placeholder='Ex: inurl:forum "{keyword}" site:.fr'
-                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm font-mono focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none resize-vertical transition-all"
-                />
-              </div>
-
-              {/* Type de lien + Difficulte */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-ink-600 mb-2">
-                    Type de lien attendu
-                  </label>
-                  <select
-                    value={form.expected_link_type}
-                    onChange={(e) => handleFormChange('expected_link_type', e.target.value)}
-                    className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
-                  >
-                    <option value="">Non specifie</option>
-                    {Object.entries(LINK_TYPE_LABELS).map(([key, label]) => (
-                      <option key={key} value={key}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-ink-600 mb-2">
-                    Difficulte
-                  </label>
-                  <select
-                    value={form.difficulty}
-                    onChange={(e) => handleFormChange('difficulty', e.target.value)}
-                    className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
-                  >
-                    <option value="">Non specifie</option>
-                    {Object.entries(DIFFICULTY_LABELS).map(([key, label]) => (
-                      <option key={key} value={key}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Plateforme */}
-              <div>
-                <label className="block text-sm font-medium text-ink-600 mb-2">
-                  Plateforme cible
-                </label>
-                <input
-                  type="text"
-                  value={form.platform_target}
-                  onChange={(e) => handleFormChange('platform_target', e.target.value)}
-                  placeholder="Ex: WordPress, phpBB, Discourse..."
-                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
-                />
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-sm font-medium text-ink-600 mb-2">
-                  Description
-                </label>
-                <textarea
-                  value={form.description}
-                  onChange={(e) => handleFormChange('description', e.target.value)}
-                  rows={2}
-                  placeholder="Description optionnelle du footprint"
-                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none resize-vertical transition-all"
-                />
-              </div>
-
-              {/* Tags */}
-              <div>
-                <label className="block text-sm font-medium text-ink-600 mb-2">
-                  Tags
-                </label>
-                <input
-                  type="text"
-                  value={form.tags}
-                  onChange={(e) => handleFormChange('tags', e.target.value)}
-                  placeholder="Separes par des virgules : seo, forum, fr"
-                  className="w-full rounded-xl border border-ink-100 bg-surface-muted px-4 py-2.5 text-sm focus:border-brand-300 focus:ring-1 focus:ring-brand-200 outline-none transition-all"
-                />
-              </div>
-
-              {/* Actions */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-ink-50/50">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="btn-secondary"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  disabled={createMutation.isPending}
-                  className="btn-primary"
-                >
-                  {createMutation.isPending && (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  )}
-                  Creer le footprint
-                </button>
-              </div>
-            </form>
+            <button
+              onClick={() => navigate('/choose-plan')}
+              className="btn-primary w-full py-3 text-sm font-semibold flex items-center justify-center gap-2"
+            >
+              {t('footprints.premiumUpgrade')}
+              <ArrowRight className="h-4 w-4" />
+            </button>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <SEOHead pageKey="footprints" />
+      <FootprintsPanel />
+    </>
   );
 }

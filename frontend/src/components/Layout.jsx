@@ -19,10 +19,9 @@ import {
   Menu,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getProject, getProjects, createProject, deleteProject, analyzeProject } from '@/lib/api';
+import { getProject, getProjects, deleteProject } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSubscription } from '@/contexts/SubscriptionContext';
-import Modal from './ui/Modal';
 import UpgradeModal from './UpgradeModal';
 import LanguageSwitcher from './LanguageSwitcher';
 import useLocalizedNavigate from '@/hooks/useLocalizedNavigate';
@@ -46,10 +45,7 @@ export default function Layout() {
   const { t } = useTranslation('app');
 
   const [projectMenuOpen, setProjectMenuOpen] = useState(false);
-  const [showNewModal, setShowNewModal] = useState(false);
   const [faviconError, setFaviconError] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newDomain, setNewDomain] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -99,30 +95,6 @@ export default function Layout() {
     if (window.confirm(t('confirm.deleteProject', { name: projectName }))) {
       deleteMutation.mutate(projectId);
     }
-  };
-
-  const createMutation = useMutation({
-    mutationFn: () => createProject({ name: newName, client_domain: newDomain }),
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['projects'] });
-      toast.success(t('toast.projectCreated'));
-      setShowNewModal(false);
-      setNewName('');
-      setNewDomain('');
-      navigate(`/projects/${data.id}`);
-      // Trigger site analysis in background (fire-and-forget)
-      analyzeProject(data.id).catch(() => {});
-    },
-    onError: () => toast.error(t('toast.createError')),
-  });
-
-  const handleCreateSubmit = (e) => {
-    e.preventDefault();
-    if (!newName.trim() || !newDomain.trim()) {
-      toast.error(t('toast.fieldsRequired'));
-      return;
-    }
-    createMutation.mutate();
   };
 
   const switchProject = (projectId) => {
@@ -204,7 +176,7 @@ export default function Layout() {
             <p className="mt-3 text-xs font-medium text-ink-400">{t('sidebar.noProject')}</p>
             <p className="mt-1 text-[11px] text-ink-300">{t('sidebar.createToStart')}</p>
             <button
-              onClick={() => setShowNewModal(true)}
+              onClick={() => navigate('/onboarding')}
               className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-brand-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-600 transition-colors"
             >
               <Plus className="h-3 w-3" />
@@ -215,7 +187,7 @@ export default function Layout() {
 
         {!activeProjectId && collapsed && (
           <button
-            onClick={() => setShowNewModal(true)}
+            onClick={() => navigate('/onboarding')}
             title={t('sidebar.newProject')}
             aria-label={t('sidebar.newProject')}
             className="w-full flex justify-center p-2.5 rounded-lg text-ink-500 hover:bg-cream hover:text-ink transition-colors"
@@ -319,7 +291,7 @@ export default function Layout() {
                   onClick={(e) => {
                     e.stopPropagation();
                     setProjectMenuOpen(false);
-                    setShowNewModal(true);
+                    navigate('/onboarding');
                   }}
                   className="flex items-center gap-1 text-[10px] font-semibold text-brand-600 hover:text-brand-700 transition-colors"
                 >
@@ -448,31 +420,6 @@ export default function Layout() {
       {/* ── Upgrade Modal (global) ──────────────────────────────── */}
       <UpgradeModal />
 
-      {/* ── Modal: New project ──────────────────────────────── */}
-      <Modal open={showNewModal} onClose={() => setShowNewModal(false)} title={t('projectModal.title')}>
-        <form onSubmit={handleCreateSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-semibold text-ink mb-1.5">{t('projectModal.nameLabel')}</label>
-            <input
-              type="text" value={newName} onChange={e => setNewName(e.target.value)}
-              placeholder={t('projectModal.namePlaceholder')} className="input" autoFocus required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-semibold text-ink mb-1.5">{t('projectModal.domainLabel')}</label>
-            <input
-              type="text" value={newDomain} onChange={e => setNewDomain(e.target.value)}
-              placeholder={t('projectModal.domainPlaceholder')} className="input" required
-            />
-          </div>
-          <Modal.Footer>
-            <button type="button" onClick={() => setShowNewModal(false)} className="btn-secondary">{t('projectModal.cancel')}</button>
-            <button type="submit" disabled={createMutation.isPending} className="btn-primary">
-              {createMutation.isPending ? t('projectModal.creating') : t('projectModal.create')}
-            </button>
-          </Modal.Footer>
-        </form>
-      </Modal>
     </div>
   );
 }

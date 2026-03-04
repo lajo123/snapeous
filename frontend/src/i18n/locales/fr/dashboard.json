@@ -111,6 +111,22 @@
   "socialProfiles": "Profils sociaux",
   "contactInfo": "Infos de contact",
 
+  "topKeywords": "Top Mots-clés",
+  "keyword": "Mot-clé",
+  "position": "Pos.",
+  "searchVolume": "Volume",
+  "estimatedTraffic": "Trafic est.",
+  "showingTopN": "Top {{n}} sur {{total}}",
+
+  "topPages": "Top Pages par Trafic",
+  "pageUrl": "Page",
+  "topKeyword": "Mot-clé principal",
+  "backlinkCount": "Backlinks",
+
+  "fetchData": "Actualiser les données",
+  "fetchDataSuccess": "Analyse relancée avec succès",
+  "fetchDataError": "Erreur lors du lancement de l'analyse",
+
   "topAnchors": "Principales ancres",
   "anchor": "Ancre",
   "anchorBacklinks": "Backlinks",

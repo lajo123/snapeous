@@ -57,7 +57,7 @@ export default function ProjectBacklinks() {
         <DashboardTab projectId={projectId} stats={stats} />
       )}
       {activeTab === 'links' && (
-        <LinksTab projectId={projectId} />
+        <LinksTab projectId={projectId} project={project} />
       )}
       {activeTab === 'anchors' && (
         <AnchorsTab projectId={projectId} projectDomain={project?.client_domain} />

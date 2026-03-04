@@ -1135,6 +1135,20 @@ async def analyze_site(project_id: str, domain: str, target_language: str | None
     """
     print(f"[SiteAnalyzer] Starting analysis for {domain} (project: {project_id}, lang: {target_language or 'auto'})")
 
+    # ── Step 0: Read project backlink_strategy ────────────────────────
+    backlink_strategy = None
+    try:
+        from sqlalchemy import select as _sel
+        from backend.db.database import async_session as _async_session
+        from backend.models.models import Project as _Project
+        async with _async_session() as _sess:
+            _res = await _sess.execute(_sel(_Project.site_analysis).where(_Project.id == project_id))
+            _sa = _res.scalar_one_or_none()
+            if _sa and isinstance(_sa, dict):
+                backlink_strategy = _sa.get("backlink_strategy")
+    except Exception as e:
+        print(f"[SiteAnalyzer] Could not read backlink_strategy: {e}")
+
     # ── Step 1: Fetch Sitemap ─────────────────────────────────────────
     sitemap_pages: list[dict] = []
     try:
@@ -1188,14 +1202,17 @@ async def analyze_site(project_id: str, domain: str, target_language: str | None
         await _save_analysis(project_id, analysis)
         return analysis
 
-    # ── Step 2b: Import DomDetailer Backlinks ─────────────────────────
+    # ── Step 2b: Import DomDetailer Backlinks (only if strategy is "auto") ──
     domdetailer_metrics = None
-    try:
-        domdetailer_metrics = await _import_domdetailer_backlinks(project_id, domain)
-        if domdetailer_metrics:
-            print(f"[SiteAnalyzer] DomDetailer metrics imported for {domain}")
-    except Exception as e:
-        print(f"[SiteAnalyzer] DomDetailer import failed: {e}")
+    if backlink_strategy == "auto":
+        try:
+            domdetailer_metrics = await _import_domdetailer_backlinks(project_id, domain)
+            if domdetailer_metrics:
+                print(f"[SiteAnalyzer] DomDetailer metrics imported for {domain}")
+        except Exception as e:
+            print(f"[SiteAnalyzer] DomDetailer import failed: {e}")
+    else:
+        print(f"[SiteAnalyzer] Skipping DomDetailer backlink import (strategy={backlink_strategy})")
 
     # ── Step 2c: Fetch domain metrics (DomDetailer + DataForSEO) ─────
     domain_metrics = None

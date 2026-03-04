@@ -23,11 +23,11 @@
     },
     "pro": {
       "desc": "Freelances & \u00e9quipes",
-      "features": ["10 projets", "5 000 backlinks", "Tout Starter +", "Recommandations IA", "3 concurrents", "Rapports PDF", "Int\u00e9gration GSC", "Acc\u00e8s API"]
+      "features": ["10 projets", "5 000 backlinks", "Tout Starter +", "Recommandations IA", "Bibliothèque Footprints", "3 concurrents", "Rapports PDF", "Intégration GSC", "Accès API"]
     },
     "agency": {
       "desc": "Agences SEO",
-      "features": ["Projets illimit\u00e9s", "25 000 backlinks", "Tout Pro +", "Concurrents illimit\u00e9s", "Sous-comptes", "Rapports planifi\u00e9s", "Support prioritaire", "API avanc\u00e9e"]
+      "features": ["Projets illimités", "25 000 backlinks", "Tout Pro +", "Bibliothèque Footprints", "Concurrents illimités", "Sous-comptes", "Rapports planifiés", "Support prioritaire", "API avancée"]
     }
   },
   "checkout": {

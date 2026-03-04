@@ -23,11 +23,11 @@
     },
     "pro": {
       "desc": "Freelancer & Teams",
-      "features": ["10 Projekte", "5.000 Backlinks", "Alles aus Starter +", "KI-Empfehlungen", "3 Wettbewerber", "PDF-Berichte", "GSC-Integration", "API-Zugang"]
+      "features": ["10 Projekte", "5.000 Backlinks", "Alles aus Starter +", "KI-Empfehlungen", "Footprint-Bibliothek", "3 Wettbewerber", "PDF-Berichte", "GSC-Integration", "API-Zugang"]
     },
     "agency": {
       "desc": "SEO-Agenturen",
-      "features": ["Unbegrenzte Projekte", "25.000 Backlinks", "Alles aus Pro +", "Unbegrenzte Wettbewerber", "Unterkonten", "Geplante Berichte", "Priorit\u00e4ts-Support", "Erweiterte API"]
+      "features": ["Unbegrenzte Projekte", "25.000 Backlinks", "Alles aus Pro +", "Footprint-Bibliothek", "Unbegrenzte Wettbewerber", "Unterkonten", "Geplante Berichte", "Prioritäts-Support", "Erweiterte API"]
     }
   },
   "checkout": {

@@ -1,28 +1,27 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Sparkles, Upload, Clock, ArrowRight, ArrowLeft, Check } from 'lucide-react';
+import { Sparkles, Upload, Clock, ArrowRight, ArrowLeft, Check, Crown, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const STRATEGIES = [
   {
     id: 'auto',
     icon: Sparkles,
-    recommended: true,
+    premium: true,
     titleKey: 'autoTitle',
     descKey: 'autoDesc',
-    tagKey: 'autoTag',
   },
   {
     id: 'manual',
     icon: Upload,
-    recommended: false,
+    premium: false,
     titleKey: 'manualTitle',
     descKey: 'manualDesc',
   },
   {
     id: 'skip',
     icon: Clock,
-    recommended: false,
+    premium: false,
     titleKey: 'skipTitle',
     descKey: 'skipDesc',
   },
@@ -38,8 +37,14 @@ const cardVariants = {
   show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
 };
 
-export default function StepBacklinks({ formData, updateForm, onNext, onBack }) {
+export default function StepBacklinks({ formData, updateForm, onNext, onBack, isPaidPlan }) {
   const { t } = useTranslation('onboarding');
+
+  const handleSelect = (strategy) => {
+    // Don't allow selecting premium features on free plan
+    if (strategy.premium && !isPaidPlan) return;
+    updateForm({ backlinkStrategy: strategy.id });
+  };
 
   return (
     <div className="w-full max-w-lg mx-auto px-4">
@@ -64,6 +69,7 @@ export default function StepBacklinks({ formData, updateForm, onNext, onBack }) 
       >
         {STRATEGIES.map((strategy) => {
           const isSelected = formData.backlinkStrategy === strategy.id;
+          const isLocked = strategy.premium && !isPaidPlan;
           const Icon = strategy.icon;
 
           return (
@@ -71,45 +77,74 @@ export default function StepBacklinks({ formData, updateForm, onNext, onBack }) 
               key={strategy.id}
               variants={cardVariants}
               type="button"
-              onClick={() => updateForm({ backlinkStrategy: strategy.id })}
-              whileHover={{ y: -2 }}
-              whileTap={{ scale: 0.98 }}
+              onClick={() => handleSelect(strategy)}
+              whileHover={isLocked ? {} : { y: -2 }}
+              whileTap={isLocked ? {} : { scale: 0.98 }}
               className={cn(
                 'relative w-full flex items-start gap-4 p-5 rounded-2xl border text-left transition-all duration-200',
-                isSelected
-                  ? 'border-brand-300 bg-brand-50/50 ring-1 ring-brand-200 shadow-md'
-                  : 'border-cream-200 bg-white hover:border-ink-50 hover:shadow-soft'
+                isLocked
+                  ? 'border-cream-200 bg-cream-50/50 cursor-not-allowed opacity-75'
+                  : isSelected
+                    ? 'border-brand-300 bg-brand-50/50 ring-1 ring-brand-200 shadow-md'
+                    : 'border-cream-200 bg-white hover:border-ink-50 hover:shadow-soft'
               )}
-              style={isSelected ? { transform: 'perspective(800px) rotateX(-1deg)' } : {}}
+              style={isSelected && !isLocked ? { transform: 'perspective(800px) rotateX(-1deg)' } : {}}
             >
-              {/* Recommended badge */}
-              {strategy.recommended && (
-                <div className="absolute -top-2.5 right-4 bg-brand-500 text-white text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                  <Sparkles className="h-2.5 w-2.5" />
-                  {t(`step3.${strategy.tagKey}`)}
+              {/* Premium badge */}
+              {strategy.premium && (
+                <div className={cn(
+                  'absolute -top-2.5 right-4 text-[9px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full flex items-center gap-1',
+                  isPaidPlan
+                    ? 'bg-brand-500 text-white'
+                    : 'bg-amber-100 text-amber-700 border border-amber-200'
+                )}>
+                  {isPaidPlan ? (
+                    <>
+                      <Sparkles className="h-2.5 w-2.5" />
+                      {t('step3.autoTag')}
+                    </>
+                  ) : (
+                    <>
+                      <Crown className="h-2.5 w-2.5" />
+                      {t('step3.premiumTag')}
+                    </>
+                  )}
                 </div>
               )}
 
               <div className={cn(
                 'w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-colors',
-                isSelected ? 'bg-brand-500 text-white' : 'bg-cream text-ink-400'
+                isLocked
+                  ? 'bg-cream-100 text-ink-300'
+                  : isSelected
+                    ? 'bg-brand-500 text-white'
+                    : 'bg-cream text-ink-400'
               )}>
-                <Icon className="h-5 w-5" />
+                {isLocked ? <Lock className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
               </div>
 
               <div className="flex-1 min-w-0">
                 <p className={cn(
                   'text-sm font-bold',
-                  isSelected ? 'text-brand-800' : 'text-ink'
+                  isLocked ? 'text-ink-300' : isSelected ? 'text-brand-800' : 'text-ink'
                 )}>
                   {t(`step3.${strategy.titleKey}`)}
                 </p>
-                <p className="text-xs text-ink-400 mt-0.5 leading-relaxed">
+                <p className={cn(
+                  'text-xs mt-0.5 leading-relaxed',
+                  isLocked ? 'text-ink-300' : 'text-ink-400'
+                )}>
                   {t(`step3.${strategy.descKey}`)}
                 </p>
+                {isLocked && (
+                  <p className="text-[10px] text-amber-600 font-medium mt-1.5 flex items-center gap-1">
+                    <Crown className="h-3 w-3" />
+                    {t('step3.premiumHint')}
+                  </p>
+                )}
               </div>
 
-              {isSelected && (
+              {isSelected && !isLocked && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}

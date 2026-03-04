@@ -15,7 +15,7 @@ const SubscriptionContext = createContext(null);
 export function SubscriptionProvider({ children }) {
   const { user } = useAuth();
 
-  const { data: subscription, isLoading } = useQuery({
+  const { data: subscription, isLoading, isError } = useQuery({
     queryKey: ['subscription'],
     queryFn: getSubscription,
     enabled: !!user,
@@ -52,6 +52,7 @@ export function SubscriptionProvider({ children }) {
         plan,
         limits,
         isLoading,
+        isError,
         isTrialing,
         isCanceled,
         isPastDue,

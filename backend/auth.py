@@ -36,6 +36,7 @@ async def get_current_user(
     Raises 401 if the token is missing, expired, or invalid.
     """
     token = credentials.credentials
+    logger.info("AUTH: get_current_user called, token starts with: %s...", token[:20] if token else "NONE")
 
     if not settings.supabase_url:
         raise HTTPException(
@@ -55,6 +56,7 @@ async def get_current_user(
             audience="authenticated",
         )
     except jwt.ExpiredSignatureError:
+        logger.warning("AUTH: Token expired for token starting with: %s...", token[:20])
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token expired",

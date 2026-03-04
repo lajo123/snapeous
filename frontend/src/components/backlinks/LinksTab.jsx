@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Search, Download, RefreshCw, Trash2, Globe, BarChart3, FileText, ExternalLink, CheckCircle, XCircle, MinusCircle, Plus, Upload, Filter, ChevronDown, ChevronUp } from 'lucide-react';
+import { Search, Download, RefreshCw, Trash2, Globe, BarChart3, FileText, ExternalLink, CheckCircle, XCircle, MinusCircle, Plus, Upload, Filter, ChevronDown, ChevronUp, Zap, Loader } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   getBacklinks, getBacklinksCount, createBacklink, createBacklinksBulk,
   updateBacklink, deleteBacklink, deleteAllBacklinks, exportBacklinks,
   checkBacklink, checkAllBacklinks, checkBacklinkIndexation, fetchBacklinkMetrics,
+  toggleAutoFetch, runAutoFetchNow,
 } from '@/lib/api';
 import { cn, BACKLINK_STATUS_COLORS, BACKLINK_LINK_TYPE_COLORS, getHttpStatusColor, formatDate, truncateUrl } from '@/lib/utils';
 import AddBacklinkModal from './AddBacklinkModal';
@@ -24,7 +25,7 @@ function getHttpLabel(code) {
   return String(code);
 }
 
-export default function LinksTab({ projectId }) {
+export default function LinksTab({ projectId, project }) {
   const { t, i18n } = useTranslation(['backlinks', 'common']);
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
@@ -33,6 +34,10 @@ export default function LinksTab({ projectId }) {
   const [showImportModal, setShowImportModal] = useState(false);
   const [editingBacklink, setEditingBacklink] = useState(null);
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+
+  const autoFetch = project?.auto_fetch_enabled ?? false;
+  const autoFetchStatus = project?.auto_fetch_status ?? 'idle';
+  const autoFetchLastRun = project?.auto_fetch_last_run;
 
   const { data: backlinks, isLoading } = useQuery({
     queryKey: ['backlinks', projectId, page, filters],
@@ -127,6 +132,37 @@ export default function LinksTab({ projectId }) {
     onError: () => toast.error(t('backlinks:toast.metricsError')),
   });
 
+  const toggleMutation = useMutation({
+    mutationFn: (enabled) => toggleAutoFetch(projectId, enabled),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+      invalidateAll();
+      toast.success(!autoFetch ? t('backlinks:toast.autoFetchEnabled') : t('backlinks:toast.autoFetchDisabled'));
+    },
+    onError: (error) => {
+      if (error.response?.status === 403) {
+        toast.error(t('backlinks:links.autoFetchPremium'));
+      } else {
+        toast.error(t('backlinks:toast.autoFetchError'));
+      }
+    },
+  });
+
+  const runNowMutation = useMutation({
+    mutationFn: () => runAutoFetchNow(projectId),
+    onSuccess: () => {
+      toast.success(t('backlinks:toast.autoFetchStarted'));
+      queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+    },
+    onError: (error) => {
+      if (error.response?.status === 409) {
+        toast.warning(t('backlinks:toast.autoFetchAlreadyRunning'));
+      } else {
+        toast.error(t('backlinks:toast.autoFetchError'));
+      }
+    },
+  });
+
   const handleExport = () => {
     exportBacklinks(projectId, { status: filters.status || undefined, link_type: filters.link_type || undefined });
     toast.success(t('backlinks:toast.exportLaunched'));
@@ -150,11 +186,42 @@ export default function LinksTab({ projectId }) {
       {/* Action bar */}
       <div className="flex items-center gap-3">
         <button onClick={() => setShowImportModal(true)} className="btn-secondary">
-          <Upload className="h-4 w-4" /> {t('backlinks:links.importCsv')}
+          <Upload className="h-4 w-4" /> {t('backlinks:links.import')}
         </button>
         <button onClick={() => setShowAddModal(true)} className="btn-primary">
           <Plus className="h-4 w-4" /> {t('backlinks:links.add')}
         </button>
+        <button
+          onClick={() => toggleMutation.mutate(!autoFetch)}
+          disabled={toggleMutation.isPending}
+          className={cn(
+            'btn-secondary flex items-center gap-2',
+            autoFetch && 'bg-brand-50 text-brand-700 border-brand-200'
+          )}
+          title={t('backlinks:links.autoFetchTooltip')}
+        >
+          {toggleMutation.isPending ? (
+            <Loader className="h-4 w-4 animate-spin" />
+          ) : (
+            <Zap className={cn("h-4 w-4", autoFetch && "text-brand-500")} />
+          )}
+          {t('backlinks:links.autoFetch')}
+        </button>
+        {autoFetch && (
+          <button
+            onClick={() => runNowMutation.mutate()}
+            disabled={runNowMutation.isPending || autoFetchStatus === 'running'}
+            className="btn-secondary flex items-center gap-2"
+            title={autoFetchLastRun ? t('backlinks:links.autoFetchLastRun', { date: formatDate(autoFetchLastRun, i18n.language) }) : t('backlinks:links.autoFetchNeverRun')}
+          >
+            {(runNowMutation.isPending || autoFetchStatus === 'running') ? (
+              <Loader className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4" />
+            )}
+            {autoFetchStatus === 'running' ? t('backlinks:links.autoFetchRunning') : t('backlinks:links.runNow')}
+          </button>
+        )}
         <div className="flex-1" />
         <button onClick={handleExport} className="btn-secondary">
           <Download className="h-4 w-4" /> {t('backlinks:links.export')}
@@ -358,7 +425,7 @@ export default function LinksTab({ projectId }) {
 
       {/* Modals */}
       {showAddModal && <AddBacklinkModal onClose={() => setShowAddModal(false)} onSubmit={createMutation.mutate} isPending={createMutation.isPending} />}
-      {showImportModal && <ImportBacklinksModal onClose={() => setShowImportModal(false)} onSubmit={importMutation.mutate} isPending={importMutation.isPending} />}
+      {showImportModal && <ImportBacklinksModal onClose={() => setShowImportModal(false)} onSubmit={importMutation.mutate} isPending={importMutation.isPending} currentCount={counts?.total || 0} />}
       {editingBacklink && <EditBacklinkModal backlink={editingBacklink} onClose={() => setEditingBacklink(null)} onSubmit={(data) => updateMutation.mutate({ id: editingBacklink.id, data })} isPending={updateMutation.isPending} />}
     </div>
   );

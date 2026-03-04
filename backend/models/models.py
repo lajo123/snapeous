@@ -149,6 +149,11 @@ class Project(Base):
         DateTime, default=utcnow, onupdate=utcnow
     )
 
+    # Auto-fetch backlinks
+    auto_fetch_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    auto_fetch_last_run: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    auto_fetch_status: Mapped[str | None] = mapped_column(String(20), default="idle")
+
     # Relationships
     searches: Mapped[list["Search"]] = relationship(
         back_populates="project", cascade="all, delete-orphan"
@@ -388,6 +393,23 @@ class Subscription(Base):
     updated_at: Mapped[datetime] = mapped_column(
         TIMESTAMP(timezone=True), default=utcnow, onupdate=utcnow
     )
+
+
+class ProjectCreationLog(Base):
+    """Tracks every project creation per user, even after project deletion.
+
+    Used to enforce monthly creation limits for free-plan users and prevent
+    the create-delete-recreate abuse pattern.
+    """
+    __tablename__ = "project_creation_log"
+
+    id: Mapped[str] = mapped_column(
+        String(36), primary_key=True, default=generate_uuid
+    )
+    user_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
+    project_id: Mapped[str] = mapped_column(String(36), nullable=False)
+    client_domain: Mapped[str] = mapped_column(String(255), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
 class BacklinkHistory(Base):

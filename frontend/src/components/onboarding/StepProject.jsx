@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { Globe, FolderOpen, ArrowRight } from 'lucide-react';
+import { Globe, ArrowRight } from 'lucide-react';
 
 const containerVariants = {
   hidden: {},
@@ -12,10 +12,29 @@ const itemVariants = {
   show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 24 } },
 };
 
-export default function StepProject({ formData, updateForm, onNext }) {
+/**
+ * Derive a clean project name from a domain string.
+ * "www.example.com" → "example.com"
+ * "https://my-site.fr/page" → "my-site.fr"
+ */
+function domainToName(raw) {
+  let d = raw.trim().toLowerCase();
+  d = d.replace(/^https?:\/\//, '');
+  d = d.replace(/\/.*$/, '');
+  d = d.replace(/^www\./, '');
+  return d;
+}
+
+export default function StepProject({ formData, updateForm, onNext, isFirstProject }) {
   const { t } = useTranslation('onboarding');
 
-  const canContinue = formData.name.trim().length > 0 && formData.domain.trim().length > 0;
+  const domainValue = formData.domain.trim();
+  const canContinue = domainValue.length > 0;
+
+  const handleDomainChange = (e) => {
+    const domain = e.target.value;
+    updateForm({ domain, name: domainToName(domain) });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -36,30 +55,13 @@ export default function StepProject({ formData, updateForm, onNext }) {
           variants={itemVariants}
           className="text-2xl sm:text-3xl font-bold text-ink tracking-tight mb-2"
         >
-          {t('step1.title')}
+          {isFirstProject ? t('step1.title') : t('step1.titleNext')}
         </motion.h2>
         <motion.p variants={itemVariants} className="text-sm text-ink-400 mb-8">
           {t('step1.subtitle')}
         </motion.p>
 
         <motion.div variants={itemVariants} className="space-y-5">
-          <div>
-            <label className="block text-sm font-semibold text-ink mb-1.5">
-              {t('step1.nameLabel')}
-            </label>
-            <div className="relative">
-              <FolderOpen className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-300" />
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => updateForm({ name: e.target.value })}
-                placeholder={t('step1.namePlaceholder')}
-                className="input w-full pl-10"
-                autoFocus
-              />
-            </div>
-          </div>
-
           <div>
             <label className="block text-sm font-semibold text-ink mb-1.5">
               {t('step1.domainLabel')}
@@ -69,9 +71,10 @@ export default function StepProject({ formData, updateForm, onNext }) {
               <input
                 type="text"
                 value={formData.domain}
-                onChange={(e) => updateForm({ domain: e.target.value })}
+                onChange={handleDomainChange}
                 placeholder={t('step1.domainPlaceholder')}
                 className="input w-full pl-10"
+                autoFocus
               />
             </div>
           </div>
@@ -104,9 +107,9 @@ export default function StepProject({ formData, updateForm, onNext }) {
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center">
-              {formData.domain ? (
+              {domainValue ? (
                 <img
-                  src={`https://www.google.com/s2/favicons?domain=${formData.domain}&sz=32`}
+                  src={`https://www.google.com/s2/favicons?domain=${domainValue}&sz=32`}
                   alt=""
                   className="w-5 h-5 rounded"
                   onError={(e) => { e.target.style.display = 'none'; }}
@@ -117,10 +120,10 @@ export default function StepProject({ formData, updateForm, onNext }) {
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold text-ink truncate">
-                {formData.name || t('step1.namePlaceholder')}
+                {domainToName(formData.domain) || t('step1.domainPlaceholder')}
               </p>
               <p className="text-xs text-ink-300 truncate">
-                {formData.domain || t('step1.domainPlaceholder')}
+                {domainValue || t('step1.domainPlaceholder')}
               </p>
             </div>
           </div>

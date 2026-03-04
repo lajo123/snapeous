@@ -81,7 +81,7 @@ async def fetch_domain_metrics(domain: str) -> Optional[Dict[str, Any]]:
                 if total_backlinks is not None and dofollow is not None:
                     nofollow = max(0, total_backlinks - dofollow)
 
-                # Extract Majestic topic categories
+                # Extract Majestic topic categories (1-indexed)
                 topics = []
                 for i in range(1, 4):
                     topic_name = data.get(f"majesticTopicName{i}")
@@ -91,6 +91,20 @@ async def fetch_domain_metrics(domain: str) -> Optional[Dict[str, Any]]:
                             "name": topic_name,
                             "value": topic_value,
                         })
+
+                # Extract Majestic Topical Trust Flow (0-indexed TTF)
+                ttf_categories = []
+                for i in range(3):
+                    ttf_name = data.get(f"majesticTTF{i}Name")
+                    ttf_value = _safe_int(data.get(f"majesticTTF{i}Value"))
+                    if ttf_name:
+                        ttf_categories.append({
+                            "name": ttf_name,
+                            "value": ttf_value,
+                        })
+                # Merge: prefer TTF data if available, fallback to topic categories
+                if ttf_categories:
+                    topics = ttf_categories
 
                 return {
                     # Moz metrics

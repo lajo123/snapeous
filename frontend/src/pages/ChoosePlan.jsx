@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { Check, Loader, CreditCard, X, Sparkles, Shield } from 'lucide-react';
 import { stripePromise } from '@/lib/stripe';
-import { createSetupIntent, subscribe } from '@/lib/api';
+import { createSetupIntent, subscribe, getProjects } from '@/lib/api';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useAuth } from '@/contexts/AuthContext';
 import useLocalizedNavigate from '@/hooks/useLocalizedNavigate';
@@ -152,14 +152,29 @@ export default function ChoosePlan() {
   const [interval, setInterval] = useState('monthly');
   const [checkoutPlan, setCheckoutPlan] = useState(null);
 
+  // Pre-fetch projects to decide where to redirect after plan selection
+  const { data: projects } = useQuery({
+    queryKey: ['projects'],
+    queryFn: getProjects,
+    staleTime: 60000,
+  });
+  const hasProjects = Array.isArray(projects) && projects.length > 0;
+
+  const navigateAfterPlan = () => {
+    navigate(hasProjects ? '/dashboard' : '/onboarding');
+  };
+
   const freeMutation = useMutation({
     mutationFn: () => subscribe({ plan: 'free' }),
     onSuccess: async () => {
       await refetchSubscription();
       toast.success(t('checkout.successFree'));
-      navigate('/onboarding');
+      navigateAfterPlan();
     },
-    onError: (err) => toast.error(err.response?.data?.detail || t('checkout.activateError')),
+    onError: (err) => {
+      const detail = err.response?.data?.detail;
+      toast.error(typeof detail === 'string' ? detail : detail?.message || t('checkout.activateError'));
+    },
   });
 
   const handleSelectPlan = (planId) => {
@@ -170,7 +185,7 @@ export default function ChoosePlan() {
   const handleCheckoutSuccess = async () => {
     setCheckoutPlan(null);
     await refetchSubscription();
-    navigate('/onboarding');
+    navigateAfterPlan();
   };
 
   return (

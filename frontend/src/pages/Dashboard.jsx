@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import {
@@ -70,7 +71,7 @@ function EmptyDashboard({ t, navigate }) {
       <h2 className="text-lg font-bold text-ink mb-2">{t('createFirstProject')}</h2>
       <p className="text-sm text-ink-400 max-w-sm mb-6">{t('createFirstProjectDesc')}</p>
       <button
-        onClick={() => navigate('/projects/new')}
+        onClick={() => navigate('/onboarding')}
         className="btn-primary px-5 py-2.5 text-sm font-semibold flex items-center gap-2"
       >
         <Plus className="h-4 w-4" />
@@ -98,6 +99,13 @@ export default function Dashboard() {
 
   const isLoading = loadingProjects || loadingStats;
   const hasProjects = Array.isArray(projects) && projects.length > 0;
+
+  // Redirect to onboarding when user has no projects yet
+  useEffect(() => {
+    if (!loadingProjects && Array.isArray(projects) && projects.length === 0) {
+      navigate('/onboarding');
+    }
+  }, [loadingProjects, projects, navigate]);
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
@@ -193,7 +201,7 @@ export default function Dashboard() {
             <h2 className="text-sm font-bold text-ink mb-3">{t('quickActions')}</h2>
             <div className="space-y-2">
               <button
-                onClick={() => navigate('/projects/new')}
+                onClick={() => navigate('/onboarding')}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-ink-50/50 bg-surface-muted/30 hover:bg-surface-muted text-sm font-medium text-ink transition-colors"
               >
                 <Plus className="h-4 w-4 text-brand-500" />

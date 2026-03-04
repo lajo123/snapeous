@@ -5,7 +5,7 @@ import { DEFAULT_LANG } from '@/i18n';
 
 export default function ProtectedRoute({ children, skipSubscriptionCheck = false }) {
   const { user, loading } = useAuth();
-  const { subscription, isLoading: subLoading } = useSubscription();
+  const { subscription, isLoading: subLoading, isError: subError } = useSubscription();
   const location = useLocation();
   const { lang } = useParams();
   const currentLang = lang || DEFAULT_LANG;
@@ -22,8 +22,10 @@ export default function ProtectedRoute({ children, skipSubscriptionCheck = false
     return <Navigate to={`/${currentLang}/login`} state={{ from: location }} replace />;
   }
 
-  // Redirect to plan selection if no subscription exists
-  if (!skipSubscriptionCheck && !subscription && !location.pathname.endsWith('/choose-plan')) {
+  // Don't redirect to choose-plan if the subscription query errored —
+  // the backend auto-creates a free subscription, so errors are transient.
+  // Only redirect when we have a definitive "no subscription" (query succeeded but returned nothing).
+  if (!skipSubscriptionCheck && !subscription && !subError && !location.pathname.endsWith('/choose-plan')) {
     return <Navigate to={`/${currentLang}/choose-plan`} replace />;
   }
 

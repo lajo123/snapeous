@@ -26,9 +26,10 @@ from backend.models.models import (
     Subscription, SubscriptionPlan, SubscriptionStatus, BillingInterval,
     ProjectStatus, FootprintCategory, LinkType, Difficulty,
     SearchStatus, SpotStatus, BacklinkStatus, BacklinkLinkType,
+    ProjectCreationLog,
 )
 from backend.services.backlink_history import record_history
-from backend.subscription import get_user_subscription, check_domain_limit, check_backlink_limit
+from backend.subscription import get_user_subscription, check_domain_limit, check_backlink_limit, check_monthly_creation_limit
 from backend.plans import PLAN_LIMITS, get_plan_limits
 
 # ── App Setup ──────────────────────────────────────────────────────────
@@ -49,6 +50,76 @@ app.add_middleware(
 
 # Note: init_db() removed — tables are managed in Supabase directly.
 # No need to run create_all on every serverless cold start.
+
+
+# ── DEBUG middleware to trace auth issues on billing endpoints ──────
+@app.middleware("http")
+async def debug_billing_auth(request: Request, call_next):
+    if "/api/billing/" in str(request.url.path):
+        auth_header = request.headers.get("authorization", "MISSING")
+        logger.info(
+            "DEBUG-MW: %s %s | Auth header: %s",
+            request.method,
+            request.url.path,
+            auth_header[:30] + "..." if len(auth_header) > 30 else auth_header,
+        )
+    response = await call_next(request)
+    if "/api/billing/" in str(request.url.path):
+        logger.info(
+            "DEBUG-MW: %s %s -> status %s",
+            request.method,
+            request.url.path,
+            response.status_code,
+        )
+    return response
+
+
+@app.get("/api/debug/db-test")
+async def debug_db_test(db: AsyncSession = Depends(get_db)):
+    """Quick DB + subscribe simulation check — remove after debugging."""
+    import traceback as _tb
+    try:
+        from sqlalchemy import text
+
+        result = await db.execute(text("SELECT current_user, current_database()"))
+        row = result.one()
+
+        # Simulate the EXACT subscribe free flow with a test user
+        test_user_id = "debug-test-user-" + str(int(__import__('time').time()))
+
+        # Step 1: Check existing subscription (like subscribe endpoint)
+        result2 = await db.execute(
+            select(Subscription).where(Subscription.user_id == test_user_id)
+        )
+        sub = result2.scalar_one_or_none()
+
+        # Step 2: Create new subscription (since test user doesn't exist)
+        sub = Subscription(
+            user_id=test_user_id,
+            plan=SubscriptionPlan.free,
+            status=SubscriptionStatus.active,
+        )
+        db.add(sub)
+        await db.commit()
+        await db.refresh(sub)
+
+        # Step 3: Serialize to SubscriptionOut (like the response_model does)
+        out = SubscriptionOut.model_validate(sub)
+        serialized = out.model_dump()
+
+        # Cleanup
+        await db.execute(
+            delete(Subscription).where(Subscription.user_id == test_user_id)
+        )
+        await db.commit()
+
+        return {
+            "db_user": row[0],
+            "subscribe_test": "ok",
+            "serialized": serialized,
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e), "traceback": _tb.format_exc()}
 
 
 async def _verify_project_owner(
@@ -105,6 +176,9 @@ class ProjectOut(BaseModel):
     updated_at: datetime
     spots_count: int = 0
     searches_count: int = 0
+    auto_fetch_enabled: bool = False
+    auto_fetch_last_run: Optional[datetime] = None
+    auto_fetch_status: Optional[str] = None
 
     model_config = {"from_attributes": True}
 
@@ -311,6 +385,10 @@ async def verify_turnstile(body: TurnstileVerifyRequest, request: Request):
     if not settings.turnstile_secret_key:
         return {"success": True}
 
+    # Bypass Turnstile in debug/local dev mode
+    if settings.debug:
+        return {"success": True}
+
     # Allow Cloudflare test/dummy tokens (used in local dev with test site key)
     if body.token and ("DUMMY" in body.token or body.token == "localhost-bypass"):
         return {"success": True}
@@ -451,6 +529,9 @@ async def list_projects(
             "updated_at": p.updated_at,
             "spots_count": spots_q.scalar() or 0,
             "searches_count": searches_q.scalar() or 0,
+            "auto_fetch_enabled": p.auto_fetch_enabled,
+            "auto_fetch_last_run": p.auto_fetch_last_run,
+            "auto_fetch_status": p.auto_fetch_status,
         }
         out.append(ProjectOut(**proj_dict))
     return out
@@ -463,8 +544,9 @@ async def create_project(
     user_id: str = Depends(get_current_user),
     sub: Subscription = Depends(get_user_subscription),
 ):
-    # Check plan limit
+    # Check plan limits
     await check_domain_limit(db, user_id, sub)
+    await check_monthly_creation_limit(db, user_id, sub)
 
     # Clean domain
     domain = data.client_domain.strip()
@@ -485,6 +567,13 @@ async def create_project(
     db.add(project)
     await db.flush()
     await db.refresh(project)
+
+    # Log creation for monthly rate-limiting (persists after project deletion)
+    db.add(ProjectCreationLog(
+        user_id=user_id,
+        project_id=project.id,
+        client_domain=domain,
+    ))
 
     await db.commit()
     await db.refresh(project)
@@ -509,6 +598,9 @@ async def create_project(
             "updated_at": project.updated_at,
             "spots_count": 0,
             "searches_count": 0,
+            "auto_fetch_enabled": project.auto_fetch_enabled,
+            "auto_fetch_last_run": project.auto_fetch_last_run,
+            "auto_fetch_status": project.auto_fetch_status,
         }
     )
 
@@ -544,14 +636,18 @@ async def get_project(
 
         # Lazy-fetch DataForSEO metrics (all endpoints)
         dfs_existing = sa.get("dataforseo_metrics") or {}
-        dfs_missing_sections = not dfs_existing or not dfs_existing.get("whois")
+        dfs_missing_sections = not dfs_existing or not dfs_existing.get("whois") or not dfs_existing.get("ranked_keywords") or not dfs_existing.get("relevant_pages")
         if dfs_missing_sections:
             try:
                 from backend.services.dataforseo_domain import fetch_all_dataforseo
                 all_dfs = await fetch_all_dataforseo(project.client_domain)
                 if all_dfs:
-                    merged = all_dfs.get("summary") or {}
-                    for key in ("whois", "technologies", "top_anchors", "top_referring_domains", "history", "competitors"):
+                    merged = dict(dfs_existing)  # preserve existing data
+                    summary = all_dfs.get("summary") or {}
+                    for sk, sv in summary.items():
+                        if sk not in merged or merged[sk] is None:
+                            merged[sk] = sv
+                    for key in ("whois", "technologies", "top_anchors", "top_referring_domains", "history", "competitors", "ranked_keywords", "relevant_pages"):
                         if key in all_dfs:
                             merged[key] = all_dfs[key]
                     sa["dataforseo_metrics"] = merged
@@ -589,6 +685,9 @@ async def get_project(
             "updated_at": project.updated_at,
             "spots_count": spots_q.scalar() or 0,
             "searches_count": searches_q.scalar() or 0,
+            "auto_fetch_enabled": project.auto_fetch_enabled,
+            "auto_fetch_last_run": project.auto_fetch_last_run,
+            "auto_fetch_status": project.auto_fetch_status,
         }
     )
 
@@ -650,6 +749,9 @@ async def update_project(
             "updated_at": project.updated_at,
             "spots_count": spots_q.scalar() or 0,
             "searches_count": searches_q.scalar() or 0,
+            "auto_fetch_enabled": project.auto_fetch_enabled,
+            "auto_fetch_last_run": project.auto_fetch_last_run,
+            "auto_fetch_status": project.auto_fetch_status,
         }
     )
 
@@ -669,6 +771,91 @@ async def delete_project(
     await db.delete(project)
     await db.commit()
     return {"detail": "Projet supprimé"}
+
+
+# ── Auto-Fetch Routes ────────────────────────────────────────────────
+
+
+@app.patch("/api/projects/{project_id}/auto-fetch")
+async def toggle_auto_fetch(
+    project_id: str,
+    enabled: bool = Query(...),
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+    sub: Subscription = Depends(get_user_subscription),
+):
+    """Enable or disable auto-fetch backlinks for a project."""
+    project = await _verify_project_owner(project_id, db, user_id)
+
+    plan_name = sub.plan if isinstance(sub.plan, str) else sub.plan.value
+    if plan_name == "free" and enabled:
+        raise HTTPException(
+            status_code=403,
+            detail={
+                "code": "PLAN_LIMIT_REACHED",
+                "message": "Auto Fetch requires a paid plan.",
+                "limit_type": "auto_fetch",
+                "current_plan": plan_name,
+                "upgrade_required": True,
+            },
+        )
+
+    project.auto_fetch_enabled = enabled
+    if not enabled:
+        project.auto_fetch_status = "idle"
+    await db.flush()
+    await db.refresh(project)
+
+    # If enabling, trigger the first fetch in background
+    if enabled:
+        from backend.services.auto_fetch import run_auto_fetch_for_project
+        asyncio.create_task(run_auto_fetch_for_project(project_id))
+
+    return {
+        "auto_fetch_enabled": project.auto_fetch_enabled,
+        "auto_fetch_last_run": project.auto_fetch_last_run,
+        "auto_fetch_status": project.auto_fetch_status,
+    }
+
+
+@app.post("/api/projects/{project_id}/auto-fetch/run")
+async def run_auto_fetch_now(
+    project_id: str,
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+):
+    """Manually trigger auto-fetch for a project (runs in background)."""
+    project = await _verify_project_owner(project_id, db, user_id)
+
+    if not project.auto_fetch_enabled:
+        raise HTTPException(status_code=400, detail="Auto Fetch is not enabled for this project.")
+
+    if project.auto_fetch_status == "running":
+        raise HTTPException(status_code=409, detail="Auto Fetch is already running.")
+
+    from backend.services.auto_fetch import run_auto_fetch_for_project
+    asyncio.create_task(run_auto_fetch_for_project(project_id))
+
+    return {"detail": "Auto Fetch started", "project_id": project_id}
+
+
+@app.post("/api/cron/auto-fetch")
+async def cron_auto_fetch(request: Request):
+    """Cron endpoint to trigger auto-fetch for all eligible projects.
+
+    Protected by app_secret_key as Bearer token.
+    Designed to be called by an external cron service daily.
+    The service internally checks which projects are due (30+ days since last run).
+    """
+    auth = request.headers.get("authorization", "")
+    expected = f"Bearer {settings.app_secret_key}"
+    if auth != expected:
+        raise HTTPException(status_code=401, detail="Invalid cron secret")
+
+    from backend.services.auto_fetch import run_auto_fetch_all
+    asyncio.create_task(run_auto_fetch_all())
+
+    return {"detail": "Auto-fetch job started for all eligible projects"}
 
 
 # ── Footprint Routes ──────────────────────────────────────────────────
@@ -809,6 +996,62 @@ async def analyze_project(
     from backend.services.site_analyzer import analyze_site
     background_tasks.add_task(analyze_site, project_id, project.client_domain, language)
     return {"detail": "Analyse lancée", "project_id": project_id}
+
+
+@app.post("/api/projects/{project_id}/refresh-metrics")
+async def refresh_project_metrics(
+    project_id: str,
+    db: AsyncSession = Depends(get_db),
+    user_id: str = Depends(get_current_user),
+):
+    """Re-fetch only DataForSEO + DomDetailer metrics (no crawl / no AI analysis)."""
+    result = await db.execute(
+        select(Project).where(Project.id == project_id, Project.user_id == user_id)
+    )
+    project = result.scalar_one_or_none()
+    if not project:
+        raise HTTPException(status_code=404, detail="Projet non trouvé")
+    if not project.client_domain:
+        raise HTTPException(status_code=400, detail="Pas de domaine configuré")
+
+    sa = dict(project.site_analysis or {})
+
+    # ── DomDetailer (Moz + Majestic) ─────────────────────────────────
+    try:
+        from backend.services.domdetailer import fetch_domain_metrics
+        dm = await fetch_domain_metrics(project.client_domain)
+        if dm:
+            sa["domain_metrics"] = dm
+            print(f"[RefreshMetrics] DomDetailer OK for {project.client_domain}")
+    except Exception as e:
+        print(f"[RefreshMetrics] DomDetailer failed for {project.client_domain}: {e}")
+
+    # ── DataForSEO (whois, backlinks, keywords…) ─────────────────────
+    try:
+        from backend.services.dataforseo_domain import fetch_all_dataforseo
+        all_dfs = await fetch_all_dataforseo(project.client_domain)
+        if all_dfs:
+            dfs_existing = sa.get("dataforseo_metrics") or {}
+            merged = dict(dfs_existing)
+            summary = all_dfs.get("summary") or {}
+            for sk, sv in summary.items():
+                merged[sk] = sv  # always overwrite on manual refresh
+            for key in ("whois", "technologies", "top_anchors", "top_referring_domains", "history", "competitors", "ranked_keywords"):
+                if key in all_dfs:
+                    merged[key] = all_dfs[key]
+            sa["dataforseo_metrics"] = merged
+            print(f"[RefreshMetrics] DataForSEO OK for {project.client_domain}")
+    except Exception as e:
+        print(f"[RefreshMetrics] DataForSEO failed for {project.client_domain}: {e}")
+
+    project.site_analysis = sa
+    project.updated_at = datetime.now(timezone.utc).replace(tzinfo=None)
+    from sqlalchemy.orm.attributes import flag_modified
+    flag_modified(project, "site_analysis")
+    await db.commit()
+    await db.refresh(project)
+
+    return {"detail": "Métriques actualisées", "project_id": project_id}
 
 
 @app.get("/api/projects/{project_id}/sitemap-pages")
@@ -1833,9 +2076,21 @@ async def create_backlinks_bulk(
     user_id: str = Depends(get_current_user),
     sub: Subscription = Depends(get_user_subscription),
 ):
-    """Create multiple backlinks at once (from CSV import). Auto-detects target URLs."""
+    """Create multiple backlinks at once (bulk import). Auto-detects target URLs."""
     import time
     start_time = time.time()
+
+    MAX_BATCH_SIZE = 10_000
+    if len(items) > MAX_BATCH_SIZE:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "code": "BATCH_LIMIT_EXCEEDED",
+                "message": f"Maximum {MAX_BATCH_SIZE} URLs per batch.",
+                "limit": MAX_BATCH_SIZE,
+                "received": len(items),
+            },
+        )
 
     project = await _verify_project_owner(project_id, db, user_id)
 

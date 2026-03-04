@@ -23,11 +23,11 @@
     },
     "pro": {
       "desc": "Freelancers & teams",
-      "features": ["10 projects", "5,000 backlinks", "Everything in Starter +", "AI recommendations", "3 competitors", "PDF reports", "GSC integration", "API access"]
+      "features": ["10 projects", "5,000 backlinks", "Everything in Starter +", "AI recommendations", "Footprints Library", "3 competitors", "PDF reports", "GSC integration", "API access"]
     },
     "agency": {
       "desc": "SEO agencies",
-      "features": ["Unlimited projects", "25,000 backlinks", "Everything in Pro +", "Unlimited competitors", "Sub-accounts", "Scheduled reports", "Priority support", "Advanced API"]
+      "features": ["Unlimited projects", "25,000 backlinks", "Everything in Pro +", "Footprints Library", "Unlimited competitors", "Sub-accounts", "Scheduled reports", "Priority support", "Advanced API"]
     }
   },
   "checkout": {

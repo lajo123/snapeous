@@ -87,6 +87,7 @@ async def _post_items(path: str, payload: list) -> Optional[List[dict]]:
                 return None
             task = tasks[0]
             if task.get("status_code") != 20000:
+                print(f"[DataForSEO] {path} task error {task.get('status_code')}: {task.get('status_message')}")
                 return None
             results = task.get("result", [])
             if not results:
@@ -338,7 +339,177 @@ async def fetch_competitors(domain: str, limit: int = 10) -> Optional[List[Dict[
     ]
 
 
+# ── RANKED KEYWORDS ─────────────────────────────────────────────────────
+async def _fetch_ranked_keywords_labs(domain: str, limit: int) -> Optional[List[dict]]:
+    """Try DataForSEO Labs endpoint (requires Labs subscription)."""
+    items = await _post_items("/dataforseo_labs/google/ranked_keywords/live", [{
+        "target": domain,
+        "language_name": "French",
+        "location_code": 2250,  # France
+        "include_serp_info": True,
+        "limit": limit,
+        "order_by": ["keyword_data.keyword_info.search_volume,desc"],
+        "filters": [
+            "ranked_serp_element.serp_item.rank_group", "<=", 100
+        ],
+    }])
+    if not items:
+        return None
+    out = []
+    for item in items:
+        kw_data = item.get("keyword_data") or {}
+        kw_info = kw_data.get("keyword_info") or {}
+        serp_el = item.get("ranked_serp_element") or {}
+        serp_item = serp_el.get("serp_item") or {}
+        keyword = kw_data.get("keyword")
+        if not keyword:
+            continue
+        out.append({
+            "keyword": keyword,
+            "position": _safe_int(serp_item.get("rank_group")),
+            "search_volume": _safe_int(kw_info.get("search_volume")),
+            "cpc": _safe_float(kw_info.get("cpc")),
+            "competition": _safe_float(kw_info.get("competition")),
+            "traffic": _safe_float(item.get("estimated_paid_traffic_cost"))
+                       or _safe_float(serp_item.get("etv")),
+            "url": serp_item.get("url"),
+        })
+    return out
+
+
+async def _fetch_ranked_keywords_serp(domain: str, limit: int) -> Optional[List[dict]]:
+    """Fallback: use SERP API to get organic results for the domain."""
+    items = await _post_items("/serp/google/organic/live/advanced", [{
+        "target": domain,
+        "location_code": 2250,
+        "language_code": "fr",
+        "device": "desktop",
+        "os": "windows",
+        "depth": limit,
+    }])
+    if not items:
+        return None
+    out = []
+    for item in items:
+        if item.get("type") != "organic":
+            continue
+        keyword = item.get("keyword") or item.get("title")
+        if not keyword:
+            continue
+        out.append({
+            "keyword": keyword,
+            "position": _safe_int(item.get("rank_group")),
+            "search_volume": _safe_int(item.get("search_volume")),
+            "cpc": _safe_float(item.get("cpc")),
+            "competition": None,
+            "traffic": _safe_float(item.get("etv")),
+            "url": item.get("url"),
+        })
+    return out
+
+
+async def fetch_ranked_keywords(domain: str, limit: int = 100) -> Optional[List[Dict[str, Any]]]:
+    """Top organic keywords – tries Labs first, falls back to SERP API."""
+    if not domain:
+        return None
+
+    # Try Labs endpoint first (richer data)
+    out = await _fetch_ranked_keywords_labs(domain, limit)
+
+    # If Labs unavailable, no fallback – just return None gracefully
+    if not out:
+        print(f"[DataForSEO] ranked_keywords: no data for {domain}")
+        return None
+
+    # Sort by traffic desc, then by search_volume desc
+    out.sort(key=lambda x: (x.get("traffic") or 0, x.get("search_volume") or 0), reverse=True)
+    print(f"[DataForSEO] ranked_keywords OK for {domain} ({len(out)} keywords)")
+    return out
+
+
+# ── RELEVANT PAGES (Top Pages by Traffic) ──────────────────────────────
+async def fetch_relevant_pages(domain: str, limit: int = 20) -> Optional[List[Dict[str, Any]]]:
+    """Top pages ranked by organic traffic via DataForSEO Labs."""
+    if not domain:
+        return None
+    items = await _post_items("/dataforseo_labs/google/relevant_pages/live", [{
+        "target": domain,
+        "language_name": "French",
+        "location_code": 2250,
+        "limit": limit,
+        "order_by": ["metrics.organic.etv,desc"],
+    }])
+    if not items:
+        return None
+    print(f"[DataForSEO] relevant_pages OK for {domain} ({len(items)} pages)")
+    out = []
+    for item in items:
+        page_url = item.get("page_address")
+        if not page_url:
+            continue
+        metrics = (item.get("metrics") or {}).get("organic") or {}
+        out.append({
+            "url": page_url,
+            "etv": _safe_float(metrics.get("etv")),
+            "keywords_count": _safe_int(metrics.get("count")),
+            "pos_1": _safe_int(metrics.get("pos_1")),
+            "pos_2_3": _safe_int(metrics.get("pos_2_3")),
+            "pos_4_10": _safe_int(metrics.get("pos_4_10")),
+            "is_lost": item.get("is_lost", False),
+        })
+    # Sort by traffic desc
+    out.sort(key=lambda x: (x.get("etv") or 0), reverse=True)
+    return out
+
+
 # ── ALL-IN-ONE FETCH ─────────────────────────────────────────────────────
+async def fetch_backlinks_list(
+    domain: str,
+    limit: int = 1000,
+    offset: int = 0,
+) -> Optional[List[Dict[str, Any]]]:
+    """Fetch individual backlinks pointing to a domain.
+
+    Uses /v3/backlinks/backlinks/live endpoint.
+    Returns normalised list of backlink dicts ready for DB insertion.
+    """
+    if not domain:
+        return None
+    items = await _post_items("/backlinks/backlinks/live", [{
+        "target": domain,
+        "include_subdomains": True,
+        "limit": limit,
+        "offset": offset,
+        "order_by": ["rank,desc"],
+        "backlinks_status_type": "live",
+        "mode": "as_is",
+    }])
+    if not items:
+        return None
+    print(f"[DataForSEO] backlinks/live OK for {domain} ({len(items)} backlinks)")
+
+    def _safe_int(v):
+        try:
+            return int(v) if v is not None else None
+        except (ValueError, TypeError):
+            return None
+
+    return [
+        {
+            "source_url": item.get("url_from", ""),
+            "target_url": item.get("url_to", ""),
+            "anchor_text": item.get("anchor", ""),
+            "source_domain": item.get("domain_from", ""),
+            "target_domain": item.get("domain_to", ""),
+            "link_type": "nofollow" if item.get("dofollow") is False else "dofollow",
+            "http_code": _safe_int(item.get("page_from_status_code")),
+            "links_on_page": _safe_int(item.get("links_on_page")),
+            "domain_rank": _safe_int(item.get("rank")),
+        }
+        for item in items if item.get("url_from")
+    ]
+
+
 async def fetch_all_dataforseo(domain: str) -> Dict[str, Any]:
     """Fetch all DataForSEO data in parallel. Returns dict with all sections."""
     import asyncio
@@ -354,11 +525,13 @@ async def fetch_all_dataforseo(domain: str) -> Dict[str, Any]:
         fetch_top_referring_domains(domain),
         fetch_backlinks_history(domain),
         fetch_competitors(domain),
+        fetch_ranked_keywords(domain),
+        fetch_relevant_pages(domain),
         return_exceptions=True,
     )
 
     out: Dict[str, Any] = {}
-    keys = ["summary", "whois", "technologies", "top_anchors", "top_referring_domains", "history", "competitors"]
+    keys = ["summary", "whois", "technologies", "top_anchors", "top_referring_domains", "history", "competitors", "ranked_keywords", "relevant_pages"]
     for key, result in zip(keys, results):
         if isinstance(result, Exception):
             print(f"[DataForSEO] {key} failed: {result}")

@@ -64,6 +64,7 @@ export const createProject = (data) => api.post('/projects', data).then(r => r.d
 export const updateProject = (id, data) => api.patch(`/projects/${id}`, data).then(r => r.data);
 export const deleteProject = (id) => api.delete(`/projects/${id}`).then(r => r.data);
 export const analyzeProject = (id, language) => api.post(`/projects/${id}/analyze`, null, { params: language ? { language } : {} }).then(r => r.data);
+export const refreshProjectMetrics = (id) => api.post(`/projects/${id}/refresh-metrics`).then(r => r.data);
 export const getSitemapPages = (projectId, params) => api.get(`/projects/${projectId}/sitemap-pages`, { params }).then(r => r.data);
 
 // ── Footprints ───────────────────────────────────────────────────────
@@ -160,5 +161,9 @@ export const getBacklinkStats = (projectId) => api.get(`/projects/${projectId}/b
 export const getBacklinkAnchors = (projectId) => api.get(`/projects/${projectId}/backlinks/anchors`).then(r => r.data);
 export const getBacklinkHistory = (projectId, params) => api.get(`/projects/${projectId}/backlinks/history`, { params }).then(r => r.data);
 export const getBacklinkDomains = (projectId, params) => api.get(`/projects/${projectId}/backlinks/domains`, { params }).then(r => r.data);
+
+// Auto-fetch
+export const toggleAutoFetch = (projectId, enabled) => api.patch(`/projects/${projectId}/auto-fetch`, null, { params: { enabled } }).then(r => r.data);
+export const runAutoFetchNow = (projectId) => api.post(`/projects/${projectId}/auto-fetch/run`).then(r => r.data);
 
 export default api;

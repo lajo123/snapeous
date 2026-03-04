@@ -38,6 +38,7 @@ const ProjectBacklinks = lazy(() => import('./pages/ProjectBacklinks'));
 const ProjectKeywords = lazy(() => import('./pages/ProjectKeywords'));
 const ProjectNew = lazy(() => import('./pages/ProjectNew'));
 const Settings = lazy(() => import('./pages/Settings'));
+const Footprints = lazy(() => import('./pages/Footprints'));
 
 // 404
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -120,6 +121,9 @@ function App() {
 
             {/* Settings */}
             <Route path="settings" element={<Settings />} />
+
+            {/* Footprints (premium) */}
+            <Route path="footprints" element={<Footprints />} />
           </Route>
 
           {/* 404 within language context */}

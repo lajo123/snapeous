@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { getProjects, createProject, analyzeProject } from '@/lib/api';
+import { getProjects, getProject, createProject, analyzeProject, getDashboardStats, getBacklinkStats } from '@/lib/api';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 import useLocalizedNavigate from '@/hooks/useLocalizedNavigate';
 import ProgressBar from '@/components/onboarding/ProgressBar';
 import StepTransition from '@/components/onboarding/StepTransition';
@@ -15,6 +16,15 @@ export default function Onboarding() {
   const { i18n } = useTranslation();
   const navigate = useLocalizedNavigate();
   const queryClient = useQueryClient();
+  const { plan } = useSubscription();
+
+  const { data: projects = [] } = useQuery({
+    queryKey: ['projects'],
+    queryFn: getProjects,
+  });
+
+  const isFirstProject = projects.length === 0;
+  const isPaidPlan = ['starter', 'pro', 'agency'].includes(plan);
 
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
@@ -24,20 +34,8 @@ export default function Onboarding() {
     name: '',
     domain: '',
     languages: [i18n.language?.split('-')[0] || 'en'],
-    backlinkStrategy: 'auto',
+    backlinkStrategy: isPaidPlan ? 'auto' : 'manual',
   });
-
-  // Check if user already has projects → redirect to dashboard
-  const { data: projects, isLoading } = useQuery({
-    queryKey: ['projects'],
-    queryFn: getProjects,
-  });
-
-  useEffect(() => {
-    if (!isLoading && projects?.length > 0) {
-      navigate('/dashboard');
-    }
-  }, [projects, isLoading, navigate]);
 
   const updateForm = (updates) => {
     setFormData((prev) => ({ ...prev, ...updates }));
@@ -58,12 +56,26 @@ export default function Onboarding() {
     onSuccess: async (project) => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
 
-      // Trigger analysis in background
+      // Trigger analysis and prefetch data in parallel during the launch animation
       const primaryLang = formData.languages[0] || 'en';
-      analyzeProject(project.id, primaryLang).catch(() => {});
+      const analysisPromise = analyzeProject(project.id, primaryLang).catch(() => {});
 
-      // Wait for the launch animation to finish
-      await new Promise((resolve) => setTimeout(resolve, 3200));
+      // Minimum animation duration
+      const animationPromise = new Promise((resolve) => setTimeout(resolve, 3200));
+
+      // Wait for analysis to complete (or timeout after 15s), then prefetch project data
+      const analysisTimeout = new Promise((resolve) => setTimeout(resolve, 15000));
+      await Promise.race([analysisPromise, analysisTimeout]);
+
+      // Prefetch all data the user will need on the project page
+      await Promise.allSettled([
+        queryClient.prefetchQuery({ queryKey: ['project', project.id], queryFn: () => getProject(project.id) }),
+        queryClient.prefetchQuery({ queryKey: ['dashboard-stats'], queryFn: getDashboardStats }),
+        queryClient.prefetchQuery({ queryKey: ['backlink-stats', project.id], queryFn: () => getBacklinkStats(project.id) }),
+      ]);
+
+      // Ensure animation has finished before navigating
+      await animationPromise;
       setIsLaunching(false);
 
       toast.success(
@@ -81,7 +93,9 @@ export default function Onboarding() {
     },
     onError: (err) => {
       setIsLaunching(false);
-      toast.error(err.response?.data?.detail || 'Failed to create project');
+      const detail = err.response?.data?.detail;
+      const message = typeof detail === 'string' ? detail : detail?.message || 'Failed to create project';
+      toast.error(message);
     },
   });
 
@@ -94,15 +108,6 @@ export default function Onboarding() {
       backlink_strategy: formData.backlinkStrategy,
     });
   };
-
-  // Show nothing while checking existing projects
-  if (isLoading) {
-    return (
-      <div className="min-h-[100dvh] flex items-center justify-center grain-bg">
-        <div className="w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-[100dvh] flex flex-col overflow-x-hidden grain-bg">
@@ -128,6 +133,7 @@ export default function Onboarding() {
               formData={formData}
               updateForm={updateForm}
               onNext={goNext}
+              isFirstProject={isFirstProject}
             />
           )}
           {step === 2 && (
@@ -144,6 +150,7 @@ export default function Onboarding() {
               updateForm={updateForm}
               onNext={goNext}
               onBack={goBack}
+              isPaidPlan={isPaidPlan}
             />
           )}
           {step === 4 && (
